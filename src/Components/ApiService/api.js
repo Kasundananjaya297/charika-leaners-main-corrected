@@ -1,4 +1,18 @@
 import AxiosInstance from "./AxiosInstance";
+import { initializeApp } from "firebase/app";
+import {getDownloadURL, getStorage, ref, uploadBytesResumable,deleteObject} from "firebase/storage";
+import Swal from "sweetalert2";
+import axios from "axios";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCvDeVEEK2AaHjIfl6SeJ13bM-nVBfOZ1g",
+  authDomain: "charikaleaners.firebaseapp.com",
+  projectId: "charikaleaners",
+  storageBucket: "charikaleaners.appspot.com",
+  messagingSenderId: "26678943785",
+  appId: "1:26678943785:web:a44af8f1d9945c3c343c38",
+  measurementId: "G-N7BBJSL5VP"
+};
 
 /* old method I tried */
 
@@ -11,7 +25,7 @@ import AxiosInstance from "./AxiosInstance";
 // };
 
 export const ValidateUser = (userData) => {
-  return AxiosInstance.post("authentication/ValidateUser", userData);
+  return axios.post("http://127.0.0.1:8080/api/authentication/ValidateUser", userData);
 };
 
 export const SaveStudent = (stdData) => {
@@ -21,7 +35,7 @@ export const SaveStudent = (stdData) => {
 export const FetchAllStudnet = (field, order, pageSize, offset) => {
   // const headers = generateHeaders(token);
   return AxiosInstance.get(
-    `admin/getStudent/${field}/${order}/${pageSize}/${offset}`
+      `admin/getStudent/${field}/${order}/${pageSize}/${offset}`
   );
 };
 export const findStudentByAnyfield = (detail) => {
@@ -36,3 +50,73 @@ export const saveTrailPermit = (permitData) => {
 export const getTrailPermit = (stdID) =>{
   return AxiosInstance.get(`admin/getTrialPermit/${stdID}`);
 }
+export  const app = initializeApp(firebaseConfig);
+export const storage = getStorage(app);
+
+export const uploadFile = ({ fileLocation, stdId, setUploadProgress, setUploadState, setDownloadURL,setProgressBarVisible }) => {
+  console.log(fileLocation);
+  if (!fileLocation) {
+    return;
+  }
+
+  const storageRef = ref(storage, `student/${stdId}/${fileLocation.name}`);
+
+  const uploadTask = uploadBytesResumable(storageRef, fileLocation);
+  // Set up event listeners for the upload task
+  uploadTask.on("state_changed",
+      // Progress callback
+      (snapshot) => {
+        const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+        setUploadProgress(progress);
+      },
+      (error) => {
+        console.log(error);
+        Swal.fire({
+          icon: "error",
+          title: "Upload Error",
+          text: error.message
+        });
+      },
+      // Completion callback
+      () => {
+        // Define a function to get the download URL
+        const getDownloadUrlWithRetry = (retryCount = 0) => {
+          if (retryCount > 3) {
+            // Maximum retries reached, show an error message
+            Swal.fire({
+              icon: "error",
+              title: "Download URL Error",
+              text: "Failed to get download URL. Please try again later."
+            });
+            return;
+          }
+          getDownloadURL(uploadTask.snapshot.ref)
+              .then((downloadUrl) => {
+                console.log(downloadUrl);
+                setUploadState(true);
+                setDownloadURL(downloadUrl);
+                Swal.fire({
+                  icon: "success",
+                  title: "Uploaded Successfully"
+                }).then(setProgressBarVisible(false));
+              })
+              .catch((error) => {
+                console.log(error);
+                // Retry getting the download URL after a delay
+                setTimeout(() => {
+                  getDownloadUrlWithRetry(retryCount + 1);
+                }, 3000);
+              });
+        };
+        getDownloadUrlWithRetry();
+      }
+  );
+};
+export const getVehicleType = () =>{
+  return AxiosInstance.get('admin/getVehicleType');
+}
+export const saveVehicleType = (vehicleData) =>{
+  return AxiosInstance.post('admin/saveVehicleType',vehicleData);
+}
+
+

@@ -55,55 +55,59 @@ export default function Login() {
     }
   };
   return (
-    <div className="flex justify-center items-center w-screen h-screen">
-      <ToastContainer />
-      <Card style={{ width: "25rem" }}>
-        <Card.Body>
-          <Card.Title>
-            <p className="flex flex-row justify-center p-4 rounded-md text-2xl">
-              Login
-            </p>
-          </Card.Title>
-          <div className="pl-8 pr-8">
-            <Form>
-              <Form.Group className="mb-3">
-                <Form.Label>Username</Form.Label>
-                <Form.Control
-                  type="Text"
-                  placeholder="Userame..."
-                  value={username}
-                  onChange={(e) => {
-                    setUsername(e.target.value);
-                  }}
-                />
-              </Form.Group>
-              <Form.Group className="mb-3 flex">
-                <Form.Control
-                  type={type}
-                  name="password"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  autoComplete="current-password"
-                />
-                <span
-                  class="flex justify-around items-center"
-                  onClick={handleToggle}
-                >
+      <div className="flex justify-center items-center w-screen h-screen">
+        <ToastContainer />
+        <Card style={{ width: "25rem" }}>
+          <Card.Body>
+            <Card.Title>
+              <p className="flex flex-row justify-center p-4 rounded-md text-2xl">
+                Login
+              </p>
+            </Card.Title>
+            <div className="pl-8 pr-8">
+              <Form>
+                <Form.Group className="mb-3">
+                  <Form.Label>Username:</Form.Label>
+                  <Form.Control
+                      type="Text"
+                      placeholder="Userame..."
+                      value={username}
+                      onChange={(e) => {
+                        setUsername(e.target.value);
+                      }}
+                  />
+                </Form.Group>
+                <Form.Group className="mb-3">
+                  <Form.Label>Password:</Form.Label>
+                  <div className="flex">
+                    <Form.Control
+                        type={type}
+                        name="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        autoComplete="current-password"
+                    />
+                    <span
+                        class="flex justify-around items-center"
+                        onClick={handleToggle}
+                    >
                   <Icon class="absolute mr-10" icon={icon} size={25} />
                 </span>
-              </Form.Group>
-            </Form>
-            <Button
-              variant="primary"
-              className="w-full mt-3 mb-4"
-              onClick={HandleLogin}
-            >
-              Login
-            </Button>
-          </div>
-        </Card.Body>
-      </Card>
-    </div>
+                  </div>
+
+                </Form.Group>
+              </Form>
+              <Button
+                  variant="primary"
+                  className="w-full mt-3 mb-4"
+                  onClick={HandleLogin}
+              >
+                Login
+              </Button>
+            </div>
+          </Card.Body>
+        </Card>
+      </div>
   );
 }
