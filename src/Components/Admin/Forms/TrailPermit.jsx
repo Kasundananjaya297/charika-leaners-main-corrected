@@ -30,6 +30,7 @@ export default function TrailPermit() {
   const [autoOrManual, setAutoOrManual] = useState("");
   const [ID, setID] = useState("");
 
+
   const handleTypeSelection = (typeID, type, i) => {
     setAutoOrManual(type);
     setSelectedType(typeID);
@@ -73,7 +74,8 @@ export default function TrailPermit() {
       formik.setValues({ ...formik.values });
       console.log(formik.values);
       try {
-        save(formik.values);
+
+        //save(formik.values);
         resetForm();
       } catch (errors) {
         formik.setErrors(errors);
@@ -176,12 +178,23 @@ export default function TrailPermit() {
   const AddType =() =>{
     nav("/studentprofile/trail/addtype",{ state: stdId });
   };
+  // useEffect(() => {
+  //   const dataArray = [];
+  //   const data = {selectedType, autoOrManual};
+  //   dataArray[ID].push(data);
+  //   console.log(dataArray);
+  // }, [selectedType, autoOrManual]);
+  const [vehicleData, setVehicleData] = useState([]);
+
   useEffect(() => {
-    console.log("useEffect");
-    console.log(selectedType);
-    console.log(autoOrManual);
-    console.log(ID);
-  }, [ID, selectedType, autoOrManual]);
+    const newVehicleData = [...vehicleData];
+    newVehicleData[ID] = { selectedType, autoOrManual };
+    setVehicleData(newVehicleData);
+  }, [selectedType, autoOrManual, ID]);
+
+  useEffect(() => {
+    console.log(vehicleData)
+  }, [vehicleData]);
 
   return (
       <div className="flex flex-1 justify-center bg-neutral-100 mt-10 w-screen items-center">
@@ -361,7 +374,6 @@ export default function TrailPermit() {
                     <Button
                         type="submit"
                         variant="success"
-                        disabled={submitButton}
                     >
                       Save
                     </Button>
