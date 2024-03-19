@@ -27,10 +27,10 @@ function TrialPermitView() {
             const getStudentData = async ()=>{
             try{
                 const response= await findStudentByID(stdID);
-                const response2 =await  getTrailPermit(stdID);
+                //const response2 =await  getTrailPermit(stdID);
                 setStudentData(response?.data?.content);
-                setTrailPermit(response2?.data?.content);
-                console.log("length is"+response2?.data?.content.length)
+                //setTrailPermit(response2?.data?.content);
+                //console.log("length is"+response2?.data?.content.length)
                 //console.log(trialPermit);
             }catch (e){
                 Swal.fire({

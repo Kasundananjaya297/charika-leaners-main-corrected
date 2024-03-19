@@ -45,7 +45,7 @@ export const findStudentByID = (stdID) => {
   return AxiosInstance.get(`admin/getStudentByID/${stdID}`);
 };
 export const saveTrailPermit = (permitData) => {
-  return AxiosInstance.post("admin/SaveTrialPermit", permitData);
+  return AxiosInstance.post("admin/saveTrailPermitEfficient", permitData);
 };
 export const getTrailPermit = (stdID) =>{
   return AxiosInstance.get(`admin/getTrialPermit/${stdID}`);
@@ -118,5 +118,7 @@ export const getVehicleType = () =>{
 export const saveVehicleType = (vehicleData) =>{
   return AxiosInstance.post('admin/saveVehicleType',vehicleData);
 }
+
+
 
 

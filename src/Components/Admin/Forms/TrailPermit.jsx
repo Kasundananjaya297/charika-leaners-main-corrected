@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {Card, Form, Row, Col, Button, Dropdown} from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useFormik } from "formik";
+import { Formik, useFormik } from "formik";
 import * as Yup from "yup";
 import {findStudentByID, getVehicleType, saveTrailPermit, uploadFile} from "../../ApiService/api";
 import Swal from "sweetalert2";
@@ -75,7 +75,7 @@ export default function TrailPermit() {
       console.log(formik.values);
       try {
 
-        //save(formik.values);
+        save(formik.values);
         resetForm();
       } catch (errors) {
         formik.setErrors(errors);
@@ -84,8 +84,7 @@ export default function TrailPermit() {
       }
     },
   });
-
-  const save = (trailPermitDetails) => {
+  const save = () => {
     Swal.fire({
       icon: "warning",
       title: "Are you sure?",
@@ -93,9 +92,26 @@ export default function TrailPermit() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const response = await saveTrailPermit(trailPermitDetails); // call api.saveStudent
+          const permitAndVehicleType = vehicleData.filter(item => 
+            item.autoOrManual !== undefined &&
+            item.autoOrManual !== null &&
+            item.autoOrManual !== ''
+          );
+          
+          const dataToSave = {
+            stdID: stdId,
+            serialNo: formik.values.serialNo,
+            examDate: formik.values.examDate,
+            expDate: formik.values.expDate,
+            downURL: formik.values.downURL,
+            permitAndVehicleType: permitAndVehicleType
+          };
+          
+          console.log(dataToSave);
+          
+          const response = await saveTrailPermit(dataToSave);
           console.log(response);
-          // Check the response and handle it accordingly
+          
           if (response.data.code === "00") {
             Swal.fire({
               icon: "success",
@@ -106,11 +122,12 @@ export default function TrailPermit() {
               icon: "error",
               title: "Already Entered This Permit",
             });
-          }else if(response.data.code === "10"){
+          } else if (response.data.code === "10") {
             Swal.fire({
               icon: "error",
               title: "Current permit not Expired",
-            });}
+            });
+          }
         } catch (error) {
           console.error("Error while saving student details:", error);
           Swal.fire({
@@ -122,6 +139,46 @@ export default function TrailPermit() {
       }
     });
   };
+  
+
+
+  // const save = (trailPermitDetails) => {
+  //   Swal.fire({
+  //     icon: "warning",
+  //     title: "Are you sure?",
+  //     text: "Going to save details",
+  //   }).then(async (result) => {
+  //     if (result.isConfirmed) {
+  //       try {
+  //         const response = await saveTrailPermit(trailPermitDetails); // call api.saveStudent
+  //         //console.log(response);
+  //         // Check the response and handle it accordingly
+  //         if (response.data.code === "00") {
+  //           Swal.fire({
+  //             icon: "success",
+  //             title: "Saved Successfully",
+  //           });
+  //         } else if (response.data.code === "06") {
+  //           Swal.fire({
+  //             icon: "error",
+  //             title: "Already Entered This Permit",
+  //           });
+  //         }else if(response.data.code === "10"){
+  //           Swal.fire({
+  //             icon: "error",
+  //             title: "Current permit not Expired",
+  //           });}
+  //       } catch (error) {
+  //         console.error("Error while saving student details:", error);
+  //         Swal.fire({
+  //           icon: "error",
+  //           title: "Oops...",
+  //           text: "Internal error occurred while saving trail permit details",
+  //         });
+  //       }
+  //     }
+  //   });
+  // };
 
   useEffect(() => {
     const atLeastOneSelected = () => {
@@ -153,6 +210,7 @@ export default function TrailPermit() {
       try {
         const response = await findStudentByID(stdId);
         setStudentData(response?.data?.content);
+        console.log(response?.data?.content)
       } catch (e) {
         console.log(e);
       }
@@ -174,7 +232,7 @@ export default function TrailPermit() {
       }
     }
     getVehicleTypes();
-  },[]);
+  },[stdId]);
   const AddType =() =>{
     nav("/studentprofile/trail/addtype",{ state: stdId });
   };
@@ -320,7 +378,12 @@ export default function TrailPermit() {
                                         Manual
                                       </Dropdown.Item>
                                   }
-                                  <Dropdown.Item>--</Dropdown.Item>
+                                  <Dropdown.Item 
+                                  onClick={()=>{
+                                    setSelectedType(null);
+                                    setAutoOrManual(null);
+                                    setID(i);
+                                  }}>--</Dropdown.Item>
                                 </Dropdown.Menu>
                               </Dropdown>
                             </td>
@@ -372,8 +435,9 @@ export default function TrailPermit() {
                       Back
                     </Button>
                     <Button
-                        type="submit"
+                         type="submit"
                         variant="success"
+                        //onClick={save}
                     >
                       Save
                     </Button>
