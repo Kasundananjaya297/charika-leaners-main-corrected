@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import { IoMdAdd } from "react-icons/io";
+import { isVisible } from "@testing-library/user-event/dist/utils";
 
 
 
@@ -29,6 +30,7 @@ export default function TrailPermit() {
   const [selectedType, setSelectedType] = useState("");
   const [autoOrManual, setAutoOrManual] = useState("");
   const [ID, setID] = useState("");
+  const [isVisible, setIsVisible] = useState(false);
 
 
   const handleTypeSelection = (typeID, type, i) => {
@@ -226,7 +228,7 @@ export default function TrailPermit() {
       try {
         const response = await getVehicleType();
         setVehicleType(response?.data?.content);
-        console.log(response?.data?.content);
+        console.log(response?.data);
       }catch (e){
         console.log(e);
       }
@@ -332,7 +334,7 @@ export default function TrailPermit() {
                         min={new Date().toISOString().split('T')[0]}
                         max={maxDate.toISOString().split('T')[0]}
                         onSelect={() => {
-                          formik.setFieldValue("b1M", false);
+                          setIsVisible(true)
                         }}
                     />
                     <Form.Text className="text-danger">
@@ -374,6 +376,7 @@ export default function TrailPermit() {
                                         setSelectedType(item?.typeID);
                                         setAutoOrManual("Manual");
                                         setID(i);
+                                      
                                       }}>
                                         Manual
                                       </Dropdown.Item>
@@ -383,6 +386,7 @@ export default function TrailPermit() {
                                     setSelectedType(null);
                                     setAutoOrManual(null);
                                     setID(i);
+                                    setIsVisible(true)
                                   }}>--</Dropdown.Item>
                                 </Dropdown.Menu>
                               </Dropdown>
@@ -391,6 +395,9 @@ export default function TrailPermit() {
                       ))
                     }
                   </table>
+                  <Form.Text className="text-danger">
+                      {isVisible&&<div>At least one vehicle type should be selected</div>}
+                    </Form.Text>
                 </Row>
                 <Row className="pl-4 pr-4">
                   <Button onClick={AddType}>
