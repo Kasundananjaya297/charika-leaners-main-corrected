@@ -120,13 +120,12 @@ export default function RegistrationForm1Edit() {
           Swal.fire({
             icon: "error",
             title: "Oops...",
-            text: "Internal Server Error! Please try again later.",
+            text: "NIC or Telephone or Email are duplicated separately.",
           });
         }
       }
     });
   };
-
   useEffect(() => {
     let role = sessionStorage.getItem("role");
     console.log("role: " + role);

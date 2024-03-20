@@ -9,6 +9,7 @@ import TrialPermitView from "./Components/Admin/Preview/TrialPermitView";
 import Medical from "./Components/Admin/Forms/Medical";
 import AddVehicleType from "./Components/Admin/Forms/AddVehicleType";
 import RegistrationForm1Edit from "./Components/Admin/Forms/RegistrationForm1Edit";
+import TrailPermitEdit from "./Components/Admin/Forms/TrailPermitEdit";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/studentprofile/medical" element={<Medical/>}/>
           <Route path = "/studentprofile/trail/addtype" element={<AddVehicleType/>} />
           <Route path ="/studentprofile/Form1/edit" element={<RegistrationForm1Edit/>} />
+          <Route path ="/studentprofile/trail/edit" element={<TrailPermitEdit/>} />
           {/*
           <Route path="/Form2" element={<Form2 />} /> */}
         </Route>

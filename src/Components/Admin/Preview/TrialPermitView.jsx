@@ -4,6 +4,7 @@ import {Button, Card, Form, Row,CloseButton} from "react-bootstrap";
 import {findStudentByID, getTrailPermit} from "../../ApiService/api";
 import Swal from "sweetalert2";
 import { GrDocumentImage } from "react-icons/gr";
+import { FaUserEdit } from "react-icons/fa";
 
 function TrialPermitView() {
     const location = useLocation();
@@ -46,11 +47,18 @@ function TrialPermitView() {
     const back =() =>{
         nav("/studentprofile");
     }
+    const regForm2 = (trialPermit) => {
+        nav("/studentprofile/trail", { state: trialPermit });
+    }
 
     return (
         <div className="flex flex-1 justify-center  h-screen w-screen items-center">
             <Card style={{ width: "40em" }}>
-            <CloseButton className='p-3 bg-red-400' onClick={back}/>
+                <div className='flex items-center justify-between p-3'>
+                <CloseButton className=' bg-red-400' onClick={back}/>
+                <FaUserEdit size={24} onClick={() => regForm2(studentData)}/>
+                </div>
+            
                 <Card.Body>
                     <div className="p-4">
                         <Row>
