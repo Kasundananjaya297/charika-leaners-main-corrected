@@ -8,7 +8,7 @@ import Swal from "sweetalert2";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import { IoMdAdd } from "react-icons/io";
-import { isVisible } from "@testing-library/user-event/dist/utils";
+import { FaUserEdit } from "react-icons/fa";
 
 
 
@@ -31,6 +31,7 @@ export default function TrailPermit() {
   const [autoOrManual, setAutoOrManual] = useState("");
   const [ID, setID] = useState("");
   const [isVisible, setIsVisible] = useState(false);
+  const [datatoParse, setDatatoParse] = useState([]);
 
 
   const handleTypeSelection = (typeID, type, i) => {
@@ -259,6 +260,11 @@ export default function TrailPermit() {
     
   }, [vehicleData]);
 
+  const edit = (data) => {
+    console.log(data);
+    nav("/studentprofile/trail/editVehicleType",{state: data});
+  };
+
   return (
       <div className="flex flex-1 justify-center bg-neutral-100 mt-10 w-screen items-center">
         <Card style={{ width: "40em" }} className="mb-4">
@@ -354,6 +360,7 @@ export default function TrailPermit() {
                     <tr className="border-1">
                       <th className="p-2">Vehicle Category</th>
                       <th>Vehicle Type</th>
+                      <th></th>
                     </tr>
                     {
                       vehicleType?.map((item, i) => (
@@ -409,7 +416,9 @@ export default function TrailPermit() {
                                   </Dropdown>
                                 </Form.Group>
                             </td>
+                            <td className="gap-x-10"><FaUserEdit onClick={()=>{edit({stdId,typeID:item?.typeID,typeName:item?.typeName,engineCapacity:item?.engineCapacity,typeAuto:item?.typeAuto,typeManual:item?.typeManual});setDatatoParse();}}/></td>
                           </tr>
+                          
                       ))
                     }
                   </table>

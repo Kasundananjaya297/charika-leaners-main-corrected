@@ -124,6 +124,9 @@ export const UpdateStudent = (studentData) =>{
 export const UpdateTrailPermit = (trailData) =>{
   return AxiosInstance.post('admin/UpdateTrialPermit',trailData);
 }
+export const UpdateVehicleTypes = (vehicleData) =>{
+  return AxiosInstance.post('admin/UpdateVehicleType',vehicleData);
+}
 
 
 

@@ -1,23 +1,23 @@
-import React, {useEffect} from 'react';
+import React, {useEffect,useState} from 'react';
 import Card from "react-bootstrap/Card";
 import {Button, Col, Row} from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import {useFormik} from "formik";
 import * as Yup from "yup";
-import {saveVehicleType} from "../../ApiService/api";
+import {UpdateVehicleTypes} from "../../ApiService/api";
 import {useLocation, useNavigate} from "react-router-dom";
 import Swal from "sweetalert2";
-
-function AddVehicleType(props) {
+function AddVehicleTypeEdit(props) {
     const location = useLocation();
-    const stdId = location.state;
+    const [parsedData, setParsedData] =useState(location.state);
+    const stdId = parsedData?.stdId;
     const formik = useFormik({
         initialValues: {
-            typeID: "",
-            engineCapacity: "",
-            typeName: "",
-            typeAuto: false,
-            typeManual: false,
+            typeID: parsedData?.typeID,
+            engineCapacity: parsedData?.engineCapacity,
+            typeName: parsedData?.typeName,
+            typeAuto: parsedData?.typeAuto,
+            typeManual: parsedData?.typeManual,
         },
         validationSchema: Yup.object({
             typeID: Yup.string().required("Required"),
@@ -45,12 +45,12 @@ function AddVehicleType(props) {
                 showCancelButton: true,
             });
             if (result.isConfirmed) {
-                const response = await saveVehicleType(formik.values);
+                const response = await UpdateVehicleTypes(formik.values);
                 if(response?.data?.code==="00"){
                     Swal.fire(
                         {
-                            title:"Saved!",
-                            html:"Vehicle type has been saved.",
+                            title:"Updated!",
+                            html:"Vehicle type has been Updated.",
                             icon:"success",
                         });
                     nav("/studentprofile/trail",{ state: stdId });
@@ -101,6 +101,7 @@ function AddVehicleType(props) {
                                 placeholder="A1..."
                                 {...formik.getFieldProps("typeID")}
                                 required
+                                disabled={true}
                             />
                             <Form.Text className="text-danger">
                                 {formik.touched.typeID && formik.errors.typeID}
@@ -144,6 +145,7 @@ function AddVehicleType(props) {
                                     type="radio"
                                     label="Manual"
                                     name="Control"
+                                    checked={formik.values.typeManual}
                                     onChange={() => {
                                         formik.setFieldValue("typeManual", true);
                                         formik.setFieldValue("typeAuto", false);
@@ -153,6 +155,7 @@ function AddVehicleType(props) {
                                 <Form.Check
                                     type="radio"
                                     label="Auto"
+                                    checked={formik.values.typeAuto}
                                     name="Control"
                                     onChange={() => {
                                         formik.setFieldValue("typeAuto", true);
@@ -163,6 +166,7 @@ function AddVehicleType(props) {
                                 <Form.Check
                                     type="radio"
                                     label="Both"
+                                    checked={formik.values.typeAuto && formik.values.typeManual}
                                     name="Control"
                                     onChange={() => {
                                         formik.setFieldValue("typeAuto", true);
@@ -197,4 +201,4 @@ function AddVehicleType(props) {
     );
 }
 
-export default AddVehicleType;
+export default AddVehicleTypeEdit;
