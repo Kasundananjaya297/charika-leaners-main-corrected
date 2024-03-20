@@ -3,12 +3,12 @@ import {Card, Form, Row, Col, Button, Dropdown} from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Formik, useFormik } from "formik";
 import * as Yup from "yup";
-import {findStudentByID, getVehicleType, saveTrailPermit, uploadFile} from "../../ApiService/api";
+import {findStudentByID, getVehicleType, saveTrailPermit, uploadFile,UpdateTrailPermit} from "../../ApiService/api";
 import Swal from "sweetalert2";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import { IoMdAdd } from "react-icons/io";
-import { isVisible } from "@testing-library/user-event/dist/utils";
+
 
 
 
@@ -16,7 +16,10 @@ import { isVisible } from "@testing-library/user-event/dist/utils";
 
 export default function TrailPermitEdit() {
   const location = useLocation();
-  const stdId = location.state;
+  const [permidData, setPermidData] = useState(location.state);
+  const stdId = permidData[0]?.stdID;
+  // console.log("+++++++++++++++");
+  // console.log(permidData[0]);
   const [studentData, setStudentData] = useState("");
   const [submitButton, setSubmitButton] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
@@ -59,9 +62,10 @@ export default function TrailPermitEdit() {
   const formik = useFormik({
     initialValues: {
       stdID: stdId,
-      examDate: "",
-      serialNo: "",
-      expDate: "",
+      examDate: permidData[0]?.examDate,
+      serialNo: permidData[0]?.serialNo,
+      expDate: permidData[0]?.expDate,
+      downURL:permidData[0]?.downURL,
     },
     validationSchema: Yup.object({
       examDate: Yup.date().required("Exam date is required"),
@@ -69,8 +73,8 @@ export default function TrailPermitEdit() {
           "Serial number is required"
       ),
       expDate: Yup.date().required("Exam date is required"),
-      downURL: Yup.string().required("Trail Permit is required"),
-      vehicleType : Yup.string().required("Vehicle Type is required"),
+      downURL: Yup.string().required("Image Uploading is required, In the updating stage u need to select "),
+      vehicleType : Yup.string().required("Vehicle Type is required, In the updating stage u need to select"),
     }),
     onSubmit: async (e, { setSubmitting, resetForm }) => {
       setSubmitting(true);
@@ -113,23 +117,24 @@ export default function TrailPermitEdit() {
           
           console.log(dataToSave);
           
-          const response = await saveTrailPermit(dataToSave);
+          const response = await UpdateTrailPermit(dataToSave);
           console.log(response);
           
           if (response.data.code === "00") {
             Swal.fire({
               icon: "success",
-              title: "Saved Successfully",
+              title: "Updated Successfully",
             });
-          } else if (response.data.code === "06") {
+            nav("/studentprofile/trailView", { state: stdId });
+          } else if (response.data.code === "01") {
             Swal.fire({
               icon: "error",
-              title: "Already Entered This Permit",
+              title: "No Data founded",
             });
           } else if (response.data.code === "10") {
             Swal.fire({
               icon: "error",
-              title: "Current permit not Expired",
+              title: "You try to update the other student permit",
             });
           }
         } catch (error) {
@@ -137,7 +142,7 @@ export default function TrailPermitEdit() {
           Swal.fire({
             icon: "error",
             title: "Oops...",
-            text: "Internal error occurred while saving trail permit details",
+            text: "Axios Error",
           });
         }
       }
@@ -184,19 +189,19 @@ export default function TrailPermitEdit() {
   //   });
   // };
 
-  useEffect(() => {
-    const atLeastOneSelected = () => {
-      const { b1M, bM, bA, a1M, a1A, aM } = formik.values;
-      if ((b1M || bM || bA || a1M || a1A || aM) !== true) {
-        setSubmitButton(true);
-        setErrorMsg("At least one need to be selected");
-      } else {
-        setSubmitButton(false);
-        setErrorMsg("");
-      }
-    };
-    atLeastOneSelected();
-  }, [formik.values]);
+  // useEffect(() => {
+  //   const atLeastOneSelected = () => {
+  //     const { b1M, bM, bA, a1M, a1A, aM } = formik.values;
+  //     if ((b1M || bM || bA || a1M || a1A || aM) !== true) {
+  //       setSubmitButton(true);
+  //       setErrorMsg("At least one need to be selected");
+  //     } else {
+  //       setSubmitButton(false);
+  //       setErrorMsg("");
+  //     }
+  //   };
+  //   atLeastOneSelected();
+  // }, [formik.values]);
 
   const nav = useNavigate();
   useEffect(() => {
@@ -223,7 +228,7 @@ export default function TrailPermitEdit() {
   }, [stdId]);
 
   const back = () => {
-    nav("/studentprofile");
+    nav("/studentprofile/trailView", { state: stdId });
   };
   useEffect(()=>{
     const getVehicleTypes = async () =>{
@@ -302,6 +307,7 @@ export default function TrailPermitEdit() {
                         placeholder=""
                         {...formik.getFieldProps("serialNo")}
                         required
+                        disabled={true}
                     />
                     <Form.Text className="text-danger">
                       {formik.touched.serialNo && formik.errors.serialNo}
@@ -428,11 +434,10 @@ export default function TrailPermitEdit() {
 
                 <Row className="">
                   <Form.Group controlId="formFile" className="mb-2 mt-2" as={Col} md={8}>
-                    <Form.Label>Upload Current Trail Permit<span className="text-red-500">*</span></Form.Label>
+                    <Form.Label>Upload Current Trail Permit</Form.Label>
                     <div className="flex flex-row gap-x-3">
                       <Form.Control
                           type="file"
-                          required={true}
                           onChange={(e) => {
                             setFileLocation(e.target.files[0]);
                             setUploadState(false);

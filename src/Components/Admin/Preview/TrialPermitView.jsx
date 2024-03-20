@@ -47,8 +47,8 @@ function TrialPermitView() {
     const back =() =>{
         nav("/studentprofile");
     }
-    const regForm2 = (trialPermit) => {
-        nav("/studentprofile/trail", { state: trialPermit });
+    const regForm2 = () => {
+        nav("/studentprofile/trail/edit", { state: trialPermit});
     }
 
     return (
@@ -56,7 +56,7 @@ function TrialPermitView() {
             <Card style={{ width: "40em" }}>
                 <div className='flex items-center justify-between p-3'>
                 <CloseButton className=' bg-red-400' onClick={back}/>
-                <FaUserEdit size={24} onClick={() => regForm2(studentData)}/>
+                <FaUserEdit size={24} onClick={() => regForm2()}/>
                 </div>
             
                 <Card.Body>
