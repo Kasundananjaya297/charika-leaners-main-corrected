@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useLocation, useNavigate} from "react-router-dom";
-import {Card, Form, Row} from "react-bootstrap";
+import {Button, Card, Form, Row} from "react-bootstrap";
 import {findStudentByID, getTrailPermit} from "../../ApiService/api";
 import Swal from "sweetalert2";
 
@@ -27,11 +27,10 @@ function TrialPermitView() {
             const getStudentData = async ()=>{
             try{
                 const response= await findStudentByID(stdID);
-                //const response2 =await  getTrailPermit(stdID);
+                const response2 =await  getTrailPermit(stdID);
                 setStudentData(response?.data?.content);
-                //setTrailPermit(response2?.data?.content);
-                //console.log("length is"+response2?.data?.content.length)
-                //console.log(trialPermit);
+                setTrailPermit(response2?.data?.content);
+                console.log(trialPermit);
             }catch (e){
                 Swal.fire({
                     icon: "error",
@@ -109,143 +108,22 @@ function TrialPermitView() {
                                             <thead>
                                             <tr>
                                                 <th className="border p-2">
-                                                    <label>Vehicle Type</label>
+                                                    <label>Vehicle Tpye</label>
                                                 </th>
-                                                <th className="border p-2">Manual</th>
-                                                <th className="border p-2">Auto</th>
-                                                <th className="border p-2">None</th>
+                                                <th className="border p-2">Auto Or Manual</th>
+                                                
                                             </tr>
                                             </thead>
                                             <tbody className="text-sm">
-                                            <tr>
-                                                <td className="border p-2">
-                                                    <label>B1 - Motor Tricycle</label>
-                                                </td>
-                                                <td className="border p-2">
-                                                    <input
-                                                        type="radio"
-                                                        name="b1"
-                                                        onChange={() => {
-                                                        }}
-                                                        checked={data?.b1M}
-                                                        disabled={true}
-                                                    />
-                                                </td>
-                                                <td className="border p-2">
-                                                    <input type="radio" name="b1" disabled={true}/>
-                                                </td>
-                                                <td className="border p-2">
-                                                    <input
-                                                        type="radio"
-                                                        name="b1"
-                                                        defaultChecked={true}
-                                                        onChange={() => {
-                                                        }}
-                                                        disabled={true}
-                                                    />
-                                                </td>
+                                            {data?.permitAndVehicleType?.map((dt,i)=>(
+                                            <tr key={i}>
+                                                <td className="border p-2">{dt?.selectedType} {"-"} {dt?.description} {dt?.engineCapacity}</td>
+                                                <td className="border p-2">{dt?.autoOrManual}</td>
                                             </tr>
-                                            <tr>
-                                                <td className="border p-2">
-                                                    <label>B - all cars/duel purpose</label>
-                                                </td>
-                                                <td className="border p-2">
-                                                    <input
-                                                        type="radio"
-                                                        name="b"
-                                                        onChange={() => {
-                                                        }}
-                                                        checked={data?.ba}
-                                                        disabled={true}
-                                                    />
-                                                </td>
-                                                <td className="border p-2">
-                                                    <input
-                                                        type="radio"
-                                                        name="b"
-                                                        onChange={() => {
-                                                        }}
-                                                        checked={data?.bm}
-                                                        disabled={true}
-                                                    />
-                                                </td>
-                                                <td className="border p-2">
-                                                    <input
-                                                        type="radio"
-                                                        name="b"
-                                                        defaultChecked={true}
-                                                        onChange={() => {
-                                                        }}
-                                                        checked={data?.bM}
-                                                        disabled={true}
-                                                    />
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="border p-2">
-                                                    <label>A1 - Mortorcycle Engine Capacity &lt; 100</label>
-                                                </td>
-                                                <td className="border p-2">
-                                                    <input
-                                                        type="radio"
-                                                        name="A1"
-                                                        onChange={() => {
-                                                        }}
-                                                        checked={data?.a1M}
-                                                        disabled={true}
-                                                    />
-                                                </td>
-                                                <td className="border p-2">
-                                                    <input
-                                                        type="radio"
-                                                        name="A1"
-                                                        onChange={() => {
-                                                        }}
-                                                        checked={data?.a1A}
-                                                        disabled={true}
-                                                    />
-                                                </td>
-                                                <td className="border p-2">
-                                                    <input
-                                                        type="radio"
-                                                        name="A1"
-                                                        defaultChecked={true}
-                                                        onChange={() => {
-                                                        }}
-                                                        disabled={true}
-                                                    />
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="border p-2">
-                                                    <label>A - Mortorcycle Engine Capacity &ge; 100</label>
-                                                </td>
-                                                <td className="border p-2">
-                                                    <input
-                                                        type="radio"
-                                                        name="A"
-                                                        onChange={() => {
-                                                        }}
-                                                        checked={data?.am}
-                                                        disabled={true}
-                                                    />
-                                                </td>
-                                                <td className="border p-2">
-                                                    <input type="radio" name="A" disabled={true}/>
-                                                </td>
-                                                <td className="border p-2">
-                                                    <input
-                                                        type="radio"
-                                                        name="A"
-                                                        defaultChecked={true}
-                                                        onChange={() => {
-                                                        }}
-                                                        disabled={true}
-                                                    />
-                                                </td>
-                                            </tr>
+                                            ))}
                                             </tbody>
                                         </table>
+                                        <Button className='mt-3 w-full' onClick={() => window.open(data?.downURL, '_blank')}>View</Button>
                                     </div>
                                 </Form>))}
                         </div>
