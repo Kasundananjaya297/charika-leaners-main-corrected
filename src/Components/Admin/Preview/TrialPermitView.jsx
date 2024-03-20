@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {useLocation, useNavigate} from "react-router-dom";
-import {Button, Card, Form, Row} from "react-bootstrap";
+import {Button, Card, Form, Row,CloseButton} from "react-bootstrap";
 import {findStudentByID, getTrailPermit} from "../../ApiService/api";
 import Swal from "sweetalert2";
+import { GrDocumentImage } from "react-icons/gr";
 
 function TrialPermitView() {
     const location = useLocation();
@@ -42,10 +43,14 @@ function TrialPermitView() {
             getStudentData(stdID);}
 
     }, [stdID]);
+    const back =() =>{
+        nav("/studentprofile");
+    }
 
     return (
-        <div className="flex flex-1 justify-center  mt-10 w-screen items-center">
+        <div className="flex flex-1 justify-center  h-screen w-screen items-center">
             <Card style={{ width: "40em" }}>
+            <CloseButton className='p-3 bg-red-400' onClick={back}/>
                 <Card.Body>
                     <div className="p-4">
                         <Row>
@@ -123,7 +128,11 @@ function TrialPermitView() {
                                             ))}
                                             </tbody>
                                         </table>
-                                        <Button className='mt-3 w-full' onClick={() => window.open(data?.downURL, '_blank')}>View</Button>
+                                        <Button className='mt-3 w-full hover:to-blue-600' onClick={() => window.open(data?.downURL, '_blank')}>
+                                            <div className='flex items-center justify-center gap-x-3'>
+                                                <div><GrDocumentImage /></div>
+                                                <div>View</div>
+                                            </div></Button>
                                     </div>
                                 </Form>))}
                         </div>
