@@ -70,6 +70,7 @@ export default function TrailPermit() {
       ),
       expDate: Yup.date().required("Exam date is required"),
       downURL: Yup.string().required("Trail Permit is required"),
+      vehicleType : Yup.string().required("Vehicle Type is required"),
     }),
     onSubmit: async (e, { setSubmitting, resetForm }) => {
       setSubmitting(true);
@@ -87,6 +88,7 @@ export default function TrailPermit() {
     },
   });
   const save = () => {
+
     Swal.fire({
       icon: "warning",
       title: "Are you sure?",
@@ -254,6 +256,7 @@ export default function TrailPermit() {
 
   useEffect(() => {
     console.log(vehicleData)
+    
   }, [vehicleData]);
 
   return (
@@ -357,47 +360,62 @@ export default function TrailPermit() {
                           <tr key={i}>
                             <td className="pl-3">{item?.typeID}-{item?.typeName} {item?.engineCapacity}</td>
                             <td className="p-1">
-                              <Dropdown>
-                                <Dropdown.Toggle variant="outline-secondary" size="sm">
-                                  Type
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu>
-                                  {(item?.typeAuto) &&
-                                      <Dropdown.Item onClick={() => {
-                                        setSelectedType(item?.typeID);
-                                        setAutoOrManual("Auto");
-                                        setID(i);
-                                      }}>
-                                        Auto
+                            <Form.Group controlId={`dropdown-${i}`} required>
+                                  <Dropdown>
+                                    <Dropdown.Toggle variant="outline-secondary" size="sm">
+                                      Type
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu>
+                                      {item?.typeAuto && (
+                                        <Dropdown.Item
+                                        {...formik.getFieldProps("vehicleType")}
+                                          onClick={() => {
+                                            setSelectedType(item?.typeID);
+                                            setAutoOrManual("Auto");
+                                            setID(i);
+                                            setIsVisible(true);
+                                            formik.setFieldValue("vehicleType", "Auto");
+                                          }}
+                                        >
+                                          Auto
+                                        </Dropdown.Item>
+                                      )}
+                                      {item?.typeManual && (
+                                        <Dropdown.Item
+                                        {...formik.getFieldProps("vehicleType")}
+                                          onClick={() => {
+                                            setSelectedType(item?.typeID);
+                                            setAutoOrManual("Manual");
+                                            setID(i);
+                                            setIsVisible(true);
+                                            formik.setFieldValue("vehicleType", "Manual");
+                                          }}
+                                        >
+                                          Manual
+                                        </Dropdown.Item>
+                                      )}
+                                      <Dropdown.Item
+                                        onClick={() => {
+                                          setSelectedType(null);
+                                          setAutoOrManual(null);
+                                          setID(i);
+                                          setIsVisible(false);
+                                          formik.setFieldValue("vehicleType", "");
+                                        }}
+                                      >
+                                        --
                                       </Dropdown.Item>
-                                  }
-                                  {(item?.typeManual) &&
-                                      <Dropdown.Item onClick={() => {
-                                        setSelectedType(item?.typeID);
-                                        setAutoOrManual("Manual");
-                                        setID(i);
-                                      
-                                      }}>
-                                        Manual
-                                      </Dropdown.Item>
-                                  }
-                                  <Dropdown.Item 
-                                  onClick={()=>{
-                                    setSelectedType(null);
-                                    setAutoOrManual(null);
-                                    setID(i);
-                                    setIsVisible(true)
-                                  }}>--</Dropdown.Item>
-                                </Dropdown.Menu>
-                              </Dropdown>
+                                    </Dropdown.Menu>
+                                  </Dropdown>
+                                </Form.Group>
                             </td>
                           </tr>
                       ))
                     }
                   </table>
                   <Form.Text className="text-danger">
-                      {isVisible&&<div>At least one vehicle type should be selected</div>}
-                    </Form.Text>
+                      {formik.touched.expDate && formik.errors.vehicleType} 
+                  </Form.Text>
                 </Row>
                 <Row className="pl-4 pr-4">
                   <Button onClick={AddType}>

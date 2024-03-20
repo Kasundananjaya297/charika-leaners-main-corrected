@@ -118,7 +118,9 @@ export const getVehicleType = () =>{
 export const saveVehicleType = (vehicleData) =>{
   return AxiosInstance.post('admin/saveVehicleType',vehicleData);
 }
-
+export const UpdateStudent = (studentData) =>{
+  return AxiosInstance.post('admin/UpdateStudentData',studentData);
+}
 
 
 

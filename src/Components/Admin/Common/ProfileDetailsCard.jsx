@@ -5,6 +5,7 @@ import { Button } from "react-bootstrap";
 import Image from "react-bootstrap/Image";
 import { Link, useNavigate } from "react-router-dom";
 import {useState} from "react";
+import { FaUserEdit } from "react-icons/fa";
 export default function ProfileDetailsCard({ studentData }) {
   const [stdData,setStudentData]= useState();
   const [trailData,setTrialData] = useState();
@@ -26,19 +27,19 @@ const viewTrail = (stdID) =>{
         nav("/studentprofile/medical", { state: stdID });
         }
   }
-
+  const regForm2 = (studentData) => {
+    console.log("clicked");
+    nav("/studentprofile/Form1/edit", { state: studentData });
+  }
   return (
     <div>
       <Row className="flex overflow-hidden text-sm item-center">
         <Col sm={12} md={6} lg={4}>
           <Card style={{ width: "24rem" }}>
+          <div className=" items-end justify-end pl-5 pt-3 w-wrap h-wrap " >
+            <FaUserEdit size={24} onClick={() => regForm2(studentData)}/>
+          </div>
             <Card.Body className="p-4">
-              <Row className="mb-2 items-end flex flex-row justify-end">
-                <Col xs={6} md={4}>
-                  {/* Check and correct the image path */}
-                  <Image src="./photo.jpg" roundedCircle fluid />
-                </Col>
-              </Row>
               <Row className="mb-2">
                 <Col xs={4}>Contract No:</Col>
                 <Col xs={8} className="pl-4">
