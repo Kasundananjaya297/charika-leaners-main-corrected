@@ -66,7 +66,7 @@ export default function RegistrationForm1() {
       try {
         save();
         // Reset the form after successful submission
-        resetForm();
+        
       } catch (errors) {
         formik.setErrors(errors);
       } finally {
@@ -75,7 +75,7 @@ export default function RegistrationForm1() {
     },
   });
 
-  const save = () => {
+  const save = (resetForm) => {
     Swal.fire({
       icon: "warning",
       title: "Are you sure?",

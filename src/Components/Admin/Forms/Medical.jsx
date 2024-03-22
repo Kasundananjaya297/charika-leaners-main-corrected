@@ -1,11 +1,17 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 import {Button, Card, Col, Form, Row,Dropdown} from "react-bootstrap";
 import {useFormik} from "formik";
+import { uploadFile,findStudentByID,AddMedicalReport,checkMedicalExpired } from '../../ApiService/api';
 import * as Yup from "yup";
+import { FaCloudUploadAlt } from "react-icons/fa";
+import ProgressBar from 'react-bootstrap/ProgressBar';
+import { set } from 'lodash';
+import Swal from 'sweetalert2';
 function Medical(props) {
-    const nav = useNavigate();
     const location = useLocation();
+    const stdId = location.state;
+    const nav = useNavigate();
     const stdID = location.state;
     const [studentData, setStudentData] = React.useState({});
     const maxDate = new Date();
@@ -13,44 +19,141 @@ function Medical(props) {
     maxDate.setFullYear(maxDate.getFullYear() +1 );
     const [submitButton, setSubmitButton] = useState(false);
     const [bloodType,setBloodType]=useState("Select");
+    const [uploadState, setUploadState] = useState(true);
+    const [fileLocation, setFileLocation] = useState("");
+    const [uploadProgress, setUploadProgress] = useState(0);
+    const[downloadURL, setDownloadURL] = useState("");
+    const [progressBarVisible,setProgressBarVisible] = useState(false);
+    useEffect(() => {
+        const fetch = async () => {
+            try{
+                const response = await checkMedicalExpired(stdID);
+                //console.log(response);
+                if(response?.data?.code ==="10"){
+                    Swal.fire({
+                        icon: "error",
+                        title: "Medical Report not Expired",
+                        text: "Please wait until the current medical report expires"
+                    }).then(()=>{nav("/studentprofile");});
+                }else if(response?.data?.code==="00"){}
+            }catch(e){
+                console.log(e);
+            }
+        };
+        fetch();
+    },[stdID])
+
+    useEffect(() => {formik.setFieldValue("medicalURL", downloadURL);}, [downloadURL])
     const back = () => {
         nav("/studentprofile");
     };
     const formik = useFormik({
         initialValues: {
-            stdID: stdID,
-            examDate: "",
-            serialNo: "",
-            expDate: "",
-            b1M: true,
-            bM: false,
-            bA: false,
-            a1M: false,
-            a1A: false,
-            aM: false,
+          stdID: stdId,
+          serialNo:"",
+          examination:"",
+          bloodType:"",
+          medicalURL:"",
+          visionISCorrected:"",
+          isSatisfactory:"",
+          isSquint:"",
         },
         validationSchema: Yup.object({
-            examDate: Yup.date().required("Exam date is required"),
-            serialNo: Yup.number("Serial number is Number").required(
-                "Serial number is required"
-            ),
-            expDate: Yup.date().required("Exam date is required"),
+        serialNo: Yup.number("Serial number is Number").required("Serial number is required"),
+        examination: Yup.date().required("examin date is required"),
+        bloodType: Yup.string().required("Blood Type is required"),
+        medicalURL: Yup.string().required("Medical Report Uploading is required"),
         }),
         onSubmit: async (e, { setSubmitting, resetForm }) => {
-            setSubmitting(true);
-            formik.setValues({ ...formik.values });
-            console.log(formik.values);
-            try {
-
-                resetForm();
-            } catch (errors) {
-                formik.setErrors(errors);
-            } finally {
-                setSubmitting(false);
-            }
+          setSubmitting(true);
+          formik.setValues({ ...formik.values });
+          try {
+    
+            save(formik.values);
+            resetForm();
+          } catch (errors) {
+            formik.setErrors(errors);
+          } finally {
+            setSubmitting(false);
+          }
         },
-    });
+      });
+      const save = () => {
+    
+        Swal.fire({
+          icon: "warning",
+          title: "Are you sure?",
+          text: "Going to save details",
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            try {
+              console.log(formik.values);
+              
+              //console.log(dataToSave);
+                const response = await  AddMedicalReport(formik.values);
+              //console.log(response);
+              
+              if (response.data.code === "00") {
+                Swal.fire({
+                  icon: "success",
+                  title: "Saved Successfully",
+                });
+              } else if (response.data.code === "06") {
+                Swal.fire({
+                  icon: "error",
+                  title: "Already Entered This Permit",
+                });
+              } else if (response.data.code === "10") {
+                Swal.fire({
+                  icon: "error",
+                  title: "Current permit not Expired",
+                });
+              }
+            } catch (error) {
+              console.error("Error while saving student details:", error);
+              Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Internal error occurred while saving trail permit details",
+              });
+            }
+          }
+        });
+      };
+      
 
+    const uploadFileTrail = async () => {
+        try {
+          await uploadFile({ fileLocation, stdId, setUploadProgress, setUploadState, setDownloadURL, setProgressBarVisible, category: "medical"});
+    
+          console.log("url.............." + downloadURL);
+          setDownloadURL(downloadURL);
+        } catch (error) {
+          console.error("Error in uploadFileTrail:", error);
+        }
+      }
+      useEffect(() => {
+        let role = sessionStorage.getItem("role");
+        console.log("role: " + role);
+        if (!(role === "ADMIN" && sessionStorage.getItem("token") !== null)) {
+          nav("/");
+        } else if (stdId === null) {
+          nav("/studentprofile");
+        }
+      }, [nav]);
+    
+      useEffect(() => {
+        const fetch = async () => {
+          try {
+            const response = await findStudentByID(stdID);
+            setStudentData(response?.data?.content);
+            //console.log(response?.data?.content)
+          } catch (e) {
+            console.log(e);
+          }
+        };
+        fetch();
+      }, [stdID]);
 
     return (
         <div className="flex flex-1 justify-center  mt-10 w-screen items-center">
@@ -59,7 +162,7 @@ function Medical(props) {
                     <div className="p-4">
                         <Row>
                             <div className="flex justify-center p-2 bg-neutral-100 rounded-md text-2xl mb-4">
-                                Trail Permit
+                                Medial Report
                             </div>
                         </Row>
 
@@ -89,34 +192,41 @@ function Medical(props) {
                             </table>
                         </div>
                         <Form onSubmit={formik.handleSubmit}>
-                            <Row className="">
-                                <Form.Group as={Col} md={6}>
+                        <Row>
+                            <Col md={6}>
+                                <Form.Group>
                                     <Form.Label>
                                         Serial Number:<span className="text-red-500"> *</span>
                                     </Form.Label>
                                     <Form.Control
+                                        {...formik.getFieldProps("serialNo")}
                                         type="Number"
                                         placeholder=""
                                         required
                                     />
+                                    <Form.Text className="text-danger">
+                                        {formik.touched.serialNo && formik.errors.serialNo}
+                                    </Form.Text>
                                 </Form.Group>
-                                <Form.Group as={Col} md={6}>
+                            </Col>
+                            <Col md={6}>
+                                <Form.Group>
                                     <Form.Label>
                                         Examination:<span className="text-red-500"> *</span>
                                     </Form.Label>
                                     <Form.Control
                                         type="Date"
-                                        {...formik.getFieldProps("examDate")}
+                                        {...formik.getFieldProps("examination")}
                                         required
                                         min={new Date().toISOString().split('T')[0]}
                                         max={maxDate.toISOString().split('T')[0]}
                                     />
                                     <Form.Text className="text-danger">
-                                        {formik.touched.examDate && formik.errors.examDate}
+                                        {formik.touched.examination && formik.errors.examination}
                                     </Form.Text>
                                 </Form.Group>
-                            </Row>
-
+                            </Col>
+                        </Row>
                             <Row className="mt-3">
                                 <Form.Group as={Col} md={6} className="flex items-center gap-x-4">
                                     <Form.Label>
@@ -127,168 +237,131 @@ function Medical(props) {
                                             {bloodType}
                                         </Dropdown.Toggle>
                                         <Dropdown.Menu>
-                                            <Dropdown.Item onClick={()=>{setBloodType("A+")}} >A+</Dropdown.Item>
-                                            <Dropdown.Item onClick={()=>{setBloodType("A-")}}>A-</Dropdown.Item>
-                                            <Dropdown.Item onClick={()=>{setBloodType("B+")}}>B+</Dropdown.Item>
-                                            <Dropdown.Item onClick={()=>{setBloodType("B-")}}>B-</Dropdown.Item>
-                                            <Dropdown.Item onClick={()=>{setBloodType("O+")}}>O+</Dropdown.Item>
-                                            <Dropdown.Item onClick={()=>{setBloodType("O-")}}>O-</Dropdown.Item>
-                                            <Dropdown.Item onClick={()=>{setBloodType("AB+")}}>AB+</Dropdown.Item>
-                                            <Dropdown.Item onClick={()=>{setBloodType("AB-")}}>AB-</Dropdown.Item>
+                                            <Dropdown.Item onClick={()=>{formik.setFieldValue("bloodType","A+")}} >A+</Dropdown.Item>
+                                            <Dropdown.Item onClick={()=>{formik.setFieldValue("bloodType","A-")}}>A-</Dropdown.Item>
+                                            <Dropdown.Item onClick={()=>{formik.setFieldValue("bloodType","B+")}}>B+</Dropdown.Item>
+                                            <Dropdown.Item onClick={()=>{formik.setFieldValue("bloodType","B-")}}>B-</Dropdown.Item>
+                                            <Dropdown.Item onClick={()=>{formik.setFieldValue("bloodType","O+")}}>O+</Dropdown.Item>
+                                            <Dropdown.Item onClick={()=>{formik.setFieldValue("bloodType","O-")}}>O-</Dropdown.Item>
+                                            <Dropdown.Item onClick={()=>{formik.setFieldValue("bloodType","AB+")}}>AB+</Dropdown.Item>
+                                            <Dropdown.Item onClick={()=>{formik.setFieldValue("bloodType","AB-")}}>AB-</Dropdown.Item>
                                         </Dropdown.Menu>
                                     </Dropdown>
                                 </Form.Group>
                             </Row>
-
+                            <Form.Text className="text-danger">
+                                {formik.touched.bloodType && formik.errors.bloodType}
+                            </Form.Text>
                             <div className="mb-0 mt-3">
-                                Details Of leaner permit<span className="text-red-500"> *</span>
+                                Details Of Medical Report<span className="text-red-500"> *</span>
                             </div>
-                            <div className="flex flex-col items-center  pr-4">
+                            <div className="flex flex-col items-center">
                                 <table className="border-collapse w-full mt-2">
-                                    <thead>
-                                    <tr>
-                                        <th className="border p-2">
-                                            <label>Vehicle Type</label>
-                                        </th>
-                                        <th className="border p-2">Manual</th>
-                                        <th className="border p-2">Auto</th>
-                                        <th className="border p-2">None</th>
-                                    </tr>
-                                    </thead>
                                     <tbody className="text-sm">
                                     <tr>
                                         <td className="border p-2">
-                                            <label>B1 - Motor Tricycle</label>
+                                            <label>Vission Corrected</label>
                                         </td>
                                         <td className="border p-2">
-                                            <input
+                                            <Form.Check
                                                 type="radio"
-                                                name="b1"
-                                                onChange={() => {
-                                                    formik.setFieldValue("b1M", true);
-                                                }}
+                                                name="vission"
+                                                label="Yes"
+                                                required
+                                                onClick={(e)=>{formik.setFieldValue("visionISCorrected",true)}}
                                             />
                                         </td>
                                         <td className="border p-2">
-                                            <input type="radio" name="b1" disabled={true}/>
-                                        </td>
-                                        <td className="border p-2">
-                                            <input
+                                            <Form.Check
                                                 type="radio"
-                                                name="b1"
-                                                defaultChecked={true}
-                                                onChange={() => {
-                                                    formik.setFieldValue("b1M", false);
-                                                }}
+                                                name="vission"
+                                                label="No"
+                                                required
+                                                onClick={(e)=>{formik.setFieldValue("visionISCorrected",false)}}
                                             />
                                         </td>
                                     </tr>
                                     <tr>
                                         <td className="border p-2">
-                                            <label>B - all cars/duel purpose</label>
+                                            <label>Squint</label>
                                         </td>
                                         <td className="border p-2">
-                                            <input
+                                            <Form.Check
                                                 type="radio"
-                                                name="b"
-                                                onChange={() => {
-                                                    formik.setFieldValue("bM", true);
-                                                    formik.setFieldValue("bA", false);
-                                                }}
+                                                name="Squint"
+                                                label="Yes"
+                                                required
+                                                onClick={(e)=>{formik.setFieldValue("isSquint",true)}}
                                             />
                                         </td>
                                         <td className="border p-2">
-                                            <input
+                                            <Form.Check
                                                 type="radio"
-                                                name="b"
-                                                onChange={() => {
-                                                    formik.setFieldValue("bM", false);
-                                                    formik.setFieldValue("bA", true);
-                                                }}
-                                            />
-                                        </td>
-                                        <td className="border p-2">
-                                            <input
-                                                type="radio"
-                                                name="b"
-                                                defaultChecked={true}
-                                                onChange={() => {
-                                                    formik.setFieldValue("bA", false);
-                                                    formik.setFieldValue("bM", false);
-                                                }}
+                                                name="Squint"
+                                                label="No"
+                                                required
+                                                onClick={(e)=>{formik.setFieldValue("isSquint",false)}}
                                             />
                                         </td>
                                     </tr>
                                     <tr>
                                         <td className="border p-2">
-                                            <label>A1 - Mortorcycle Engine Capacity &lt; 100</label>
+                                            <label>Hearing</label>
                                         </td>
                                         <td className="border p-2">
-                                            <input
+                                            <Form.Check
+                                                name="hearing"
                                                 type="radio"
-                                                name="A1"
-                                                onChange={() => {
-                                                    formik.setFieldValue("a1M", true);
-                                                    formik.setFieldValue("a1A", false);
-                                                }}
+                                                label="Satisfactory"
+                                                required
+                                                onClick={(e)=>{formik.setFieldValue("isSatisfactory",true)}}
                                             />
                                         </td>
                                         <td className="border p-2">
-                                            <input
+                                            <Form.Check
                                                 type="radio"
-                                                name="A1"
-                                                onChange={() => {
-                                                    formik.setFieldValue("a1M", false);
-                                                    formik.setFieldValue("a1A", true);
-                                                }}
-                                            />
-                                        </td>
-                                        <td className="border p-2">
-                                            <input
-                                                type="radio"
-                                                name="A1"
-                                                defaultChecked={true}
-                                                onChange={() => {
-                                                    formik.setFieldValue("a1M", false);
-                                                    formik.setFieldValue("a1A", false);
-                                                }}
-                                            />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td className="border p-2">
-                                            <label>A - Mortorcycle Engine Capacity &ge; 100</label>
-                                        </td>
-                                        <td className="border p-2">
-                                            <input
-                                                type="radio"
-                                                name="A"
-                                                onChange={() => {
-                                                    formik.setFieldValue("aM", true);
-                                                }}
-                                            />
-                                        </td>
-                                        <td className="border p-2">
-                                            <input type="radio" name="A" disabled={true}/>
-                                        </td>
-                                        <td className="border p-2">
-                                            <input
-                                                type="radio"
-                                                name="A"
-                                                defaultChecked={true}
-                                                onChange={() => {
-                                                    formik.setFieldValue("aM", false);
-                                                }}
+                                                name="hearing"
+                                                label="Not-Satisfactory"
+                                                required
+                                                onClick={(e)=>{formik.setFieldValue("isSatisfactory",false)}}
                                             />
                                         </td>
                                     </tr>
                                     </tbody>
                                 </table>
+                            </div>
+                            <Row className="">
+                                    <Form.Group controlId="formFile" className="mb-2 mt-2" as={Col} md={8}>
+                                        <Form.Label>Upload Current Medical Report<span className="text-red-500">*</span></Form.Label>
+                                        <div className="flex flex-row gap-x-3">
+                                        <Form.Control
+                                            type="file"
+                                            required={true}
+                                            onChange={(e) => {
+                                                setFileLocation(e.target.files[0]);
+                                                setUploadState(false);
+                                            }}
+                                        />
+                                        <Button variant="primary" disabled={uploadState} onClick={()=>{setUploadState(true);
+                                            setProgressBarVisible(true);uploadFileTrail()}}>
+                                            <div className="flex items-center gap-x-2">
+                                            <FaCloudUploadAlt />
+                                            <div>Upload</div>
+                                            </div>
+                                        </Button>
+                                        </div>
+                                        {uploadProgress <= 100 && progressBarVisible && (
+                                            <ProgressBar now={uploadProgress} label={`${uploadProgress}%`} className="mt-3" />
+                                        )}
+                                    </Form.Group>
+                                    <Form.Text className="text-danger">
+                                        {formik.touched.medicalURL && formik.errors.medicalURL}
+                                    </Form.Text>
+                                    </Row>
                                 <Form.Text
                                     className="text-danger items-start flex justify-start text-left flex-row w-full">
                                     {errorMsg}
                                 </Form.Text>
-                            </div>
 
                             <Row>
                                 <div

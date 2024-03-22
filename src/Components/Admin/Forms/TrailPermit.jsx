@@ -3,7 +3,7 @@ import {Card, Form, Row, Col, Button, Dropdown} from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Formik, useFormik } from "formik";
 import * as Yup from "yup";
-import {findStudentByID, getVehicleType, saveTrailPermit, uploadFile} from "../../ApiService/api";
+import {findStudentByID, getVehicleType, saveTrailPermit, uploadFile,checkeTrailExpired} from "../../ApiService/api";
 import Swal from "sweetalert2";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import ProgressBar from 'react-bootstrap/ProgressBar';
@@ -40,7 +40,24 @@ export default function TrailPermit() {
     console.log(typeID + " " + type + " " + i);
   }
 
-
+  useEffect(() => {
+    const fetch = async ()=>{
+      try{
+        const response = await checkeTrailExpired(stdId);
+        console.log(response);
+        if(response?.data?.code ==="10"){
+          Swal.fire({
+              icon: "error",
+              title: "Medical Report not Expired",
+              text: "Please wait until the current medical report expires"
+          }).then(()=>{nav("/studentprofile");});
+      }else if(response?.data?.code==="00"){}
+      }catch(e){
+      console.log(e);
+      }
+    }
+    fetch();
+  },[stdId])
 
 
 
@@ -49,7 +66,7 @@ export default function TrailPermit() {
   //uploading to firebase
   const uploadFileTrail = async () => {
     try {
-      await uploadFile({ fileLocation, stdId, setUploadProgress, setUploadState, setDownloadURL, setProgressBarVisible });
+      await uploadFile({ fileLocation, stdId, setUploadProgress, setUploadState, setDownloadURL, setProgressBarVisible, category: "Trail"});
 
       console.log("url.............." + downloadURL);
     } catch (error) {
@@ -321,8 +338,8 @@ export default function TrailPermit() {
                         type="Date"
                         {...formik.getFieldProps("examDate")}
                         required
-                        min={new Date().toISOString().split('T')[0]}
-                        max={maxDate.toISOString().split('T')[0]}
+                        min={new Date(new Date().setMonth(new Date().getMonth() - 3)).toISOString().split('T')[0]}
+                        max={new Date(new Date().setMonth(new Date().getMonth() + 3)).toISOString().split('T')[0]}
                     />
                     <Form.Text className="text-danger">
                       {formik.touched.examDate && formik.errors.examDate}

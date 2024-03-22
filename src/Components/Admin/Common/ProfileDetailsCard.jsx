@@ -12,7 +12,9 @@ export default function ProfileDetailsCard({ studentData }) {
 
   const nav = useNavigate();
 
-
+const viewMedical = () =>{
+  nav("/studentprofile/medical/medicalView");
+}
   const AddTrial = (stdID) => {
     if (stdID !== null && stdID !== undefined && stdID !== "") {
       nav("/studentprofile/trail", { state: stdID });
@@ -63,7 +65,7 @@ const viewTrail = (stdID) =>{
                   >
                     Add
                   </Button>
-                  <Button variant="link" className="font-bold" style={{ fontSize: "small" }} >View</Button>
+                  <Button variant="link" className="font-bold" style={{ fontSize: "small" }} onClick={viewMedical}>View</Button>
                 </Col>
               </Row>
               <Row className="mb-2 flex items-center justify-center">

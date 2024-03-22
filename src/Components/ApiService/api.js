@@ -53,13 +53,13 @@ export const getTrailPermit = (stdID) =>{
 export  const app = initializeApp(firebaseConfig);
 export const storage = getStorage(app);
 
-export const uploadFile = ({ fileLocation, stdId, setUploadProgress, setUploadState, setDownloadURL,setProgressBarVisible }) => {
+export const uploadFile = ({ fileLocation, stdId, setUploadProgress, setUploadState, setDownloadURL,setProgressBarVisible,category }) => {
   console.log(fileLocation);
   if (!fileLocation) {
     return;
   }
 
-  const storageRef = ref(storage, `student/${stdId}/${fileLocation.name}`);
+  const storageRef = ref(storage, `student/${stdId}/${category}/${fileLocation.name}`);
 
   const uploadTask = uploadBytesResumable(storageRef, fileLocation);
   // Set up event listeners for the upload task
@@ -126,6 +126,15 @@ export const UpdateTrailPermit = (trailData) =>{
 }
 export const UpdateVehicleTypes = (vehicleData) =>{
   return AxiosInstance.post('admin/UpdateVehicleType',vehicleData);
+}
+export const AddMedicalReport=(data)=>{
+  return AxiosInstance.post('admin/saveMedicalReport',data);
+}
+export const checkMedicalExpired=(stdID)=>{
+  return AxiosInstance.get(`admin/checkMedicalExpired/${stdID}`);
+}
+export const checkeTrailExpired=(stdID)=>{
+  return AxiosInstance.get(`admin/checkTrialPermitExpired/${stdID}`);
 }
 
 
