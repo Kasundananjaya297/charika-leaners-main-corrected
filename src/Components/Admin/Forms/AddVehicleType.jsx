@@ -35,7 +35,8 @@ function AddVehicleType(props) {
     const nav = useNavigate();
     const back = () => {
         console.log(stdId);
-        nav("/studentprofile/trail",{ state: stdId });
+        //nav("/studentprofile/trail",{ state: stdId });
+        nav(-1);
     }
     const save = async () => {
         try {
@@ -53,7 +54,8 @@ function AddVehicleType(props) {
                             html:"Vehicle type has been saved.",
                             icon:"success",
                         });
-                    nav("/studentprofile/trail",{ state: stdId });
+                    //nav("/studentprofile/trail",{ state: stdId });
+                    nav(-1);
 
                 }else if(response?.data?.code==="06"){
                     Swal.fire({

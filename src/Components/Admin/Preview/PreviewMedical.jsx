@@ -30,13 +30,13 @@ function PreviewMedical() {
             try{
                 const response= await findStudentByID(stdID);
                 const response2 =await  getMedicalReport(stdID);
+                console.log(response2)
                 setStudentData(response?.data?.content);
                 setMedical(response2?.data?.content);
-                
             }catch (e){
                 Swal.fire({
                     icon: "error",
-                    title: "Trial Permit Not Exists",
+                    title: "Medical Not Exists",
                 })
                 nav("/studentprofile")
             }
