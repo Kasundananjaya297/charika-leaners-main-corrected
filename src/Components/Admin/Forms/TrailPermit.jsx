@@ -48,8 +48,8 @@ export default function TrailPermit() {
         if(response?.data?.code ==="10"){
           Swal.fire({
               icon: "error",
-              title: "Medical Report not Expired",
-              text: "Please wait until the current medical report expires"
+              title: "Trial Permit not Expired",
+              text: "Please wait until the current trial expires or try on edit"
           }).then(()=>{nav("/studentprofile");});
       }else if(response?.data?.code==="00"){}
       }catch(e){

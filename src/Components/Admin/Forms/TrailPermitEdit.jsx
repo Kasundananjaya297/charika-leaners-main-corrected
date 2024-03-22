@@ -124,8 +124,8 @@ export default function TrailPermitEdit() {
             Swal.fire({
               icon: "success",
               title: "Updated Successfully",
-            });
-            nav("/studentprofile/trailView", { state: stdId });
+            }).then(()=>{nav("/studentprofile/trailView", { state: stdId })});
+            
           } else if (response.data.code === "01") {
             Swal.fire({
               icon: "error",

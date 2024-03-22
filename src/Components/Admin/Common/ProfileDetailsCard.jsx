@@ -7,13 +7,15 @@ import { Link, useNavigate } from "react-router-dom";
 import {useState} from "react";
 import { FaUserEdit } from "react-icons/fa";
 export default function ProfileDetailsCard({ studentData }) {
-  const [stdData,setStudentData]= useState();
-  const [trailData,setTrialData] = useState();
+  
 
   const nav = useNavigate();
 
-const viewMedical = () =>{
-  nav("/studentprofile/medical/medicalView");
+const viewMedical = (stdID) =>{
+  if (stdID !== null && stdID !== undefined && stdID !== ""){
+    nav("/studentprofile/medical/view",{state:stdID});
+  }
+  
 }
   const AddTrial = (stdID) => {
     if (stdID !== null && stdID !== undefined && stdID !== "") {
@@ -65,7 +67,7 @@ const viewTrail = (stdID) =>{
                   >
                     Add
                   </Button>
-                  <Button variant="link" className="font-bold" style={{ fontSize: "small" }} onClick={viewMedical}>View</Button>
+                  <Button variant="link" className="font-bold" style={{ fontSize: "small" }} onClick={()=>viewMedical(studentData?.stdID)}>View</Button>
                 </Col>
               </Row>
               <Row className="mb-2 flex items-center justify-center">

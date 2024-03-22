@@ -56,7 +56,7 @@ function TrialPermitView() {
             <Card style={{ width: "40em" }}>
                 <div className='flex items-center justify-between p-3'>
                 <CloseButton className=' bg-red-400' onClick={back}/>
-                <FaUserEdit size={24} onClick={() => regForm2()}/>
+                <FaUserEdit size={24} onClick={() => regForm2()} className=' cursor-pointer'/>
                 </div>
             
                 <Card.Body>
@@ -116,7 +116,7 @@ function TrialPermitView() {
                                         </table>
 
                                     </div>
-                                    <div className="flex flex-col items-center  pr-4">
+                                    <div className="flex flex-col items-center">
                                         <table className="border-collapse w-full mt-2">
                                             <thead>
                                             <tr>

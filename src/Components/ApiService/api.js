@@ -136,6 +136,11 @@ export const checkMedicalExpired=(stdID)=>{
 export const checkeTrailExpired=(stdID)=>{
   return AxiosInstance.get(`admin/checkTrialPermitExpired/${stdID}`);
 }
-
+export const getMedicalReport=(stdID)=>{
+  return AxiosInstance.get(`admin/getMedicalReport/${stdID}`);
+}
+export const updateMedicalReport=(data)=>{
+  return AxiosInstance.post('admin/updateMedicalReport',data);
+}
 
 

@@ -2,17 +2,17 @@ import React, {useState,useEffect} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 import {Button, Card, Col, Form, Row,Dropdown} from "react-bootstrap";
 import {useFormik} from "formik";
-import { uploadFile,findStudentByID,AddMedicalReport,checkMedicalExpired } from '../../ApiService/api';
+import { uploadFile,findStudentByID,updateMedicalReport} from '../../ApiService/api';
 import * as Yup from "yup";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import { set } from 'lodash';
 import Swal from 'sweetalert2';
-function Medical(props) {
+function MedicalEdit(props) {
     const location = useLocation();
-    const stdId = location.state;
+    const [medicalData, setMedicalData] = useState(location.state);
+    const stdId = medicalData?.stdID;
     const nav = useNavigate();
-    const stdID = location.state;
     const [studentData, setStudentData] = React.useState({});
     const maxDate = new Date();
     const [errorMsg, setErrorMsg] = useState("");
@@ -24,45 +24,29 @@ function Medical(props) {
     const [uploadProgress, setUploadProgress] = useState(0);
     const[downloadURL, setDownloadURL] = useState("");
     const [progressBarVisible,setProgressBarVisible] = useState(false);
-    useEffect(() => {
-        const fetch = async () => {
-            try{
-                const response = await checkMedicalExpired(stdID);
-                //console.log(response);
-                if(response?.data?.code ==="10"){
-                    Swal.fire({
-                        icon: "error",
-                        title: "Medical Report not Expired",
-                        text: "Please wait until the current medical report expires"
-                    }).then(()=>{nav("/studentprofile");});
-                }else if(response?.data?.code==="00"){}
-            }catch(e){
-                console.log(e);
-            }
-        };
-        fetch();
-    },[stdID])
+    
 
     useEffect(() => {formik.setFieldValue("medicalURL", downloadURL);}, [downloadURL])
     const back = () => {
-        nav("/studentprofile");
+        nav("/studentprofile/medical/view",{state:stdId});
     };
     const formik = useFormik({
         initialValues: {
           stdID: stdId,
-          serialNo:"",
-          examination:"",
-          bloodType:"",
-          medicalURL:"",
-          visionISCorrected:"",
-          isSatisfactory:"",
-          isSquint:"",
+          oldSerialNo:medicalData?.serialNo,
+          serialNo:medicalData?.serialNo,
+          examination:medicalData?.examination,
+          bloodType:medicalData?.bloodType,
+          medicalURL: medicalData?.medicalURL,
+          visionISCorrected:medicalData?.visionISCorrected,
+          isSatisfactory:medicalData?.isSatisfactory,
+          isSquint:medicalData?.isSquint,
         },
         validationSchema: Yup.object({
         serialNo: Yup.number("Serial number is Number").required("Serial number is required"),
         examination: Yup.date().required("examin date is required"),
         bloodType: Yup.string().required("Blood Type is required"),
-        medicalURL: Yup.string().required("Medical Report Uploading is required"),
+        medicalURL: Yup.string().required("Image Uploading is required, In the updating stage u need to select the file again"),
         }),
         onSubmit: async (e, { setSubmitting, resetForm }) => {
           setSubmitting(true);
@@ -83,21 +67,21 @@ function Medical(props) {
         Swal.fire({
           icon: "warning",
           title: "Are you sure?",
-          text: "Going to save details",
+          text: "Going to Update details",
         }).then(async (result) => {
           if (result.isConfirmed) {
             try {
               console.log(formik.values);
               
               //console.log(dataToSave);
-                const response = await  AddMedicalReport(formik.values);
+                const response = await  updateMedicalReport(formik.values);
               //console.log(response);
               
               if (response.data.code === "00") {
                 Swal.fire({
                   icon: "success",
-                  title: "Saved Successfully",
-                });
+                  title: "Updated Successfully",
+                }).then(()=>{nav("/studentprofile/medical/view", { state: stdId })});
               } else if (response.data.code === "06") {
                 Swal.fire({
                   icon: "error",
@@ -145,7 +129,7 @@ function Medical(props) {
       useEffect(() => {
         const fetch = async () => {
           try {
-            const response = await findStudentByID(stdID);
+            const response = await findStudentByID(stdId);
             setStudentData(response?.data?.content);
             //console.log(response?.data?.content)
           } catch (e) {
@@ -153,7 +137,7 @@ function Medical(props) {
           }
         };
         fetch();
-      }, [stdID]);
+      }, [stdId]);
 
     return (
         <div className="flex flex-1 justify-center  mt-10 w-screen items-center">
@@ -203,6 +187,7 @@ function Medical(props) {
                                         type="Number"
                                         placeholder=""
                                         required
+                                        disabled
                                     />
                                     <Form.Text className="text-danger">
                                         {formik.touched.serialNo && formik.errors.serialNo}
@@ -267,17 +252,19 @@ function Medical(props) {
                                                 type="radio"
                                                 name="vission"
                                                 label="Yes"
+                                                checked={formik.getFieldProps("visionISCorrected").value}
                                                 required
-                                                onClick={(e)=>{formik.setFieldValue("visionISCorrected",true)}}
+                                                onChange={(e)=>{formik.setFieldValue("visionISCorrected",true)}}
                                             />
                                         </td>
                                         <td className="border p-2">
                                             <Form.Check
                                                 type="radio"
                                                 name="vission"
+                                                checked={!formik.getFieldProps("visionISCorrected").value}
                                                 label="No"
                                                 required
-                                                onClick={(e)=>{formik.setFieldValue("visionISCorrected",false)}}
+                                                onChange={(e)=>{formik.setFieldValue("visionISCorrected",false)}}
                                             />
                                         </td>
                                     </tr>
@@ -289,9 +276,10 @@ function Medical(props) {
                                             <Form.Check
                                                 type="radio"
                                                 name="Squint"
+                                                checked={formik.getFieldProps("isSquint").value}
                                                 label="Yes"
                                                 required
-                                                onClick={(e)=>{formik.setFieldValue("isSquint",true)}}
+                                                onChange={(e)=>{formik.setFieldValue("isSquint",true)}}
                                             />
                                         </td>
                                         <td className="border p-2">
@@ -299,8 +287,9 @@ function Medical(props) {
                                                 type="radio"
                                                 name="Squint"
                                                 label="No"
+                                                checked={!formik.getFieldProps("isSquint").value}
                                                 required
-                                                onClick={(e)=>{formik.setFieldValue("isSquint",false)}}
+                                                onChange={(e)=>{formik.setFieldValue("isSquint",false)}}
                                             />
                                         </td>
                                     </tr>
@@ -314,7 +303,8 @@ function Medical(props) {
                                                 type="radio"
                                                 label="Satisfactory"
                                                 required
-                                                onClick={(e)=>{formik.setFieldValue("isSatisfactory",true)}}
+                                                checked={formik.getFieldProps("isSatisfactory").value}
+                                                onChange={(e)=>{formik.setFieldValue("isSatisfactory",true)}}
                                             />
                                         </td>
                                         <td className="border p-2">
@@ -323,7 +313,8 @@ function Medical(props) {
                                                 name="hearing"
                                                 label="Not-Satisfactory"
                                                 required
-                                                onClick={(e)=>{formik.setFieldValue("isSatisfactory",false)}}
+                                                checked={!formik.getFieldProps("isSatisfactory").value}
+                                                onChange={(e)=>{formik.setFieldValue("isSatisfactory",false)}}
                                             />
                                         </td>
                                     </tr>
@@ -386,4 +377,4 @@ function Medical(props) {
     );
 }
 
-export default Medical;
+export default MedicalEdit;
