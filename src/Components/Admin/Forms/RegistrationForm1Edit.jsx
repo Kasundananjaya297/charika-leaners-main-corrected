@@ -311,14 +311,14 @@ export default function RegistrationForm1Edit() {
                       type="radio"
                       label="Male"
                       name="gender"
-                      checked={dataFetched?.isMale}
+                      checked={formik.getFieldProps("isMale").value}
                       onChange={() => formik.setFieldValue("isMale", true)}
                       required
                     />
                     <Form.Check
                       type="radio"
                       label="Female"
-                      checked={!dataFetched?.isMale}
+                      checked={!formik.getFieldProps("isMale").value}
                       name="gender"
                       onChange={() => formik.setFieldValue("isMale", false)}
                       required
