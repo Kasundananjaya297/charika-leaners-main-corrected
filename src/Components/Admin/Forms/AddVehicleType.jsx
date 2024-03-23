@@ -4,7 +4,7 @@ import {Button, Col, Row} from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import {useFormik} from "formik";
 import * as Yup from "yup";
-import {saveVehicleType} from "../../ApiService/api";
+import {saveVehicleType,uploadFile} from "../../ApiService/api";
 import {useLocation, useNavigate} from "react-router-dom";
 import Swal from "sweetalert2";
 

@@ -6,9 +6,9 @@ import Image from "react-bootstrap/Image";
 import { Link, useNavigate } from "react-router-dom";
 import {useState} from "react";
 import { FaUserEdit } from "react-icons/fa";
+import { Modal } from 'react-bootstrap';
 export default function ProfileDetailsCard({ studentData }) {
-  
-
+  const [showModal, setShowModal] = useState(false);
   const nav = useNavigate();
 
 const viewMedical = (stdID) =>{
@@ -40,9 +40,21 @@ const viewTrail = (stdID) =>{
       <Row className="flex overflow-hidden text-sm item-center">
         <Col sm={12} md={6} lg={4}>
           <Card style={{ width: "24rem" }}>
-          <div className=" items-end justify-end pl-5 pt-3 w-wrap h-wrap " >
+          <div className="flex  justify-between pr-1 pl-5 pt-3 w-wrap h-wrap -mb-6 " >
             <FaUserEdit size={24} onClick={() => regForm2(studentData)}/>
+            <Col xs={1} sm={3}>
+              <div className="flex justify-center rounded-full items-center  w-fit h-fit bg-gray-200">
+                <div className=" w-16 h-16 p-2 rounded-full">
+                    <Image src={`${studentData?.profilePhotoURL}`} style={{ width: '100%', height: '100%' }} roundedCircle onClick={()=>setShowModal(true)}/>
+                </div>
+              </div>
+            </Col>
           </div>
+          <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+              <Modal.Body className="text-center">
+                  <Image src={`${studentData?.profilePhotoURL}`} style={{ maxWidth: '100%', maxHeight: '80vh' }} rounded />
+              </Modal.Body>
+          </Modal>
             <Card.Body className="p-4">
               <Row className="mb-2">
                 <Col xs={4}>Contract No:</Col>

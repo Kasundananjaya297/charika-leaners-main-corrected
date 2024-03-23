@@ -6,8 +6,11 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Card from "react-bootstrap/Card";
 import { useFormik } from "formik";
-import { UpdateStudent } from "../../ApiService/api";
+import { UpdateStudent,uploadFile } from "../../ApiService/api";
 import Swal from "sweetalert2";
+import { FaCloudUploadAlt } from "react-icons/fa";
+import { FaCamera } from "react-icons/fa";
+import ProgressBar from 'react-bootstrap/ProgressBar';
 import {
   validateName,
   validateEmail,
@@ -20,6 +23,13 @@ import { set } from "lodash";
 export default function RegistrationForm1Edit() {
   const location = useLocation();
   const [dataFetched, setDataFetched] = useState(location.state);
+  const [uploadState, setUploadState] = useState(true);
+  const [fileLocation, setFileLocation] = useState("");
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [submitButton, setSubmitButton] = useState(false);
+  const[downloadURL, setDownloadURL] = useState("");
+  const [progressBarVisible,setProgressBarVisible] = useState(false);
+  useEffect(() => {formik.setFieldValue("profilePhotoURL", downloadURL);}, [downloadURL])
 
 
   const nav = useNavigate();
@@ -50,6 +60,7 @@ export default function RegistrationForm1Edit() {
       adl1: dataFetched?.adl1,
       adl2: dataFetched?.adl2,
       city:  dataFetched?.city,
+      profilePhotoURL:dataFetched?.profilePhotoURL,
     },
 
     validationSchema: Yup.object({
@@ -67,13 +78,13 @@ export default function RegistrationForm1Edit() {
       adl1: validateName("Address line 1"),
       adl2: ValidateNonRequiredName(),
       city: validateName("City"),
+      profilePhotoURL:Yup.string().required("Profile Photo Uploading is required"),
     }),
     onSubmit: async (e, { setSubmitting, resetForm }) => {
       setSubmitting(true);
 
       try {
         save();
-        
         resetForm();
       } catch (errors) {
         formik.setErrors(errors);
@@ -133,6 +144,18 @@ export default function RegistrationForm1Edit() {
       nav("/");
     }
   }, [nav]);
+  const tekePhoto = () => {
+    nav("/studentprofile/Form1/camera");
+  }
+  const uploadFileTrail = async () => {
+    try {
+      await uploadFile({ fileLocation,stdId:"" , setUploadProgress, setUploadState, setDownloadURL, setProgressBarVisible, category: "ProfilePhoto"});
+      console.log("url.............." + downloadURL);
+      setDownloadURL(downloadURL);
+    } catch (error) {
+      console.error("Error in uploadFileTrail:", error);
+    }
+  }
   return (
     <div className="flex flex-1 justify-center items-center w-screen mt-4 h-screen">
       <Card style={{ width: "40em" }}>
@@ -143,6 +166,44 @@ export default function RegistrationForm1Edit() {
                 <div className="flex justify-center p-2 bg-neutral-100 rounded-md text-2xl mb-3">
                   Student Details
                 </div>
+              </Row>
+              <Row className="mb-3">
+                <Form.Group as={Col} md={12}>
+                  <Form.Label>Profile Picture<span className="text-red-500"> *</span></Form.Label>
+                        <div className="flex flex-col">
+                        <div className="flex gap-x-3">
+                        <Form.Control
+                          type="file"
+                          required={true}
+                          onChange={(e) => {
+                              setFileLocation(e.target.files[0]);
+                              setUploadState(false);
+                            }}
+                        />
+                        <Button onClick={tekePhoto}>
+                            <div className=" flex items-center gap-x-2" >
+                              <FaCamera />
+                              <div>Take</div>
+                            </div>
+                        </Button>
+                        <Button disabled={uploadState} onClick={()=>{setUploadState(true);setProgressBarVisible(true);uploadFileTrail()}}>
+                            <div className=" flex items-center gap-x-2" >
+                              <FaCloudUploadAlt/>
+                              <div>Upload</div>
+                            </div>     
+                        </Button>
+                           
+                      </div>
+                      <div className="flex flex-row">
+                              {uploadProgress <= 100 && progressBarVisible && (
+                                  <ProgressBar now={uploadProgress} label={`${uploadProgress}%`} className="mt-3  w-full" />
+                              )}
+                      </div>
+                  </div>
+                  <Form.Text className="text-danger">
+                    {formik.touched.profilePhotoURL && formik.errors.profilePhotoURL}
+                  </Form.Text>
+                </Form.Group>
               </Row>
               <Row className="mb-3">
                 <Form.Group

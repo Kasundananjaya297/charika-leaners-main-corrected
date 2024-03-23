@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect,useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
@@ -6,8 +6,11 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Card from "react-bootstrap/Card";
 import { useFormik } from "formik";
-import { SaveStudent } from "../../ApiService/api";
+import { SaveStudent,uploadFile } from "../../ApiService/api";
 import Swal from "sweetalert2";
+import { FaCloudUploadAlt } from "react-icons/fa";
+import { FaCamera } from "react-icons/fa";
+import ProgressBar from 'react-bootstrap/ProgressBar';
 import {
   validateName,
   validateEmail,
@@ -25,6 +28,13 @@ export default function RegistrationForm1() {
   maxDate.setFullYear(maxDate.getFullYear() - 17);
   const minDate = new Date();
   minDate.setFullYear(minDate.getFullYear() - 80);
+  const [uploadState, setUploadState] = useState(true);
+    const [fileLocation, setFileLocation] = useState("");
+    const [uploadProgress, setUploadProgress] = useState(0);
+    const [submitButton, setSubmitButton] = useState(false);
+    const[downloadURL, setDownloadURL] = useState("");
+    const [progressBarVisible,setProgressBarVisible] = useState(false);
+  useEffect(() => {formik.setFieldValue("profilePhotoURL", downloadURL);}, [downloadURL])
   const formik = useFormik({
     initialValues: {
       fname: "",
@@ -42,6 +52,7 @@ export default function RegistrationForm1() {
       adl1: "",
       adl2: "",
       city: "",
+      profilePhotoURL:"",
     },
 
     validationSchema: Yup.object({
@@ -59,6 +70,7 @@ export default function RegistrationForm1() {
       adl1: validateName("Address line 1"),
       adl2: ValidateNonRequiredName(),
       city: validateName("City"),
+      profilePhotoURL:Yup.string().required("Profile Photo Uploading is required"),
     }),
     onSubmit: async (e, { setSubmitting, resetForm }) => {
       setSubmitting(true);
@@ -118,10 +130,23 @@ export default function RegistrationForm1() {
       nav("/");
     }
   }, [nav]);
+  const tekePhoto = () => {
+    nav("/studentprofile/Form1/camera");
+  }
+
+  const uploadFileTrail = async () => {
+    try {
+      await uploadFile({ fileLocation,stdId:"" , setUploadProgress, setUploadState, setDownloadURL, setProgressBarVisible, category: "ProfilePhoto"});
+      console.log("url.............." + downloadURL);
+      setDownloadURL(downloadURL);
+    } catch (error) {
+      console.error("Error in uploadFileTrail:", error);
+    }
+  }
   return (
-    <div className="flex flex-1 justify-center items-center w-screen mt-4 h-screen">
+    <div className="flex flex-row justify-center items-center w-screen h-full">
       <Card style={{ width: "40em" }}>
-        <Card.Body>
+        <Card.Body className="overflow-auto h-full">
           <div className="p-4">
             <Form onSubmit={formik.handleSubmit}>
               <Row>
@@ -130,10 +155,46 @@ export default function RegistrationForm1() {
                 </div>
               </Row>
               <Row className="mb-3">
+                <Form.Group as={Col} md={12}>
+                  <Form.Label>Profile Picture<span className="text-red-500"> *</span></Form.Label>
+                        <div className="flex flex-col">
+                        <div className="flex gap-x-3">
+                        <Form.Control
+                          type="file"
+                          required={true}
+                          onChange={(e) => {
+                              setFileLocation(e.target.files[0]);
+                              setUploadState(false);
+                            }}
+                        />
+                        <Button onClick={tekePhoto}>
+                            <div className=" flex items-center gap-x-2" >
+                              <FaCamera />
+                              <div>Take</div>
+                            </div>
+                        </Button>
+                        <Button disabled={uploadState} onClick={()=>{setUploadState(true);setProgressBarVisible(true);uploadFileTrail()}}>
+                            <div className=" flex items-center gap-x-2" >
+                              <FaCloudUploadAlt/>
+                              <div>Upload</div>
+                            </div>     
+                        </Button>
+                           
+                      </div>
+                      <div className="flex flex-row">
+                              {uploadProgress <= 100 && progressBarVisible && (
+                                  <ProgressBar now={uploadProgress} label={`${uploadProgress}%`} className="mt-3  w-full" />
+                              )}
+                      </div>
+                  </div>
+                  <Form.Text className="text-danger">
+                    {formik.touched.profilePhotoURL && formik.errors.profilePhotoURL}
+                  </Form.Text>
+                </Form.Group>
+              </Row>
+              <Row className="mb-3">
                 <Form.Group
                   as={Col}
-                  onSubmit={formik.handleSubmit}
-                  method="POST"
                 >
                   <Form.Label>
                     First Name<span className="text-red-500"> *</span>
@@ -359,7 +420,7 @@ export default function RegistrationForm1() {
                   <Button variant="danger" onClick={back}>
                     Back
                   </Button>
-                  <Button type="submit" variant="success">
+                  <Button type="submit" variant="success" disabled={submitButton}>
                     Save
                   </Button>
                 </div>
