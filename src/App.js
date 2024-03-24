@@ -14,6 +14,8 @@ import AddVehicleTypeEdit from "./Components/Admin/Forms/AddVehicleTypeEdit";
 import PreviewMedical from "./Components/Admin/Preview/PreviewMedical";
 import MedicalEdit from "./Components/Admin/Forms/MedicalEdit";
 import Camera from "./Components/Admin/Common/Camera";
+import Packages from "./Components/Admin/Packages";
+import AddPackages from "./Components/Admin/Forms/AddPackages";
 
 function App() {
   return (
@@ -34,7 +36,9 @@ function App() {
           <Route path ="/studentprofile/medical/view" element = {<PreviewMedical/>} />
           <Route path ="/studentprofile/medical/edit" element = {<MedicalEdit/>} />
           <Route path = "/studentprofile/Form1/camera" element = {<Camera/>} />
-          {/*
+          <Route path="/Packages" element={< Packages/>} />
+          <Route path = "/Packages/addPackage" element={<AddPackages/>} />
+           {/*
           <Route path="/Form2" element={<Form2 />} /> */}
         </Route>
       </Routes>

@@ -435,7 +435,6 @@ export default function TrailPermit() {
                             </td>
                             <td className="gap-x-10"><FaUserEdit onClick={()=>{edit({stdId,typeID:item?.typeID,typeName:item?.typeName,engineCapacity:item?.engineCapacity,typeAuto:item?.typeAuto,typeManual:item?.typeManual});setDatatoParse();}}/></td>
                           </tr>
-                          
                       ))
                     }
                   </table>

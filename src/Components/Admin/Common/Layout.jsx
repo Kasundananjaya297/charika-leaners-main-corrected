@@ -10,7 +10,8 @@ export default function Layout() {
     location.pathname.includes("/Login") ||
     location.pathname.includes("/trail")||
     location.pathname.includes("/trailView")||
-    location.pathname.includes("/medical")
+    location.pathname.includes("/medical")||
+    location.pathname.includes("/addPackage")
   );
 
   return (

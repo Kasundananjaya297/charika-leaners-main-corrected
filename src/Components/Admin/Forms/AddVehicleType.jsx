@@ -20,7 +20,10 @@ function AddVehicleType(props) {
             typeManual: false,
         },
         validationSchema: Yup.object({
-            typeID: Yup.string().required("Required"),
+            typeID: Yup.string()
+                .required("Required")
+                .matches(/^[A-Z]{1,3}[1-9]*$/, { message: "Capital letters allowed, Sapce Not allowed and maximum length is 3" }),
+
             engineCapacity: Yup.string().matches(/^[0-9<>= ]+$/, "Must be a number or a number with >,<,.."),
             typeName: Yup.string().required("Required").matches(/^[a-zA-Z ]+$/, "Must be a string"),
         }),
@@ -77,8 +80,6 @@ function AddVehicleType(props) {
         console.log("role: " + role);
         if (!(role === "ADMIN" && sessionStorage.getItem("token") !== null)) {
             nav("/");
-        } else if (stdId === null) {
-            nav("/studentprofile");
         }
     }, [nav]);
     return (
