@@ -5,12 +5,23 @@ import { FaUserEdit } from "react-icons/fa";
 import { getVehicleType } from '../../ApiService/api';
 import { IoMdAdd } from "react-icons/io";
 import { useNavigate } from 'react-router-dom';
+import * as Yup from "yup";
+import { AddPackage } from '../../ApiService/api';
+import Swal from 'sweetalert2';
+
 export default function AddPackages() {
     const [vehicleType, setVehicleType] = useState([]);
     const [ID, setID] = useState("");
-    const [selectedType, setSelectedType] = useState("");
+    const [typeID, setSelectedType] = useState("");
     const [autoOrManual, setAutoOrManual] = useState("");
-    const [isVisible, setIsVisible] = useState(false);
+    const [isVisible, setIsVisible] = useState(true);
+    const  [isDisabled, setIsDisabled] = useState(false);
+    const [vehicleData, setVehicleData] = useState([]);
+    const [lessons,setLessons] = useState(0); 
+    const [dataTosave, setDataToSave] = useState([]);
+    const[error,setError] = useState("");
+    const [packageID, setPackageID] = useState("");
+
 
     const nav = useNavigate();
 
@@ -32,18 +43,115 @@ export default function AddPackages() {
       const back =()=>{
         nav(-1);
       }
+      const formik = useFormik({
+        initialValues: {
+            packageID:"",
+            packageName:"",
+            description:"",
+            packagePrice:"",
+            vehicleData: [], 
+        },
+        validationSchema: Yup.object({
+            packageName: Yup.string().required("Required").matches(/^[a-zA-Z]+$/, "Must be a string"),
+            description: Yup.string().required("Required"),
+            packagePrice: Yup.number().required("Required").min(1000), 
+        }),
+        onSubmit: async (values) => {
+            try {
+                await save();
+            } catch (error) {
+                console.error("Error occurred while saving:", error);
+            }
+        },
+    });
+    useEffect(()=>{
+        if(vehicleData.length > 0 && isVisible ===true){
+            setIsDisabled(false);
+            setError("");
+        }else if(isVisible === false){
+            setIsDisabled(true);
+            setError("Please add vehicle type");
+        }
+    },[isVisible,formik.values.packagePrice])
+    
+
+    const save = async()=>{
+        Swal.fire({
+            icon: "warning",
+            title: "Are you sure?",
+            text: "Going to save details",
+        }).then(async(result)=>{
+            if(result.isConfirmed){
+                try{
+                    const filteredData = vehicleData.filter(item => 
+                        item.autoOrManual !== undefined &&
+                        item.autoOrManual !== null &&
+                        item.autoOrManual !== ''
+                      );
+                    const data={
+                        packageID:formik.values.packageID,
+                        packageName:formik.values.packageName,
+                        description:formik.values.description,
+                        packagePrice:formik.values.packagePrice,
+                        packageAndVehicleType:filteredData
+                    }
+                    const response = await AddPackage(data);
+                    if (response.data.code === "00") {
+                        Swal.fire({
+                          icon: "success",
+                          title: "Saved Successfully",
+                        });
+                      } else if (response.data.code === "06") {
+                        Swal.fire({
+                          icon: "error",
+                          title: "Already Entered This Permit",
+                        });
+                      } else if (response.data.code === "10") {
+                        Swal.fire({
+                          icon: "error",
+                          title: "Current permit not Expired",
+                        });
+                      }
+                    } catch (error) {
+                      console.error("Error while saving student details:", error);
+                      Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Internal error occurred while saving trail permit details",
+                      });
+                }
+            }
+        })
+        
+        
+    }
+     useEffect(() => {
+        const newVehicleData = [...vehicleData];
+        newVehicleData[ID] = { typeID, autoOrManual,lessons,packageID};
+        setVehicleData(newVehicleData);
+      }, [typeID, autoOrManual, ID,lessons]);
+
+
+    //   useEffect(()=>{
+    //     const lessonsCount = [...lessons];
+    //     lessonsCount[ID]={lessons};
+    //     setLessonCount(lessonsCount);
+    //   },[lessons,ID])
+
+    //   useEffect(()=>{
+    //     console.log(lessonCountArray)
+    //   },[lessonCountArray])
   return (
-    <div className="flex flex-row justify-center items-center w-screen h-screen" >
-        <Card style={{ width: "40em" }}>
+    <div className="flex flex-1 flex-row justify-center items-center w-screen h-screen" >
+        <Card style={{ width: "40em" }} className="mt-5">
             <Card.Body className="overflow-auto h-full">
                 <div className='p-4'>
-                <Form onSubmit={""}>
+                <Form onSubmit={formik.handleSubmit}>
                 <Row>
                     <div className="flex justify-center p-2 bg-neutral-100 rounded-md text-2xl mb-3">
                          Add Package Details
                     </div>
                 </Row>
-
                 <Row>
                     <Col md={6}>
                         <Form.Group className="mb-3"> 
@@ -51,29 +159,29 @@ export default function AddPackages() {
                                 Package Name:<span className="text-red-500"> *</span>
                             </Form.Label>
                             <Form.Control
-                                // {...formik.getFieldProps("serialNo")}
-                                type="Number"
+                                {...formik.getFieldProps("packageName")}
+                                type="text"
                                 placeholder=""
                                 required
                             />
                             <Form.Text className="text-danger">
-                                {/* {formik.touched.serialNo && formik.errors.serialNo} */}
+                                {formik.touched.packageName && formik.errors.packageName}
                             </Form.Text>
                         </Form.Group>
                     </Col>
                     <Col md={6}>
                     <Form.Group className="mb-3">
                             <Form.Label>
-                                Decpription:<span className="text-red-500"> *</span>
+                                About Package:<span className="text-red-500"> *</span>
                             </Form.Label>
                             <Form.Control
-                                // {...formik.getFieldProps("serialNo")}
-                                type="Number"
+                                 {...formik.getFieldProps("description")}
+                                type="text"
                                 placeholder=""
                                 required
                             />
                             <Form.Text className="text-danger">
-                                {/* {formik.touched.serialNo && formik.errors.serialNo} */}
+                                {formik.touched.description && formik.errors.description}
                             </Form.Text>
                         </Form.Group>
                     </Col>
@@ -85,11 +193,15 @@ export default function AddPackages() {
                                 Price:<span className="text-red-500"> *</span>
                             </Form.Label>
                             <Form.Control
-                                type="text"
-                                placeholder="First Name"
-                                // {...formik.getFieldProps("fname")}
+                                type="number"
+                                placeholder="Enter price of package"
+                                {...formik.getFieldProps("packagePrice")}
                                 required
+                                onBlur={(e) => {setIsVisible(false)}}
                             />
+                            <Form.Text className="text-danger">
+                                {formik.touched.packagePrice && formik.errors.packagePrice}
+                            </Form.Text>
                         </Form.Group>
                     </Col>
                 </Row>
@@ -108,7 +220,7 @@ export default function AddPackages() {
                           <tr key={i}>
                             <td className="pl-3">{item?.typeID}-{item?.typeName} {item?.engineCapacity}</td>
                             <td className="p-2">
-                            <Form.Group controlId={`dropdown-${i}`} required>
+                            <Form.Group required>
                                   <Dropdown>
                                     <Dropdown.Toggle variant="outline-secondary" size="sm">
                                       Type
@@ -122,6 +234,7 @@ export default function AddPackages() {
                                             setAutoOrManual("Auto");
                                             setID(i);
                                             setIsVisible(true);
+                                            setLessons(vehicleData[i]?.lessons);
                                             //formik.setFieldValue("vehicleType", "Auto");
                                           }}
                                         >
@@ -136,6 +249,7 @@ export default function AddPackages() {
                                             setAutoOrManual("Manual");
                                             setID(i);
                                             setIsVisible(true);
+                                            setLessons(vehicleData[i]?.lessons);
                                             //formik.setFieldValue("vehicleType", "Manual");
                                           }}
                                         >
@@ -148,6 +262,8 @@ export default function AddPackages() {
                                           setAutoOrManual(null);
                                           setID(i);
                                           setIsVisible(false);
+                                          setLessons(0);
+                                          setVehicleData([]);
                                           //formik.setFieldValue("vehicleType", "");
                                         }}
                                       >
@@ -159,20 +275,30 @@ export default function AddPackages() {
                             </td>
                             <td className="-gap-x-10"><FaUserEdit /></td>
                             <td className='flex flex-row mt-1 items-center justify-center'>
-                                <Col md={4}>
-                                <Form.Control
-                                    type="number"
-                                    min={0}
-                                    max={50}
-                                    placeholder="0"
-                                    // {...formik.getFieldProps("fname")}
-                                    required
-                                /></Col>
+                                <Col md={6}>
+                                    <Form.Control
+                                        key={i}
+                                        type="number"
+                                        min={1}
+                                        max={50}
+                                        defaultValue={0}
+                                        placeholder="0"
+                                        onBlur={(e) => {
+                                            setLessons(e.target.value);
+                                            setID(i); 
+                                        }}
+                                        disabled={(vehicleData[i]?.typeID === undefined || vehicleData[i]?.typeID === null || vehicleData[i]?.typeID === "")}
+                                        required
+                                    />
+                                </Col>
                             </td>
                           </tr>
                       ))
                     }
                     </table>
+                    <Form.Text className="text-danger">
+                        {error}
+                    </Form.Text>
                 </Row>
                 <Row className="pl-4 pr-4">
                   <Button onClick={AddType}>
@@ -192,12 +318,13 @@ export default function AddPackages() {
                                 <Button
                                     type="submit"
                                     variant="success"
+                                    disabled={isDisabled}
                                 >
                                     Save
                                 </Button>
                             </div>
                         </Row>
-                    </Form.Group>
+                </Form.Group>
 
                 </Form>
                 </div>

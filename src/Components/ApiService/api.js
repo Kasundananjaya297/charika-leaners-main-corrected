@@ -142,5 +142,11 @@ export const getMedicalReport=(stdID)=>{
 export const updateMedicalReport=(data)=>{
   return AxiosInstance.post('admin/updateMedicalReport',data);
 }
+export const AddPackage = (data)=>{
+  return AxiosInstance.post('admin/AddPackage',data);
+}
+export const getPackages = ()=>{
+  return AxiosInstance.get('admin/getAllPackage');
+}
 
 
