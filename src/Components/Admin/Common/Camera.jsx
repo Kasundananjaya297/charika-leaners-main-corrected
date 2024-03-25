@@ -42,7 +42,7 @@ export default function Camera({}) {
           <div className="p-4">
             <Row>
               <div className="flex justify-center p-2 bg-neutral-100 rounded-md text-2xl mb-4">
-                Medial Report
+                Take Photo
               </div>
             </Row>
             <Row>

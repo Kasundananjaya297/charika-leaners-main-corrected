@@ -148,5 +148,13 @@ export const AddPackage = (data)=>{
 export const getPackages = ()=>{
   return AxiosInstance.get('admin/getAllPackage');
 }
-
+export const upDatePackage = (data)=>{
+  return AxiosInstance.post('admin/updatePackage',data);
+}
+export const getPackageByLetter = (data)=>{
+  return AxiosInstance.get(`admin/getPackage/${data}`);
+}
+export const getPackgeByID = (data)=>{
+  return AxiosInstance.get(`admin/getPackageByID/${data}`);
+}
 

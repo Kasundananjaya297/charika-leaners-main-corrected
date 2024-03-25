@@ -16,6 +16,8 @@ import MedicalEdit from "./Components/Admin/Forms/MedicalEdit";
 import Camera from "./Components/Admin/Common/Camera";
 import Packages from "./Components/Admin/Packages";
 import AddPackages from "./Components/Admin/Forms/AddPackages";
+import AddPackagesEdit from "./Components/Admin/Forms/AddPackagesEdit";
+import SelectPackage from "./Components/Admin/Forms/SelectPackage";
 
 function App() {
   return (
@@ -38,6 +40,8 @@ function App() {
           <Route path = "/studentprofile/Form1/camera" element = {<Camera/>} />
           <Route path="/Packages" element={< Packages/>} />
           <Route path = "/Packages/addPackage" element={<AddPackages/>} />
+          <Route path = "/Packages/editPackage" element={<AddPackagesEdit/>} />
+        
            {/*
           <Route path="/Form2" element={<Form2 />} /> */}
         </Route>

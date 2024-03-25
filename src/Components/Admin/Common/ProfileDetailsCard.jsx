@@ -35,6 +35,9 @@ const viewTrail = (stdID) =>{
     console.log("clicked");
     nav("/studentprofile/Form1/edit", { state: studentData });
   }
+  const addPackage = (stdID) =>{
+    nav("/studentprofile/addPackage",{state:stdID});
+  }
   return (
     <div>
       <Row className="flex overflow-hidden text-sm item-center">
@@ -180,10 +183,20 @@ const viewTrail = (stdID) =>{
                   </Button>
                 </Col>
               </Row>
-              <Row className="mb-2">
+              <Row className="mb-2 items-center">
                 <Col xs={4}>Package:</Col>
-                <Col xs={8} className="pl-4 font-bold">
-                  {studentData?.pak}
+                <Col xs={8} className="font-bold flex flex-row gap-x-4 items-center" >
+                    <Button
+                      className="flex w-18 h-8 justify-center items-center "
+                      variant="outline-success"
+                      onClick={(e) => {addPackage(studentData?.stdID);}}
+                      style={{ fontSize: "small" }}
+                    >
+                      Add
+                    </Button>
+                    <Button variant="link" className="font-bold" style={{ fontSize: "small" }}
+                            onClick={(e) => {""}}>View
+                    </Button>
                 </Col>
               </Row>
               <Row className="mb-2">

@@ -8,9 +8,9 @@ import { useNavigate } from "react-router-dom";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import { debounce } from "lodash";
-import { findStudentByAnyfield } from "../../ApiService/api";
+import { getPackageByLetter } from "../../ApiService/api";
 
-export default function PackageNavBar({ setfiled, setOrder, setStudentID }) {
+export default function PackageNavBar({ setfiled, setOrder, setPackageID }) {
   //props for set nav bar selections
   const nav = useNavigate();
   const GotoAddPackage = () => {
@@ -24,7 +24,7 @@ export default function PackageNavBar({ setfiled, setOrder, setStudentID }) {
     const fetchData = async () => {
       try {
         if (search !== null && search !== undefined && search !== "") {
-          const response = await findStudentByAnyfield(search);
+          const response = await getPackageByLetter(search);
           console.log(response?.data?.content);
           setSearchData(response?.data?.content);
         }
@@ -63,7 +63,7 @@ export default function PackageNavBar({ setfiled, setOrder, setStudentID }) {
             <div className="relative">
               <Form.Control
                 type="search"
-                placeholder="Enter Studet Name..."
+                placeholder="Enter package....."
                 className="me-2"
                 aria-label="Search"
                 onChange={debounce((e) => {
@@ -83,16 +83,18 @@ export default function PackageNavBar({ setfiled, setOrder, setStudentID }) {
                         className="flex flex-col  p-2 text-sm hover:bg-blue-400 w-full h-full rounded-lg"
                         onClick={(e) => {
                           setSearch("");
-                          setStudentID(data?.stdID);
+                          setPackageID(data?.packageID);
                         }}
                       >
                         <div className="flex flex-row justify-between font-semibold w-full">
                           <div>
-                            {data?.fname} {data?.lname}
+                            {data?.packageID} 
                           </div>
-                          <div>{data?.stdID}</div>
+                          <div>
+                          {data?.packageName}
+                          </div>
                         </div>
-                        <div className="text-xs italic">NIC: {data?.nic}</div>
+                        <div>{data?.description}</div>
                       </div>
                     </div>
                   ))}
