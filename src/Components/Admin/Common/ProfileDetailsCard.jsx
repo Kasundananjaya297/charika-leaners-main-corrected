@@ -7,10 +7,19 @@ import { Link, useNavigate } from "react-router-dom";
 import {useState} from "react";
 import { FaUserEdit } from "react-icons/fa";
 import { Modal } from 'react-bootstrap';
+import {SelectPackage} from "../Forms/SelectPackage";
 export default function ProfileDetailsCard({ studentData }) {
   const [showModal, setShowModal] = useState(false);
+  const [packModal, setPackModal] = useState(false);
   const nav = useNavigate();
+  const showPackModal = () => {
+    setPackModal(true);
+  };
 
+  // Function to hide the modal
+  const hidePackModal = () => {
+    setPackModal(false);
+  };
 const viewMedical = (stdID) =>{
   if (stdID !== null && stdID !== undefined && stdID !== ""){
     nav("/studentprofile/medical/view",{state:stdID});
@@ -36,7 +45,7 @@ const viewTrail = (stdID) =>{
     nav("/studentprofile/Form1/edit", { state: studentData });
   }
   const addPackage = (stdID) =>{
-    nav("/studentprofile/addPackage",{state:stdID});
+
   }
   return (
     <div>
@@ -189,14 +198,19 @@ const viewTrail = (stdID) =>{
                     <Button
                       className="flex w-18 h-8 justify-center items-center "
                       variant="outline-success"
-                      onClick={(e) => {addPackage(studentData?.stdID);}}
+                      onClick={() => setPackModal(true)}
                       style={{ fontSize: "small" }}
                     >
                       Add
                     </Button>
-                    <Button variant="link" className="font-bold" style={{ fontSize: "small" }}
-                            onClick={(e) => {""}}>View
-                    </Button>
+                  <Modal show={packModal} onHide={hidePackModal} centered size={'xl'}>
+                    <Modal.Header closeButton>
+                      <Modal.Title>Select Package</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body className="overflow-hidden">
+                      <SelectPackage/>
+                    </Modal.Body>
+                  </Modal>
                 </Col>
               </Row>
               <Row className="mb-2">

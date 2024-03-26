@@ -145,8 +145,8 @@ export const updateMedicalReport=(data)=>{
 export const AddPackage = (data)=>{
   return AxiosInstance.post('admin/AddPackage',data);
 }
-export const getPackages = ()=>{
-  return AxiosInstance.get('admin/getAllPackage');
+export const getPackages = (field,order,pageSize,offset)=>{
+  return AxiosInstance.get(`admin/getAllPackage/${field}/${order}/${pageSize}/${offset}`);
 }
 export const upDatePackage = (data)=>{
   return AxiosInstance.post('admin/updatePackage',data);

@@ -17,8 +17,7 @@ export default function AddPackages() {
     const [isVisible, setIsVisible] = useState(true);
     const  [isDisabled, setIsDisabled] = useState(false);
     const [vehicleData, setVehicleData] = useState([]);
-    const [lessons,setLessons] = useState(0); 
-    const [dataTosave, setDataToSave] = useState([]);
+    const [lessons,setLessons] = useState(0);
     const[error,setError] = useState("");
     const [packageID, setPackageID] = useState("");
 
@@ -43,37 +42,70 @@ export default function AddPackages() {
       const back =()=>{
         nav(-1);
       }
-      const formik = useFormik({
+    const formik = useFormik({
         initialValues: {
-            packageID:"",
-            packageName:"",
-            description:"",
-            packagePrice:"",
-            vehicleData: [], 
+            packageID: "",
+            packageName: "",
+            description: "",
+            packagePrice: "",
+            vehicleData: [],
         },
         validationSchema: Yup.object({
             packageName: Yup.string().required("Required").matches(/^[a-zA-Z]+$/, "Must be a string"),
             description: Yup.string().required("Required"),
-            packagePrice: Yup.number().required("Required").min(1000), 
+            packagePrice: Yup.number().required("Required").min(1000),
         }),
-        onSubmit: async (values) => {
+        onSubmit: async (values, { setSubmitting }) => {
             try {
-                await save();
+                const filteredData = vehicleData.filter(item =>
+                    item?.autoOrManual !== undefined &&
+                    item?.autoOrManual !== null &&
+                    item?.autoOrManual !== '' &&
+                    item?.lessons !== undefined
+                );
+                if (filteredData.length === 0) {
+                    setError("Please add vehicle type");
+                    return;
+                }else{
+                    setError("");
+                }
+                const data = {
+                    packageID: values.packageID,
+                    packageName: values.packageName,
+                    description: values.description,
+                    packagePrice: values.packagePrice,
+                    packageAndVehicleType: filteredData
+                };
+                Swal.fire({
+                    icon: "warning",
+                    title: "Are you sure?",
+                    text: "Going to save details",}).then(async(result)=>{
+                    const response = await AddPackage(data);
+                    if (response.data.code === "00") {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Saved Successfully",
+                        });
+                    } else if (response.data.code === "06") {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Already Entered This Package",
+                        });
+                    }
+                })
             } catch (error) {
-                console.error("Error occurred while saving:", error);
+                console.error("Error while saving student details:", error);
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Internal error occurred while saving trail permit details",
+                });
+            } finally {
+                setSubmitting(false);
             }
         },
     });
-    useEffect(()=>{
-        if(vehicleData.length > 0 && isVisible ===true){
-            setIsDisabled(false);
-            setError("");
-        }else if(isVisible === false){
-            setIsDisabled(true);
-            setError("Please add vehicle type");
-        }
-    },[isVisible,formik.values.packagePrice])
-    
+
 
     const save = async()=>{
         Swal.fire({
@@ -83,7 +115,7 @@ export default function AddPackages() {
         }).then(async(result)=>{
             if(result.isConfirmed){
                 try{
-                    const filteredData = vehicleData.filter(item => 
+                    const filteredData = vehicleData.filter(item =>
                         item.autoOrManual !== undefined &&
                         item.autoOrManual !== null &&
                         item.autoOrManual !== ''
@@ -95,7 +127,8 @@ export default function AddPackages() {
                         packagePrice:formik.values.packagePrice,
                         packageAndVehicleType:filteredData
                     }
-                    const response = await AddPackage(data);
+                     const response = await AddPackage(data);
+
                     if (response.data.code === "00") {
                         Swal.fire({
                           icon: "success",
@@ -122,8 +155,8 @@ export default function AddPackages() {
                 }
             }
         })
-        
-        
+
+
     }
      useEffect(() => {
         const newVehicleData = [...vehicleData];
@@ -141,6 +174,9 @@ export default function AddPackages() {
     //   useEffect(()=>{
     //     console.log(lessonCountArray)
     //   },[lessonCountArray])
+    useEffect(() => {
+        console.log(vehicleData);
+    }, [vehicleData]);
   return (
     <div className="flex flex-1 flex-row justify-center items-center w-screen h-screen" >
         <Card style={{ width: "40em" }} className="mt-5">

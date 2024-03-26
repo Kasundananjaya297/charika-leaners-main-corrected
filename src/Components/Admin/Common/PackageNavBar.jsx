@@ -47,7 +47,7 @@ export default function PackageNavBar({ setfiled, setOrder, setPackageID }) {
                 if (eventKey === "stdID_ASC" || eventKey === "stdID_DESC") {
                   // Extract the order (ASC/DESC) from the eventKey
                   const order = eventKey.split("_")[1];
-                  setfiled("stdID");
+                  setfiled("packagePrice");
                   setOrder(order);
                 } else {
                   setfiled(eventKey);
@@ -111,7 +111,7 @@ export default function PackageNavBar({ setfiled, setOrder, setPackageID }) {
             ></Nav>
             <div className="flex flex-row space-x-3">
               <Button variant="outline-success" onClick={GotoAddPackage}>
-                Register
+                Add
               </Button>
             </div>
           </Navbar.Collapse>

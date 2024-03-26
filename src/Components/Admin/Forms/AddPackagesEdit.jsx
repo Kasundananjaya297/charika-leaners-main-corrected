@@ -2,7 +2,7 @@ import React,{useEffect,useState} from 'react'
 import { useFormik } from 'formik'
 import {Card, Form, Row, Col, Button, Dropdown} from "react-bootstrap";
 import { FaUserEdit } from "react-icons/fa";
-import { getVehicleType } from '../../ApiService/api';
+import {AddPackage, getVehicleType} from '../../ApiService/api';
 import { IoMdAdd } from "react-icons/io";
 import { useLocation, useNavigate } from 'react-router-dom';
 import * as Yup from "yup";
@@ -44,88 +44,58 @@ export default function AddPackagesEdit() {
       const back =()=>{
         nav(-1);
       }
-      const formik = useFormik({
+    const formik = useFormik({
         initialValues: {
-            packageID:fetchData?.packageID,
-            packageName:fetchData?.packageName,
-            description:fetchData?.description,
-            packagePrice:fetchData?.packagePrice,
-            vehicleData: [], 
+            packageID: fetchData?.packageID,
+            packageName: fetchData?.packageName,
+            description: fetchData?.description,
+            packagePrice:  fetchData?.packagePrice,
+            vehicleData: [],
         },
         validationSchema: Yup.object({
             packageName: Yup.string().required("Required").matches(/^[a-zA-Z]+$/, "Must be a string"),
             description: Yup.string().required("Required"),
-            packagePrice: Yup.number().required("Required").min(1000), 
+            packagePrice: Yup.number().required("Required").min(1000),
         }),
-        onSubmit: async (values) => {
+        onSubmit: async (values, { setSubmitting }) => {
             try {
-                await save();
-            } catch (error) {
-                console.error("Error occurred while saving:", error);
-            }
-        },
-    });
-    useEffect(()=>{
-        if(vehicleData.length > 0 && isVisible ===true){
-            setIsDisabled(false);
-            setError("");
-        }else if(isVisible === false){
-            setIsDisabled(true);
-            setError("Please add vehicle type");
-        }
-    },[isVisible,formik.values.packagePrice])
-    
 
-    const save = async()=>{
-        Swal.fire({
-            icon: "warning",
-            title: "Are you sure?",
-            text: "Going to Update details",
-        }).then(async(result)=>{
-            if(result.isConfirmed){
-                try{
-                    const filteredData = vehicleData.filter(item => 
-                        item.autoOrManual !== undefined &&
-                        item.autoOrManual !== null &&
-                        item.autoOrManual !== ''
-                      );
-                    const data={
-                        packageID:formik.values.packageID,
-                        packageName:formik.values.packageName,
-                        description:formik.values.description,
-                        packagePrice:formik.values.packagePrice,
-                        packageAndVehicleType:filteredData
-                    }
+                const data = {
+                    packageID: values.packageID,
+                    packageName: values.packageName,
+                    description: values.description,
+                    packagePrice: values.packagePrice,
+                    packageAndVehicleType: []
+                };
+                Swal.fire({
+                    icon: "warning",
+                    title: "Are you sure?",
+                    text: "Going to save details",}).then(async(result)=>{
                     const response = await upDatePackage(data);
                     if (response.data.code === "00") {
                         Swal.fire({
-                          icon: "success",
-                          title: "Updated Successfully",
+                            icon: "success",
+                            title: "Saved Successfully",
                         });
-                      } else if (response.data.code === "06") {
+                    } else if (response.data.code === "06") {
                         Swal.fire({
-                          icon: "error",
-                          title: "Already Entered This Permit",
+                            icon: "error",
+                            title: "Already Entered This Package",
                         });
-                      } else if (response.data.code === "10") {
-                        Swal.fire({
-                          icon: "error",
-                          title: "Current permit not Expired",
-                        });
-                      }
-                    } catch (error) {
-                      console.error("Error while saving student details:", error);
-                      Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "Internal error occurred while saving trail permit details",
-                      });
-                }
+                    }
+                })
+            } catch (error) {
+                console.error("Error while saving student details:", error);
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Internal error occurred while saving trail permit details",
+                });
+            } finally {
+                setSubmitting(false);
             }
-        })
-        
-        
-    }
+        },
+    });
      useEffect(() => {
         const newVehicleData = [...vehicleData];
         newVehicleData[ID] = { typeID, autoOrManual,lessons,packageID};
@@ -208,7 +178,7 @@ export default function AddPackagesEdit() {
                     </Col>
                 </Row>
                 <div className="mt-4">
-                    Add Lessons<span className="text-red-500"> *</span>
+                    Add Lessons (Can't Change selected lessons)<span className="text-red-500"></span>
                 </div>
                 <Row className="mb-3 pl-4 pr-3 items-center mt-2">
                     <table className="border-1">
@@ -230,6 +200,7 @@ export default function AddPackagesEdit() {
                                     <Dropdown.Menu>
                                       {item?.typeAuto && (
                                         <Dropdown.Item
+                                            disabled={true}
                                         //{...formik.getFieldProps("vehicleType")}
                                           onClick={() => {
                                             setSelectedType(item?.typeID);
@@ -245,6 +216,7 @@ export default function AddPackagesEdit() {
                                       )}
                                       {item?.typeManual && (
                                         <Dropdown.Item
+                                            disabled={true}
                                         //{...formik.getFieldProps("vehicleType")}
                                           onClick={() => {
                                             setSelectedType(item?.typeID);
@@ -259,6 +231,7 @@ export default function AddPackagesEdit() {
                                         </Dropdown.Item>
                                       )}
                                       <Dropdown.Item
+                                          disabled={true}
                                         onClick={() => {
                                           setSelectedType(null);
                                           setAutoOrManual(null);
@@ -289,7 +262,7 @@ export default function AddPackagesEdit() {
                                             setLessons(e.target.value);
                                             setID(i); 
                                         }}
-                                        disabled={(vehicleData[i]?.typeID === undefined || vehicleData[i]?.typeID === null || vehicleData[i]?.typeID === "")}
+                                        disabled={true}
                                         required
                                     />
                                 </Col>
@@ -303,7 +276,7 @@ export default function AddPackagesEdit() {
                     </Form.Text>
                 </Row>
                 <Row className="pl-4 pr-4">
-                  <Button onClick={AddType}>
+                  <Button onClick={AddType} disabled={true}>
                     <div className="flex items-center justify-center gap-x-2">
                       <IoMdAdd />
                       <div>Add Type</div>
@@ -320,7 +293,6 @@ export default function AddPackagesEdit() {
                                 <Button
                                     type="submit"
                                     variant="success"
-                                    disabled={isDisabled}
                                 >
                                     Save
                                 </Button>

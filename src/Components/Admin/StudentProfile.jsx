@@ -16,12 +16,7 @@ export default function StudentProfile() {
     const onFetch = async () => {
       try {
         console.log("onFetch");
-        const response = await FetchAllStudnet(
-          feildName,
-          order,
-          itemsPerPage,
-          offset
-        );
+        const response = await FetchAllStudnet(feildName, order, itemsPerPage, offset);
 
         if (response && response?.data?.code === "00") {
           console.log(response?.data?.content);

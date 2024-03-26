@@ -12,6 +12,7 @@ export default function Layout() {
     location.pathname.includes("/trailView")||
     location.pathname.includes("/medical")||
     location.pathname.includes("/addPackage")||
+    location.pathname.includes("/selectPackage")||
     location.pathname.includes("/editPackage")
   );
 
