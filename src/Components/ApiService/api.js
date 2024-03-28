@@ -157,4 +157,13 @@ export const getPackageByLetter = (data)=>{
 export const getPackgeByID = (data)=>{
   return AxiosInstance.get(`admin/getPackageByID/${data}`);
 }
+export const saveAgreement = (data) => {
+  return AxiosInstance.post("admin/saveAgreement",data);
+}
+export const checkCurrentAgreementIsExpired = (stdID) =>{
+  return AxiosInstance.get(`admin/checkCurrentAgreement/${stdID}`)
+}
+export const getAgreement = (stdID) =>{
+  return AxiosInstance.get(`admin/getAgreement/${stdID}`);
+}
 

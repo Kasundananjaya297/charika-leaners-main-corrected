@@ -4,13 +4,18 @@ import Col from "react-bootstrap/Col";
 import { Button } from "react-bootstrap";
 import Image from "react-bootstrap/Image";
 import { Link, useNavigate } from "react-router-dom";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import { FaUserEdit } from "react-icons/fa";
 import { Modal } from 'react-bootstrap';
 import {SelectPackage} from "../Forms/SelectPackage";
+import {returnFocus} from "react-modal/lib/helpers/focusManager";
+import PackageCard from "./PackageCard";
+import {getAgreement} from "../../ApiService/api";
 export default function ProfileDetailsCard({ studentData }) {
   const [showModal, setShowModal] = useState(false);
   const [packModal, setPackModal] = useState(false);
+  const [showModal1, setShowModal1] = useState(false);
+  const [packData,setPackData] = useState([]);
   const nav = useNavigate();
   const showPackModal = () => {
     setPackModal(true);
@@ -44,9 +49,15 @@ const viewTrail = (stdID) =>{
     console.log("clicked");
     nav("/studentprofile/Form1/edit", { state: studentData });
   }
-  const addPackage = (stdID) =>{
 
-  }
+  useEffect(() => {
+    const fetchData = async () => {
+        const response = await getAgreement(studentData?.stdID);
+        setPackData(response?.data?.content);
+        console.log(response?.data?.content);
+    }
+    fetchData();
+  }, [showModal1]);
   return (
     <div>
       <Row className="flex overflow-hidden text-sm item-center">
@@ -198,18 +209,35 @@ const viewTrail = (stdID) =>{
                     <Button
                       className="flex w-18 h-8 justify-center items-center "
                       variant="outline-success"
-                      onClick={() => setPackModal(true)}
+                      onClick={() => {
+                        setPackModal(true)
+                      }}
                       style={{ fontSize: "small" }}
                     >
                       Add
                     </Button>
-                  <Modal show={packModal} onHide={hidePackModal} centered size={'xl'}>
+                  <Button variant="link" className="font-bold" style={{ fontSize: "small" }} onClick={()=>{setShowModal1(true)}}>View</Button>
+                  <Modal show={packModal} onHide={()=>{setPackModal(false)}} centered size={'xl'}>
                     <Modal.Header closeButton>
                       <Modal.Title>Select Package</Modal.Title>
                     </Modal.Header>
                     <Modal.Body className="overflow-hidden">
-                      <SelectPackage/>
+                      <SelectPackage stdID = {studentData?.stdID} sethidePackModal = {setPackModal}/>
                     </Modal.Body>
+                  </Modal>
+                  <Modal show={showModal1} onHide={()=>{setShowModal1(false)}}>
+                    <Modal.Header closeButton>
+                      <Modal.Title>Selected Package</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body className="items-center flex flex-row justify-center">
+
+                        {packData?.map((data, i) => (
+                            <PackageCard key={i} packeData={data} />
+                        ))}
+                    </Modal.Body>
+                    <Modal.Footer>
+                      {/* You can add footer buttons or additional actions here */}
+                    </Modal.Footer>
                   </Modal>
                 </Col>
               </Row>
@@ -222,7 +250,7 @@ const viewTrail = (stdID) =>{
               <Row className="mb-2">
                 <Col xs={4}>Full-Payment:</Col>
                 <Col xs={8} className="pl-4">
-                  {studentData?.fullPayment}
+                  {packData?.fullPayment}
                 </Col>
               </Row>
               <Row className="mb-2">

@@ -1,17 +1,35 @@
 import React, {useEffect, useState} from 'react';
-import {getPackages, getPackgeByID} from "../../ApiService/api";
+import {checkCurrentAgreementIsExpired, getPackages, getPackgeByID} from "../../ApiService/api";
 import PackageCardForModel from "../Common/PackageCardForModel";
 import PackageNavBar from "../Common/PackageNavBar";
 import Dropdown from "react-bootstrap/Dropdown";
+import Swal from "sweetalert2";
 
-export const SelectPackage = () => {
+export const SelectPackage = ({stdID, sethidePackModal}) => {
     const [packages, setPackages] = useState([]);
     const  [packageID, setPackageID] = useState("");
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [feildName, setFeild] = useState("packagePrice");
     const [order, setOrder] = useState("DESC");
     const [offset, setOffset] = useState(0);
-    const [stdID, setStdID] = useState("");
+    const [dataToSave,setDataToSave] = useState([]);
+    useEffect(() => {
+        const check = async () => {
+            const response = await checkCurrentAgreementIsExpired(stdID);
+            if (response?.data?.code !== "00") {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Not Expired current Agreement",
+                    timer: 3000,
+                    timerProgressBar: true,
+                }).then(() => {
+                    sethidePackModal(false);
+                });
+            }
+        };
+        check();
+    }, []);
 
     useEffect(()=>{
         const getchPacks = async () =>{
@@ -63,7 +81,7 @@ export const SelectPackage = () => {
                         <div className="flex flex-wrap flex-row h-screen">
                             {packages?.map((data, i) => (
                                 <div className="flex flex-row pl-28 pb-4" key={i}>
-                                    <PackageCardForModel packeData={data} setPackgeID={setPackageID}/>
+                                    <PackageCardForModel packeData={data} setPackgeID={setPackageID} stdID = {stdID}/>
                                 </div>)
                             )}
                         </div>

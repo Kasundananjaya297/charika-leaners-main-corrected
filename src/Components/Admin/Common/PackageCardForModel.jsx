@@ -1,13 +1,57 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import { Col, Row ,Card, Table} from 'react-bootstrap'
 import { FaUserEdit } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
+import {checkCurrentAgreementIsExpired, saveAgreement} from "../../ApiService/api";
+import Swal from "sweetalert2";
 
 
-export default function PackageCardForModel({packeData,setPackgeID}) {
+export default function PackageCardForModel({packeData,setPackgeID,stdID }) {
     const nav = useNavigate();
     const packDataEdit=(data) =>{
         nav(`/Packages/editPackage`,{state:data})
+    }
+
+    const SaveStudentData = async (stdID,price,packID, )=>{
+        const data = {
+            stdID:stdID,
+            packageID:packID,
+            packagePrice:price,
+            agreementDate:new Date().toISOString().slice(0, 10),
+            isFinished:false
+        }
+        console.log(data)
+        Swal.fire({
+            icon: "warning",
+            title: "Are you sure?",
+            text: "Going to save details",
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const response = await saveAgreement(data);
+                    if (response?.data?.code === "00") {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Success",
+                            text: "Successfully saved",
+                        });
+                    } else if(response?.data?.code === "06"){
+                        Swal.fire({
+                            icon: "error",
+                            title: "Already selected",
+                            text: "Failed to save",
+                        });
+                    }
+                } catch (error) {
+                    console.error("An error occurred:", error);
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: "Failed to save",
+                    });
+                }
+            }
+        });
     }
   return (
     <div>
@@ -75,7 +119,7 @@ export default function PackageCardForModel({packeData,setPackgeID}) {
                             <Row className="flex mt-3">
                                 <div>
                                     <button className="btn btn-primary"
-                                            onClick={() => setPackgeID(packeData?.packageID)}>Select
+                                            onClick={() => SaveStudentData(stdID,packeData?.packagePrice,packeData?.packageID)}>Select
                                     </button>
                                 </div>
 
