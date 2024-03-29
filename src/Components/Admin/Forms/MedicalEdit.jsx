@@ -11,6 +11,7 @@ import Swal from 'sweetalert2';
 function MedicalEdit(props) {
     const location = useLocation();
     const [medicalData, setMedicalData] = useState(location.state);
+    console.log(medicalData)
     const stdId = medicalData?.stdID;
     const nav = useNavigate();
     const [studentData, setStudentData] = React.useState({});
@@ -26,7 +27,11 @@ function MedicalEdit(props) {
     const [progressBarVisible,setProgressBarVisible] = useState(false);
     
 
-    useEffect(() => {formik.setFieldValue("medicalURL", downloadURL);}, [downloadURL])
+    useEffect(() => {
+        if(downloadURL !== ""){
+            formik.setFieldValue("medicalURL", downloadURL);
+        }
+        }, [downloadURL])
     const back = () => {
         nav("/studentprofile/medical/view",{state:stdId});
     };
@@ -46,7 +51,7 @@ function MedicalEdit(props) {
         serialNo: Yup.number("Serial number is Number").required("Serial number is required"),
         examination: Yup.date().required("examin date is required"),
         bloodType: Yup.string().required("Blood Type is required"),
-        medicalURL: Yup.string().required("Image Uploading is required, In the updating stage u need to select the file again"),
+        medicalURL: Yup.string()
         }),
         onSubmit: async (e, { setSubmitting, resetForm }) => {
           setSubmitting(true);
@@ -63,6 +68,7 @@ function MedicalEdit(props) {
         },
       });
       const save = () => {
+          console.log(formik.values);
     
         Swal.fire({
           icon: "warning",
@@ -327,7 +333,6 @@ function MedicalEdit(props) {
                                         <div className="flex flex-row gap-x-3">
                                         <Form.Control
                                             type="file"
-                                            required={true}
                                             onChange={(e) => {
                                                 setFileLocation(e.target.files[0]);
                                                 setUploadState(false);

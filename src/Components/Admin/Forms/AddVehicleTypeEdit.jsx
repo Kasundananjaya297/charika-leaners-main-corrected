@@ -20,7 +20,7 @@ function AddVehicleTypeEdit(props) {
             typeManual: parsedData?.typeManual,
         },
         validationSchema: Yup.object({
-            typeID: Yup.string().required("Required").matches(/^[A-Z][0-9]+$/, "No spaces allowed").matches(/^[A-Z]+$/,"Capital letters allowed"),
+            //typeID: Yup.string().required("Required").matches(/^[A-Z][0-9]+$/, "No spaces allowed").matches(/^[A-Z]+$/,"Capital letters allowed"),
             engineCapacity: Yup.string().matches(/^[0-9<>= ]+$/, "Must be a number or a number with >,<,.."),
             typeName: Yup.string().required("Required").matches(/^[a-zA-Z ]+$/, "Must be a string"),
         }),

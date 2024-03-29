@@ -121,17 +121,19 @@ function TrialPermitView() {
                                             <thead>
                                             <tr>
                                                 <th className="border p-2">
-                                                    <label>Vehicle Tpye</label>
+                                                    <label>Category_ID</label>
                                                 </th>
-                                                <th className="border p-2">Auto Or Manual</th>
-                                                
+                                                <th className="border p-2">Category</th>
+                                                <th className="border p-2">Capacity</th>
+
                                             </tr>
                                             </thead>
                                             <tbody className="text-sm">
                                             {data?.permitAndVehicleType?.map((dt,i)=>(
                                             <tr key={i}>
-                                                <td className="border p-2">{dt?.selectedType} {"-"} {dt?.description} {dt?.engineCapacity}</td>
-                                                <td className="border p-2">{dt?.autoOrManual}</td>
+                                                <td className="border p-2">{dt?.selectedType} </td>
+                                                <td className="border p-2">{dt?.description}</td>
+                                                <td className="border p-2">{dt?.engineCapacity}</td>
                                             </tr>
                                             ))}
                                             </tbody>

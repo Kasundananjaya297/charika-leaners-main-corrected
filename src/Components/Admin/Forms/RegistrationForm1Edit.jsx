@@ -29,7 +29,11 @@ export default function RegistrationForm1Edit() {
   const [submitButton, setSubmitButton] = useState(false);
   const[downloadURL, setDownloadURL] = useState("");
   const [progressBarVisible,setProgressBarVisible] = useState(false);
-  useEffect(() => {formik.setFieldValue("profilePhotoURL", downloadURL);}, [downloadURL])
+  useEffect(() => {
+    if(downloadURL !== ""){
+      formik.setFieldValue("profilePhotoURL", downloadURL);
+    }
+    }, [downloadURL])
 
 
   const nav = useNavigate();
@@ -78,7 +82,7 @@ export default function RegistrationForm1Edit() {
       adl1: validateName("Address line 1"),
       adl2: ValidateNonRequiredName(),
       city: validateName("City"),
-      profilePhotoURL:Yup.string().required("Profile Photo Uploading is required"),
+      profilePhotoURL:Yup.string(),
     }),
     onSubmit: async (e, { setSubmitting, resetForm }) => {
       setSubmitting(true);
@@ -169,12 +173,11 @@ export default function RegistrationForm1Edit() {
               </Row>
               <Row className="mb-3">
                 <Form.Group as={Col} md={12}>
-                  <Form.Label>Profile Picture<span className="text-red-500"> *</span></Form.Label>
+                  <Form.Label>Profile Picture</Form.Label>
                         <div className="flex flex-col">
                         <div className="flex gap-x-3">
                         <Form.Control
                           type="file"
-                          required={true}
                           onChange={(e) => {
                               setFileLocation(e.target.files[0]);
                               setUploadState(false);

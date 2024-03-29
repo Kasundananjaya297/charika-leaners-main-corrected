@@ -48,6 +48,7 @@ function PreviewMedical() {
         nav("/studentprofile");
     }
     const regForm2 = () => {
+        console.log(medical[0]);
         nav("/studentprofile/medical/edit", { state: medical[0]});
     }
 

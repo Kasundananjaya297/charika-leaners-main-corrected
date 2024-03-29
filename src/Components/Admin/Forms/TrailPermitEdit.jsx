@@ -58,7 +58,12 @@ export default function TrailPermitEdit() {
       console.error("Error in uploadFileTrail:", error);
     }
   }
-  useEffect(() => {formik.setFieldValue("downURL", downloadURL);}, [downloadURL])
+  useEffect(() => {
+    if(downloadURL !== ""){
+      formik.setFieldValue("downURL", downloadURL);
+    }
+
+    }, [downloadURL])
   const formik = useFormik({
     initialValues: {
       stdID: stdId,

@@ -57,7 +57,7 @@ const viewTrail = (stdID) =>{
         console.log(response?.data?.content);
     }
     fetchData();
-  }, [showModal1]);
+  }, [showModal1,showModal]);
   return (
     <div>
       <Row className="flex overflow-hidden text-sm item-center">
@@ -230,7 +230,6 @@ const viewTrail = (stdID) =>{
                       <Modal.Title>Selected Package</Modal.Title>
                     </Modal.Header>
                     <Modal.Body className="items-center flex flex-row justify-center">
-
                         {packData?.map((data, i) => (
                             <PackageCard key={i} packeData={data} />
                         ))}
@@ -250,7 +249,7 @@ const viewTrail = (stdID) =>{
               <Row className="mb-2">
                 <Col xs={4}>Full-Payment:</Col>
                 <Col xs={8} className="pl-4">
-                  {packData?.fullPayment}
+                  Rs. {(studentData?.fullPayment===null?"0":studentData?.fullPayment)}
                 </Col>
               </Row>
               <Row className="mb-2">

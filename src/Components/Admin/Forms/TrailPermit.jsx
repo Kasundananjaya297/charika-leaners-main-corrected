@@ -9,6 +9,7 @@ import { FaCloudUploadAlt } from "react-icons/fa";
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import { IoMdAdd } from "react-icons/io";
 import { FaUserEdit } from "react-icons/fa";
+import {MdCheckBox} from "react-icons/md";
 
 
 
@@ -88,7 +89,7 @@ export default function TrailPermit() {
       ),
       expDate: Yup.date().required("Exam date is required"),
       downURL: Yup.string().required("Trail Permit is required"),
-      vehicleType : Yup.string().required("Vehicle Type is required"),
+      vehicleType : Yup.string(),
     }),
     onSubmit: async (e, { setSubmitting, resetForm }) => {
       setSubmitting(true);
@@ -115,9 +116,9 @@ export default function TrailPermit() {
       if (result.isConfirmed) {
         try {
           const permitAndVehicleType = vehicleData.filter(item => 
-            item.autoOrManual !== undefined &&
-            item.autoOrManual !== null &&
-            item.autoOrManual !== ''
+            item.selectedType !== undefined &&
+            item.selectedType !== null &&
+            item.selectedType !== ''
           );
           
           const dataToSave = {
@@ -201,21 +202,6 @@ export default function TrailPermit() {
   //     }
   //   });
   // };
-
-  useEffect(() => {
-    const atLeastOneSelected = () => {
-      const { b1M, bM, bA, a1M, a1A, aM } = formik.values;
-      if ((b1M || bM || bA || a1M || a1A || aM) !== true) {
-        setSubmitButton(true);
-        setErrorMsg("At least one need to be selected");
-      } else {
-        setSubmitButton(false);
-        setErrorMsg("");
-      }
-    };
-    atLeastOneSelected();
-  }, [formik.values]);
-
   const nav = useNavigate();
   useEffect(() => {
     let role = sessionStorage.getItem("role");
@@ -268,13 +254,12 @@ export default function TrailPermit() {
 
   useEffect(() => {
     const newVehicleData = [...vehicleData];
-    newVehicleData[ID] = { selectedType, autoOrManual };
+    newVehicleData[ID] = { selectedType };
     setVehicleData(newVehicleData);
-  }, [selectedType, autoOrManual, ID]);
+  }, [selectedType, ID]);
 
   useEffect(() => {
     console.log(vehicleData)
-    
   }, [vehicleData]);
 
   const edit = (data) => {
@@ -376,7 +361,7 @@ export default function TrailPermit() {
                   <table className="border-1">
                     <tr className="border-1">
                       <th className="p-2">Vehicle Category</th>
-                      <th>Vehicle Type</th>
+                      <th>Select</th>
                       <th></th>
                     </tr>
                     {
@@ -385,52 +370,12 @@ export default function TrailPermit() {
                             <td className="pl-3">{item?.typeID}-{item?.typeName} {item?.engineCapacity}</td>
                             <td className="p-1">
                             <Form.Group controlId={`dropdown-${i}`} required>
-                                  <Dropdown>
-                                    <Dropdown.Toggle variant="outline-secondary" size="sm">
-                                      Type
-                                    </Dropdown.Toggle>
-                                    <Dropdown.Menu>
-                                      {item?.typeAuto && (
-                                        <Dropdown.Item
-                                        {...formik.getFieldProps("vehicleType")}
-                                          onClick={() => {
-                                            setSelectedType(item?.typeID);
-                                            setAutoOrManual("Auto");
-                                            setID(i);
-                                            setIsVisible(true);
-                                            formik.setFieldValue("vehicleType", "Auto");
-                                          }}
-                                        >
-                                          Auto
-                                        </Dropdown.Item>
-                                      )}
-                                      {item?.typeManual && (
-                                        <Dropdown.Item
-                                        {...formik.getFieldProps("vehicleType")}
-                                          onClick={() => {
-                                            setSelectedType(item?.typeID);
-                                            setAutoOrManual("Manual");
-                                            setID(i);
-                                            setIsVisible(true);
-                                            formik.setFieldValue("vehicleType", "Manual");
-                                          }}
-                                        >
-                                          Manual
-                                        </Dropdown.Item>
-                                      )}
-                                      <Dropdown.Item
-                                        onClick={() => {
-                                          setSelectedType(null);
-                                          setAutoOrManual(null);
-                                          setID(i);
-                                          setIsVisible(false);
-                                          formik.setFieldValue("vehicleType", "");
-                                        }}
-                                      >
-                                        --
-                                      </Dropdown.Item>
-                                    </Dropdown.Menu>
-                                  </Dropdown>
+                                  <Form.Check
+                                      onClick={(e)=> {
+                                    setID(i);
+                                    console.log(e.target.checked);
+                                    setSelectedType((e.target.checked ? item?.typeID : ""));
+                                  }} />
                                 </Form.Group>
                             </td>
                             <td className="gap-x-10"><FaUserEdit onClick={()=>{edit({stdId,typeID:item?.typeID,typeName:item?.typeName,engineCapacity:item?.engineCapacity,typeAuto:item?.typeAuto,typeManual:item?.typeManual});setDatatoParse();}}/></td>
