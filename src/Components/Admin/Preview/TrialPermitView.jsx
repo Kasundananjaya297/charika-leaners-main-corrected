@@ -125,7 +125,6 @@ function TrialPermitView() {
                                                 </th>
                                                 <th className="border p-2">Category</th>
                                                 <th className="border p-2">Capacity</th>
-
                                             </tr>
                                             </thead>
                                             <tbody className="text-sm">

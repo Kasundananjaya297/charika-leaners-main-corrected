@@ -1,7 +1,7 @@
 import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { Button } from "react-bootstrap";
+import {Button, ModalHeader} from "react-bootstrap";
 import Image from "react-bootstrap/Image";
 import { Link, useNavigate } from "react-router-dom";
 import {useEffect, useState} from "react";
@@ -11,11 +11,14 @@ import {SelectPackage} from "../Forms/SelectPackage";
 import {returnFocus} from "react-modal/lib/helpers/focusManager";
 import PackageCard from "./PackageCard";
 import {getAgreement} from "../../ApiService/api";
-export default function ProfileDetailsCard({ studentData }) {
+import SessionCard from "./SessionCard";
+import PackageCardForSelected from "./PackageCardForSelected";
+export default function ProfileDetailsCard({ studentData,setInterrupt,interrupt }) {
   const [showModal, setShowModal] = useState(false);
   const [packModal, setPackModal] = useState(false);
   const [showModal1, setShowModal1] = useState(false);
   const [packData,setPackData] = useState([]);
+  const[showModalSession,setShowModalSession] = useState(false);
   const nav = useNavigate();
   const showPackModal = () => {
     setPackModal(true);
@@ -217,7 +220,7 @@ const viewTrail = (stdID) =>{
                       Add
                     </Button>
                   <Button variant="link" className="font-bold" style={{ fontSize: "small" }} onClick={()=>{setShowModal1(true)}}>View</Button>
-                  <Modal show={packModal} onHide={()=>{setPackModal(false)}} centered size={'xl'}>
+                  <Modal show={packModal} onHide={()=>{setPackModal(false);setInterrupt(!interrupt)}} centered size={'xl'}>
                     <Modal.Header closeButton>
                       <Modal.Title>Select Package</Modal.Title>
                     </Modal.Header>
@@ -225,21 +228,37 @@ const viewTrail = (stdID) =>{
                       <SelectPackage stdID = {studentData?.stdID} sethidePackModal = {setPackModal}/>
                     </Modal.Body>
                   </Modal>
-                  <Modal show={showModal1} onHide={()=>{setShowModal1(false)}}>
+                  <Modal show={showModal1} onHide={()=>{setShowModal1(false);setInterrupt(!interrupt)}}>
                     <Modal.Header closeButton>
                       <Modal.Title>Selected Package</Modal.Title>
                     </Modal.Header>
                     <Modal.Body className="items-center flex flex-row justify-center">
                         {packData?.map((data, i) => (
-                            <PackageCard key={i} packeData={data} />
+                            <PackageCardForSelected key={i} packeData={data} />
                         ))}
                     </Modal.Body>
                     <Modal.Footer>
-                      {/* You can add footer buttons or additional actions here */}
                     </Modal.Footer>
                   </Modal>
                 </Col>
               </Row>
+              <Row className="mb-2">
+                <Col xs={4}>Sessions:</Col>
+                <Col xs={8} className="pl-4 font-bold">
+                  <Link onClick={()=>{setShowModalSession(true)}}>View</Link>
+                </Col>
+              </Row>
+              <Modal show={showModalSession} onHide={()=>{setShowModalSession(false);setInterrupt(!interrupt)}} size={'xl'}>
+                  <ModalHeader closeButton>
+                    <Modal.Title>Session Details</Modal.Title>
+                  </ModalHeader>
+                    <Modal.Body className="items-center flex flex-row justify-center">
+                      {packData?.map((data, i) => (
+                          <SessionCard key={i} packeData={data} />
+                      ))}
+                    </Modal.Body>
+
+              </Modal>
               <Row className="mb-2">
                 <Col xs={4}>Payments:</Col>
                 <Col xs={8} className="pl-4 font-bold">
@@ -249,7 +268,7 @@ const viewTrail = (stdID) =>{
               <Row className="mb-2">
                 <Col xs={4}>Full-Payment:</Col>
                 <Col xs={8} className="pl-4">
-                  Rs. {(studentData?.fullPayment===null?"0":studentData?.fullPayment)}
+                  Rs. {studentData?.fullPayment}
                 </Col>
               </Row>
               <Row className="mb-2">

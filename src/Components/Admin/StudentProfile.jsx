@@ -3,6 +3,7 @@ import RegisterNavBar from "../Admin/Common/RegisterNavBar";
 import ProfileDetailsCard from "./Common/ProfileDetailsCard";
 import Dropdown from "react-bootstrap/Dropdown";
 import { FetchAllStudnet, findStudentByID } from "../ApiService/api";
+import {click} from "@testing-library/user-event/dist/click";
 
 export default function StudentProfile() {
   const [itemsPerPage, setItemsPerPage] = useState(10); // Default value
@@ -11,6 +12,7 @@ export default function StudentProfile() {
   const [order, setOrder] = useState("DESC");
   const [offset, setOffset] = useState(0);
   const [stdID, setStdID] = useState("");
+  const [interrupt , setInterrupt] = useState(false);
 
   useEffect(() => {
     const onFetch = async () => {
@@ -29,7 +31,7 @@ export default function StudentProfile() {
       }
     };
     onFetch();
-  }, [feildName, order, itemsPerPage, offset]); //dependency array
+  }, [feildName, order, itemsPerPage, offset,interrupt]); //dependency array
 
   useEffect(() => {
     const fetchStdData = async () => {
@@ -64,7 +66,7 @@ export default function StudentProfile() {
         <div className="flex flex-wrap">
           {studentDetails?.map((details, i) => (
             <div className="pl-20 mt-4 gap-x-16 gap-y-6 mb-9" key={i}>
-              <ProfileDetailsCard studentData={details} />
+              <ProfileDetailsCard studentData={details} setInterrupt={setInterrupt} interrupt={interrupt}/>
             </div>
           ))}
         </div>

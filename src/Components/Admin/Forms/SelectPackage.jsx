@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {checkCurrentAgreementIsExpired, getPackages, getPackgeByID} from "../../ApiService/api";
+import {checkCurrentAgreementIsExpired, getPackages, getPackagesPerStudent, getPackgeByID} from "../../ApiService/api";
 import PackageCardForModel from "../Common/PackageCardForModel";
 import PackageNavBar from "../Common/PackageNavBar";
 import Dropdown from "react-bootstrap/Dropdown";
 import Swal from "sweetalert2";
+import PackageNavBarForModal from "../Common/PackageNavBarForModal";
 
 export const SelectPackage = ({stdID, sethidePackModal}) => {
     const [packages, setPackages] = useState([]);
@@ -48,8 +49,8 @@ export const SelectPackage = ({stdID, sethidePackModal}) => {
         const onFetch = async () => {
             try {
                 console.log("onFetch");
-                const response = await getPackages(
-                    feildName,
+                const response = await getPackagesPerStudent(
+                    stdID,
                     order,
                     itemsPerPage,
                     offset
@@ -65,8 +66,9 @@ export const SelectPackage = ({stdID, sethidePackModal}) => {
                 console.error("An error occurred:", error);
             }
         };
+        console.log(order)
         onFetch();
-    }, [feildName, order, itemsPerPage, offset]);
+    }, [ order, itemsPerPage, offset, stdID]);
     const handleItemsPerPageChange = (selectedItemsPerPage) => {
         setItemsPerPage(selectedItemsPerPage);
     };
@@ -75,7 +77,7 @@ export const SelectPackage = ({stdID, sethidePackModal}) => {
             <div className="flex flex-row items-center justify-center mt-2 w-100">
                 <div className="flex flex-col max-h-dvh w-full">
                     <div className="w-full absolute flex-row mb-3 pr-8">
-                        <PackageNavBar setPackageID={setPackageID} setOrder={setOrder} setfiled={setFeild}/>
+                        <PackageNavBarForModal setPackageID={setPackageID} setOrder={setOrder} setfiled={setFeild}/>
                     </div>
                     <div className="flex flex-col overflow-y-scroll mt-24 max-h-[450px]">
                         <div className="flex flex-wrap flex-row h-screen">

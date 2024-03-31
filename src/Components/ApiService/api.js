@@ -166,4 +166,9 @@ export const checkCurrentAgreementIsExpired = (stdID) =>{
 export const getAgreement = (stdID) =>{
   return AxiosInstance.get(`admin/getAgreement/${stdID}`);
 }
-
+export const getPackagesPerStudent = (stdID,order,itemsPerPage,offset) =>{
+  return AxiosInstance.get(`admin/getPackagesForStudent/${stdID}/${order}/${itemsPerPage}/${offset}`);
+}
+export const updateAgreementDiscount = (data)=>{
+  return AxiosInstance.put('admin/updateAgreementDiscount',data);
+}
