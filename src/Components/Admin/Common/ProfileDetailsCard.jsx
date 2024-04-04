@@ -219,8 +219,8 @@ const viewTrail = (stdID) =>{
                     >
                       Add
                     </Button>
-                  <Button variant="link" className="font-bold" style={{ fontSize: "small" }} onClick={()=>{setShowModal1(true)}}>View</Button>
-                  <Modal show={packModal} onHide={()=>{setPackModal(false);setInterrupt(!interrupt)}} centered size={'xl'}>
+                  <Button variant="link" className="font-bold" style={{ fontSize: "small" }} onClick={()=>{setShowModal1(true);setInterrupt(!interrupt)}}>View</Button>
+                  <Modal show={packModal} onHide={()=>{setPackModal(false);setInterrupt(!interrupt)}} centered size='xl'>
                     <Modal.Header closeButton>
                       <Modal.Title>Select Package</Modal.Title>
                     </Modal.Header>
@@ -228,7 +228,7 @@ const viewTrail = (stdID) =>{
                       <SelectPackage stdID = {studentData?.stdID} sethidePackModal = {setPackModal}/>
                     </Modal.Body>
                   </Modal>
-                  <Modal show={showModal1} onHide={()=>{setShowModal1(false);setInterrupt(!interrupt)}}>
+                  <Modal show={showModal1} onHide={()=>{setShowModal1(false);setInterrupt(!interrupt)}} >
                     <Modal.Header closeButton>
                       <Modal.Title>Selected Package</Modal.Title>
                     </Modal.Header>
@@ -248,11 +248,12 @@ const viewTrail = (stdID) =>{
                   <Link onClick={()=>{setShowModalSession(true)}}>View</Link>
                 </Col>
               </Row>
-              <Modal show={showModalSession} onHide={()=>{setShowModalSession(false);setInterrupt(!interrupt)}} size={'xl'}>
+              <div></div>
+              <Modal show={showModalSession} onHide={()=>{setShowModalSession(false);setInterrupt(!interrupt)}}  size={'xl'}>
                   <ModalHeader closeButton>
                     <Modal.Title>Session Details</Modal.Title>
                   </ModalHeader>
-                    <Modal.Body className="items-center flex flex-row justify-center">
+                    <Modal.Body className="items-center flex flex-row justify-center w-full">
                       {packData?.map((data, i) => (
                           <SessionCard key={i} packeData={data} />
                       ))}

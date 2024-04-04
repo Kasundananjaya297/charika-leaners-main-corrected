@@ -81,9 +81,15 @@ export const SelectPackage = ({stdID, sethidePackModal}) => {
                     </div>
                     <div className="flex flex-col overflow-y-scroll mt-24 max-h-[450px]">
                         <div className="flex flex-wrap flex-row h-screen">
+                            {!(packages?.length>0) && (
+                                <div className='items-center flex-row w-full flex justify-center'>
+                                    Trial permit not added or Suitable packages are not found !!!!!
+                                </div>
+                            )}
+
                             {packages?.map((data, i) => (
                                 <div className="flex flex-row pl-28 pb-4" key={i}>
-                                    <PackageCardForModel packeData={data} setPackgeID={setPackageID} stdID = {stdID}/>
+                                    <PackageCardForModel packeData={data} setPackgeID={setPackageID} stdID={stdID}/>
                                 </div>)
                             )}
                         </div>

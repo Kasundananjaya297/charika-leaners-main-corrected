@@ -1,10 +1,10 @@
 import React,{useState} from 'react'
 import {Col, Row, Card, Table, Button} from 'react-bootstrap'
-import { FaUserEdit } from 'react-icons/fa'
+import { MdDelete } from "react-icons/md";
 import { useNavigate } from 'react-router-dom'
 import { IoMdAdd } from "react-icons/io";
 import Form from "react-bootstrap/Form";
-import {updateAgreementDiscount} from "../../ApiService/api";
+import {deleteAgreement, updateAgreementDiscount} from "../../ApiService/api";
 import Swal from "sweetalert2";
 
 
@@ -12,8 +12,28 @@ export default function PackageCardForSelected({packeData,setPackgeID}) {
     const nav = useNavigate();
     const [discount,setDiscount] =useState(0)
     const[buttonState, setButtonState]=useState(true)
-    const packDataEdit=(data) =>{
-        nav(`/Packages/editPackage`,{state:data})
+    const packDataDelete=async (stdID,packID) =>{
+        Swal.fire({
+            icon:"warning",
+            title:"Are you sure to delete",
+            html:"Agreement will be deleted"
+        }).then(async (result)=>{
+            if(result.isConfirmed) {
+                const response = await deleteAgreement(packeData?.stdID, packeData.packageID);
+                if (response?.data?.code === "00") {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Success",
+                        text: "Agreement deleted successfully"
+                    })
+                } else if (response?.data?.code === "01") {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: "Failed to delete agreement"
+                    })
+                }
+            }})
     }
     const addDiscount = async (e) => {
         e.preventDefault()
@@ -57,7 +77,7 @@ export default function PackageCardForSelected({packeData,setPackgeID}) {
             <Col sm={12} md={6} lg={4}>
                 <Card style={{ width: "25rem", height:"25em"}}>
                 <div className="flex  justify-between pr-1 pl-5 pt-3 w-wrap h-wrap mb-2 " >
-                <FaUserEdit size={24} onClick={() => packDataEdit(packeData)}/>
+                <MdDelete size={24} onClick={() => packDataDelete(packeData)}/>
                 </div>
                     <div className="flex pl-4 items-center justify-center pt-3 w-wrap h-div" >
                         <Card.Body className="p-1">

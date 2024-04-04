@@ -38,6 +38,7 @@ function AddVehicleTypeEdit(props) {
         nav("/studentprofile/trail",{ state: stdId });
     }
     const save = async () => {
+
         try {
             const result = await Swal.fire({
                 icon: "warning",

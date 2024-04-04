@@ -146,6 +146,7 @@ export const AddPackage = (data)=>{
   return AxiosInstance.post('admin/AddPackage',data);
 }
 export const getPackages = (field,order,pageSize,offset)=>{
+  console.log(field,order,pageSize,offset)
   return AxiosInstance.get(`admin/getAllPackage/${field}/${order}/${pageSize}/${offset}`);
 }
 export const upDatePackage = (data)=>{
@@ -171,4 +172,7 @@ export const getPackagesPerStudent = (stdID,order,itemsPerPage,offset) =>{
 }
 export const updateAgreementDiscount = (data)=>{
   return AxiosInstance.put('admin/updateAgreementDiscount',data);
+}
+export const deleteAgreement = (stdID,packID)=>{
+  return AxiosInstance.delete(`admin/deleteAgreement/${stdID}/${packID}`);
 }

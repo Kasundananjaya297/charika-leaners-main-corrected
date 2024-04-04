@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import {Col, Row, Card, Table, InputGroup, Button} from 'react-bootstrap'
 import { FaUserEdit } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
@@ -11,11 +11,27 @@ export default function SessionCard({packeData,setPackgeID}) {
     const packDataEdit=(data) =>{
         nav(`/Packages/editPackage`,{state:data})
     }
+    const [packageAndVehicleType,setPackageAndVehicleType] = useState([]);
+    const [packageID,setpackageID] = useState();
+    const [typeID,setTypeID] = useState();
+    const [totalLessons,setTotalLessons] = useState();
+    const [extraLessons,setExtraLessons] = useState();
+    const [priceForExtraLesson,setPriceForExtraLesson] =useState();
+    const [saveData,setSaveData] =useState([]);
+    const [ID, setID] = useState("");
+
+
+    useEffect(() => {
+        const saveDataNew = [...saveData];
+        saveDataNew[ID] = {}
+    }, [ID,packageID]);
+
   return (
     <div>
          <Row className="flex text-sm item-center">
             <Col sm={12} md={6} lg={4}>
-                <Card style={{ width: "50rem"}}>
+                <Form>
+                <Card style={{ width: "70rem"}}>
                     <div className="flex pl-4 items-center justify-center pt-3 w-wrap h-div" >
                         <Card.Body className="p-1">
                             <div className="flex flex-col w-72 mb-3">
@@ -40,30 +56,7 @@ export default function SessionCard({packeData,setPackgeID}) {
                                 <Row className="mb-2 flex-row items-center">
                                     <Col xs={5}>Extras Price:</Col>
                                     <Col xs={4} className="pl-2">
-                                        <Form onSubmit={""} className='-mb-2'>
-                                            <div className="flex flex-row items-center text-danger">
-                                                <div>
-                                                    Rs.
-                                                </div>
-                                                <input
-                                                    defaultValue={(packeData?.discount)}
-                                                    min={0}
-                                                    max={parseFloat(packeData?.packagePrice)}
-                                                    type="number"
-                                                    placeholder="Discount..."
-                                                    className="w-32 h-fit hover:border-0 border-bottom pl-1 outline-none"
-                                                    required
-                                                    onChange={(e) => {
 
-                                                    }}
-                                                    onClick={()=>{}}
-                                                />
-                                                <div>
-                                                    <Button type='submit' className='ml-4'><IoMdAdd/></Button>
-                                                </div>
-
-                                            </div>
-                                        </Form>
                                     </Col>
                                 </Row>
                             </div>
@@ -79,7 +72,9 @@ export default function SessionCard({packeData,setPackgeID}) {
                                                 <th className='px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider'>Type</th>
                                                 <th className='px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider'>Sessions_Agreed</th>
                                                 <th className='px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider'>Extras</th>
-                                                <th className='px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider'>Total</th>
+                                                <th className='px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider'>Price_per_Lesson</th>
+                                                <th className='px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider'>Price</th>
+                                                <th className='px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider'>Total_Sessions</th>
                                                 <th className='px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider'>Participated</th>
                                                 <th className='px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider'>Remain</th>
 
@@ -87,18 +82,28 @@ export default function SessionCard({packeData,setPackgeID}) {
                                             </thead>
                                             <tbody class='bg-white divide-y divide-gray-200'>
                                                 {packeData.packageAndVehicleType?.map((data, i) => (
-                                                <tr key={i}>
-                                                    <td class='px-3 py-2 whitespace-nowrap'>{data?.typeID} - {data?.typeName}</td>
-                                                    <td class='px-3 py-2 whitespace-nowrap'>{data?.autoOrManual}</td>
-                                                    <td class='px-3 py-2 whitespace-nowrap'>{data?.lessons}</td>
-                                                    <td class='px-3 py-2 whitespace-nowrap'>
+                                                    <tr key={i}>
+                                                        <td className='px-3 py-2 whitespace-nowrap'>{data?.typeID} - {data?.typeName}</td>
+                                                        <td className='px-3 py-2 whitespace-nowrap'>{data?.autoOrManual}</td>
+                                                        <td className='px-3 py-2 whitespace-nowrap'>{data?.lessons}</td>
+                                                        <td className='px-3 py-2 whitespace-nowrap'>
+                                                            <input className="w-full h-fit hover:border-0 border-bottom pl-1 outline-none" type='number' defaultValue={data?.extraLessons} min={0} onChange={(e)=> {
+                                                                // setID(i);
+                                                                // setpackageID(data?.packageID);
+                                                                // setTypeID(data?.typeID);
+                                                                // setExtraLessons(e.target.value);
+                                                            }}/>
+                                                        </td>
+                                                        <td className='px-3 py-2 whitespace-nowrap'>
+                                                            <input
+                                                                className="w-full h-fit hover:border-0 border-bottom pl-1 outline-none" defaultValue={data?.priceForExtraLesson} type='number' min={0} onChange={(e)=>setID(i)}/>
+                                                        </td>
+                                                        <td className='px-3 py-2 whitespace-nowrap'>20000</td>
+                                                        <td className='px-3 py-2 whitespace-nowrap'>{data?.totalLessons}</td>
+                                                        <td className='px-3 py-2 whitespace-nowrap'>10</td>
+                                                        <td className='px-3 py-2 whitespace-nowrap'>9</td>
 
-                                                    </td>
-                                                    <td class='px-3 py-2 whitespace-nowrap'>{data?.total}</td>
-                                                    <td class='px-3 py-2 whitespace-nowrap'>{data?.participated}</td>
-                                                    <td class='px-3 py-2 whitespace-nowrap'>{data?.remain}</td>
-
-                                                </tr>
+                                                    </tr>
                                                 ))}
                                             </tbody>
                                         </table>
@@ -109,7 +114,11 @@ export default function SessionCard({packeData,setPackgeID}) {
                         </Row>
                         </Card.Body>
                     </div>
+                    <Card.Footer>
+                        <Button>Save</Button>
+                    </Card.Footer>
                 </Card>
+                </Form>
             </Col>
          </Row>
     </div>
