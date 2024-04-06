@@ -176,3 +176,9 @@ export const updateAgreementDiscount = (data)=>{
 export const deleteAgreement = (stdID,packID)=>{
   return AxiosInstance.delete(`admin/deleteAgreement/${stdID}/${packID}`);
 }
+export const updateExtraSession = (data) =>{
+  return AxiosInstance.put("admin/UpdateExtraSession",data)
+}
+export const updateExtraSessionsTotalAmount = (data)=>{
+  return AxiosInstance.put("admin/UpdateTotalAmountToPay",data);
+}

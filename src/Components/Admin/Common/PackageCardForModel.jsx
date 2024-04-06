@@ -6,7 +6,7 @@ import {checkCurrentAgreementIsExpired, saveAgreement} from "../../ApiService/ap
 import Swal from "sweetalert2";
 
 
-export default function PackageCardForModel({packeData,setPackgeID,stdID }) {
+export default function PackageCardForModel({packeData,setPackgeID,stdID,setInterrupt,interrupt}){
     const nav = useNavigate();
     const packDataEdit=(data) =>{
         nav(`/Packages/editPackage`,{state:data})
@@ -119,7 +119,10 @@ export default function PackageCardForModel({packeData,setPackgeID,stdID }) {
                             <Row className="flex mt-3">
                                 <div>
                                     <button className="btn btn-primary"
-                                            onClick={() => SaveStudentData(stdID,packeData?.packagePrice,packeData?.packageID)}>Select
+                                            onClick={() => {
+                                                SaveStudentData(stdID, packeData?.packagePrice, packeData?.packageID);
+                                                setInterrupt(!interrupt);
+                                            }}>Select
                                     </button>
                                 </div>
 

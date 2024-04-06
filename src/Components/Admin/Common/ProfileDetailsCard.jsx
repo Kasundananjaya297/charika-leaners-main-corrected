@@ -19,6 +19,7 @@ export default function ProfileDetailsCard({ studentData,setInterrupt,interrupt 
   const [showModal1, setShowModal1] = useState(false);
   const [packData,setPackData] = useState([]);
   const[showModalSession,setShowModalSession] = useState(false);
+  const [showModalCollectPayment, setShowModalCollectPayment] = useState(false);
   const nav = useNavigate();
   const showPackModal = () => {
     setPackModal(true);
@@ -56,11 +57,12 @@ const viewTrail = (stdID) =>{
   useEffect(() => {
     const fetchData = async () => {
         const response = await getAgreement(studentData?.stdID);
+        console.log("++++++++++++++++++++++++++++")
         setPackData(response?.data?.content);
         console.log(response?.data?.content);
     }
     fetchData();
-  }, [showModal1,showModal]);
+  }, [showModal1,showModal,interrupt]);
   return (
     <div>
       <Row className="flex overflow-hidden text-sm item-center">
@@ -225,7 +227,7 @@ const viewTrail = (stdID) =>{
                       <Modal.Title>Select Package</Modal.Title>
                     </Modal.Header>
                     <Modal.Body className="overflow-hidden">
-                      <SelectPackage stdID = {studentData?.stdID} sethidePackModal = {setPackModal}/>
+                      <SelectPackage stdID = {studentData?.stdID} sethidePackModal = {setPackModal} setInterrupt = {setInterrupt} interrupt={interrupt}/>
                     </Modal.Body>
                   </Modal>
                   <Modal show={showModal1} onHide={()=>{setShowModal1(false);setInterrupt(!interrupt)}} >
@@ -255,14 +257,44 @@ const viewTrail = (stdID) =>{
                   </ModalHeader>
                     <Modal.Body className="items-center flex flex-row justify-center w-full">
                       {packData?.map((data, i) => (
-                          <SessionCard key={i} packeData={data} />
+                          <SessionCard key={i} packeData={data} stdID ={studentData?.stdID} setInterrupt={setInterrupt}/>
                       ))}
                     </Modal.Body>
 
               </Modal>
-              <Row className="mb-2">
+              <Row className="mb-2 items-center">
                 <Col xs={4}>Payments:</Col>
-                <Col xs={8} className="pl-4 font-bold">
+                <Col xs={8} className="font-bold flex flex-row gap-x-4 items-center">
+                  <Button
+                      className="flex w-18 h-8 justify-center items-center "
+                      variant="outline-success"
+                      onClick={() => {
+                        setShowModalCollectPayment(true);
+                      }}
+                      style={{ fontSize: "small" }}
+                  >
+                    Collect
+                  </Button>
+                  <Modal show ={showModalCollectPayment} onHide={()=>setShowModalCollectPayment(false)}>
+                    <Modal.Header closeButton>
+                      <Modal.Title>Payment</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                      <div className="flex flex-row gap-x-4">
+                        <div className="flex flex-col">
+                          <label htmlFor="fullPayment">Full Payment</label>
+                          <input type="text" id="fullPayment" />
+                        </div>
+                        <div className="flex flex-col">
+                          <label htmlFor="remain">Remain</label>
+                          <input type="text" id="remain" />
+                        </div>
+                      </div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                      <Button variant="primary" onClick={()=>{}}>Save</Button>
+                    </Modal.Footer>
+                  </Modal>
                   <Link to={""}>View</Link>
                 </Col>
               </Row>

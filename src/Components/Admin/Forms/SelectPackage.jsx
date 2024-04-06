@@ -6,7 +6,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 import Swal from "sweetalert2";
 import PackageNavBarForModal from "../Common/PackageNavBarForModal";
 
-export const SelectPackage = ({stdID, sethidePackModal}) => {
+export const SelectPackage = ({stdID, sethidePackModal,setInterrupt, interrupt}) => {
     const [packages, setPackages] = useState([]);
     const  [packageID, setPackageID] = useState("");
     const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -25,6 +25,7 @@ export const SelectPackage = ({stdID, sethidePackModal}) => {
                     timer: 3000,
                     timerProgressBar: true,
                 }).then(() => {
+                    setInterrupt(!interrupt);
                     sethidePackModal(false);
                 });
             }
@@ -89,7 +90,7 @@ export const SelectPackage = ({stdID, sethidePackModal}) => {
 
                             {packages?.map((data, i) => (
                                 <div className="flex flex-row pl-28 pb-4" key={i}>
-                                    <PackageCardForModel packeData={data} setPackgeID={setPackageID} stdID={stdID}/>
+                                    <PackageCardForModel packeData={data} setPackgeID={setPackageID} stdID={stdID} setInterrupt={setInterrupt} interrupt={interrupt}/>
                                 </div>)
                             )}
                         </div>
