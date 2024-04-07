@@ -182,3 +182,9 @@ export const updateExtraSession = (data) =>{
 export const updateExtraSessionsTotalAmount = (data)=>{
   return AxiosInstance.put("admin/UpdateTotalAmountToPay",data);
 }
+export const savePayments = (data) =>{
+    return AxiosInstance.post("admin/savePayment",data);
+}
+export const getPaymentDetails =(stdID,packageID) =>{
+  return AxiosInstance.get(`admin/getPayments/${stdID}/${packageID}`)
+}

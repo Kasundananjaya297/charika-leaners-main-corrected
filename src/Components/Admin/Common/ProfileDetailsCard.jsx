@@ -13,6 +13,8 @@ import PackageCard from "./PackageCard";
 import {getAgreement} from "../../ApiService/api";
 import SessionCard from "./SessionCard";
 import PackageCardForSelected from "./PackageCardForSelected";
+import Payment from "./Payment";
+import PaymentHistory from "./PaymentHistory";
 export default function ProfileDetailsCard({ studentData,setInterrupt,interrupt }) {
   const [showModal, setShowModal] = useState(false);
   const [packModal, setPackModal] = useState(false);
@@ -20,6 +22,7 @@ export default function ProfileDetailsCard({ studentData,setInterrupt,interrupt 
   const [packData,setPackData] = useState([]);
   const[showModalSession,setShowModalSession] = useState(false);
   const [showModalCollectPayment, setShowModalCollectPayment] = useState(false);
+  const [showModalPaymentHistory,setShowModalPaymentHistory] = useState(false);
   const nav = useNavigate();
   const showPackModal = () => {
     setPackModal(true);
@@ -57,12 +60,10 @@ const viewTrail = (stdID) =>{
   useEffect(() => {
     const fetchData = async () => {
         const response = await getAgreement(studentData?.stdID);
-        console.log("++++++++++++++++++++++++++++")
         setPackData(response?.data?.content);
-        console.log(response?.data?.content);
     }
     fetchData();
-  }, [showModal1,showModal,interrupt]);
+  }, [showModal1,showModal,interrupt,showModalCollectPayment]);
   return (
     <div>
       <Row className="flex overflow-hidden text-sm item-center">
@@ -244,10 +245,13 @@ const viewTrail = (stdID) =>{
                   </Modal>
                 </Col>
               </Row>
-              <Row className="mb-2">
+              <Row className="mb-2 items-center">
                 <Col xs={4}>Sessions:</Col>
                 <Col xs={8} className="pl-4 font-bold">
-                  <Link onClick={()=>{setShowModalSession(true)}}>View</Link>
+                  <Button style={{ fontSize: "small" }}
+                          className="flex w-18 h-8 justify-center items-center"
+                          variant="outline-success"
+                          onClick={()=>{setShowModalSession(true)}}>View & Edit</Button>
                 </Col>
               </Row>
               <div></div>
@@ -262,6 +266,12 @@ const viewTrail = (stdID) =>{
                     </Modal.Body>
 
               </Modal>
+              <Row className="mb-2">
+                <Col xs={4}>Full-Payment:</Col>
+                <Col xs={8} className="pl-4 font-bold">
+                  Rs. {studentData?.fullPayment}
+                </Col>
+              </Row>
               <Row className="mb-2 items-center">
                 <Col xs={4}>Payments:</Col>
                 <Col xs={8} className="font-bold flex flex-row gap-x-4 items-center">
@@ -275,39 +285,34 @@ const viewTrail = (stdID) =>{
                   >
                     Collect
                   </Button>
-                  <Modal show ={showModalCollectPayment} onHide={()=>setShowModalCollectPayment(false)}>
+                  <Modal  show ={showModalCollectPayment} onHide={()=> {
+                    setShowModalCollectPayment(false);
+                    setInterrupt(!interrupt)
+                  }}>
                     <Modal.Header closeButton>
                       <Modal.Title>Payment</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body>
-                      <div className="flex flex-row gap-x-4">
-                        <div className="flex flex-col">
-                          <label htmlFor="fullPayment">Full Payment</label>
-                          <input type="text" id="fullPayment" />
-                        </div>
-                        <div className="flex flex-col">
-                          <label htmlFor="remain">Remain</label>
-                          <input type="text" id="remain" />
-                        </div>
+                    <Modal.Body className='flex items-center justify-center'>
+                      <div>
+                        <Payment data={studentData} packageData={packData} setShowModal={setShowModalCollectPayment}/>
                       </div>
                     </Modal.Body>
-                    <Modal.Footer>
-                      <Button variant="primary" onClick={()=>{}}>Save</Button>
-                    </Modal.Footer>
                   </Modal>
-                  <Link to={""}>View</Link>
+                  <Button variant="link" className="font-bold" style={{ fontSize: "small" }} onClick={()=>setShowModalPaymentHistory(true)}>View</Button>
                 </Col>
               </Row>
-              <Row className="mb-2">
-                <Col xs={4}>Full-Payment:</Col>
-                <Col xs={8} className="pl-4">
-                  Rs. {studentData?.fullPayment}
-                </Col>
-              </Row>
+              <Modal show={showModalPaymentHistory} onHide={()=>setShowModalPaymentHistory(!showModalPaymentHistory)} size={'lg'}>
+                <Modal.Header closeButton>
+                  <Modal.Title>Payment History</Modal.Title>
+                </Modal.Header>
+                <Modal.Body className='items-center justify-center flex'>
+                  <PaymentHistory data={studentData} packageData={packData} setShowModal={setShowModalPaymentHistory}/>
+                </Modal.Body>
+              </Modal>
               <Row className="mb-2">
                 <Col xs={4}>Remain:</Col>
                 <Col xs={8} className="pl-4 font-bold">
-                  {studentData?.balance}
+                  Rs. {studentData?.balance}
                 </Col>
               </Row>
             </Card.Body>
