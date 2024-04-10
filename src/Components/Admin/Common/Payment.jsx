@@ -61,7 +61,6 @@ export const Payment = ({ data, packageData,setShowModal }) => {
         }
     }, [packData]);
 
-
     return (
         <Card style={{ width: "30rem" }} >
             <div className='bg-gray-50 text-sm flex flex-row w-96 border rounded p-4 gap-y-1 ml-10 mt-3 items-center'>
@@ -108,7 +107,11 @@ export const Payment = ({ data, packageData,setShowModal }) => {
                     <Col xs={4}>Extras:</Col>
                     <Col xs={8}>Rs. {packData[0]?.totalAmountForExtraSessions}</Col>
                 </Row>
-                <Row className='text-success font-bold'>
+                <Row className='text-success font-bold items-center flex justify-center'>
+                    <Col xs={4}>Extras Not In Agreement:</Col>
+                    <Col xs={8}>Rs. {packData[0]?.totalAmountForExtrasNotInAgreement}</Col>
+                </Row>
+                <Row className='text-success font-bold items-center '>
                     <Col xs={4}>Total Amount:</Col>
                     <Col xs={5} className='border-black border-b-4 border-t-2'>Rs. {packData[0]?.totalAmountToPay}</Col>
                 </Row>

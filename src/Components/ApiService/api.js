@@ -188,3 +188,13 @@ export const savePayments = (data) =>{
 export const getPaymentDetails =(stdID,packageID) =>{
   return AxiosInstance.get(`admin/getPayments/${stdID}/${packageID}`)
 }
+export const getExtraSessions = (stdID) =>{
+    return AxiosInstance.get(`admin/getVehicleTypesForExtras/${stdID}`);
+}
+export const saveExtralessonsNotInAgreement =(data)=>{
+  console.log(data);
+    return AxiosInstance.post("admin/saveExtraSession",data);
+}
+export const getExtraSessionNotInAgreement = (stdID,packID) =>{
+    return AxiosInstance.get(`admin/getExtraSessionNotINAgreement/${stdID}/${packID}`);
+}
