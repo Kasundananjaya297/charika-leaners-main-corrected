@@ -13,13 +13,14 @@ export default function AddPackages() {
     const [vehicleType, setVehicleType] = useState([]);
     const [ID, setID] = useState("");
     const [typeID, setSelectedType] = useState("");
-    const [autoOrManual, setAutoOrManual] = useState("");
+    const [autoOrManual, setAutoOrManual] = useState('');
     const [isVisible, setIsVisible] = useState(true);
     const  [isDisabled, setIsDisabled] = useState(false);
     const [vehicleData, setVehicleData] = useState([]);
     const [lessons,setLessons] = useState(0);
     const[error,setError] = useState("");
     const [packageID, setPackageID] = useState("");
+    const [filteredData, setFilteredData] = useState([]);
 
 
     const nav = useNavigate();
@@ -29,6 +30,7 @@ export default function AddPackages() {
           try {
             const response = await getVehicleType();
             setVehicleType(response?.data?.content);
+            //setVehicleData(response?.data?.content);
             console.log(response?.data);
           }catch (e){
             console.log(e);
@@ -57,12 +59,6 @@ export default function AddPackages() {
         }),
         onSubmit: async (values, { setSubmitting }) => {
             try {
-                const filteredData = vehicleData.filter(item =>
-                    item?.autoOrManual !== undefined &&
-                    item?.autoOrManual !== null &&
-                    item?.autoOrManual !== '' &&
-                    item?.lessons !== undefined
-                );
                 if (filteredData.length === 0) {
                     setError("Please add vehicle type");
                     return;
@@ -105,64 +101,80 @@ export default function AddPackages() {
             }
         },
     });
+    //
+    //
+    // const save = async()=>{
+    //     Swal.fire({
+    //         icon: "warning",
+    //         title: "Are you sure?",
+    //         text: "Going to save details",
+    //     }).then(async(result)=>{
+    //         if(result.isConfirmed){
+    //             try{
+    //                 const filteredData = vehicleData.filter(item =>
+    //                     item.autoOrManual !== undefined &&
+    //                     item.autoOrManual !== null &&
+    //                     item.autoOrManual !== '--'
+    //                   );
+    //                 const data={
+    //                     packageID:formik.values.packageID,
+    //                     packageName:formik.values.packageName,
+    //                     description:formik.values.description,
+    //                     packagePrice:formik.values.packagePrice,
+    //                     packageAndVehicleType:filteredData
+    //                 }
+    //                  const response = await AddPackage(data);
+    //
+    //                 if (response.data.code === "00") {
+    //                     Swal.fire({
+    //                       icon: "success",
+    //                       title: "Saved Successfully",
+    //                     });
+    //                   } else if (response.data.code === "06") {
+    //                     Swal.fire({
+    //                       icon: "error",
+    //                       title: "Already Entered This Permit",
+    //                     });
+    //                   } else if (response.data.code === "10") {
+    //                     Swal.fire({
+    //                       icon: "error",
+    //                       title: "Current permit not Expired",
+    //                     });
+    //                   }
+    //                 } catch (error) {
+    //                   console.error("Error while saving student details:", error);
+    //                   Swal.fire({
+    //                     icon: "error",
+    //                     title: "Oops...",
+    //                     text: "Internal error occurred while saving trail permit details",
+    //                   });
+    //             }
+    //         }
+    //     })
+    // }
 
-
-    const save = async()=>{
-        Swal.fire({
-            icon: "warning",
-            title: "Are you sure?",
-            text: "Going to save details",
-        }).then(async(result)=>{
-            if(result.isConfirmed){
-                try{
-                    const filteredData = vehicleData.filter(item =>
-                        item.autoOrManual !== undefined &&
-                        item.autoOrManual !== null &&
-                        item.autoOrManual !== ''
-                      );
-                    const data={
-                        packageID:formik.values.packageID,
-                        packageName:formik.values.packageName,
-                        description:formik.values.description,
-                        packagePrice:formik.values.packagePrice,
-                        packageAndVehicleType:filteredData
-                    }
-                     const response = await AddPackage(data);
-
-                    if (response.data.code === "00") {
-                        Swal.fire({
-                          icon: "success",
-                          title: "Saved Successfully",
-                        });
-                      } else if (response.data.code === "06") {
-                        Swal.fire({
-                          icon: "error",
-                          title: "Already Entered This Permit",
-                        });
-                      } else if (response.data.code === "10") {
-                        Swal.fire({
-                          icon: "error",
-                          title: "Current permit not Expired",
-                        });
-                      }
-                    } catch (error) {
-                      console.error("Error while saving student details:", error);
-                      Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "Internal error occurred while saving trail permit details",
-                      });
-                }
-            }
-        })
-
-
-    }
      useEffect(() => {
         const newVehicleData = [...vehicleData];
-        newVehicleData[ID] = { typeID, autoOrManual,lessons,packageID};
+        newVehicleData[ID] = { typeID, autoOrManual,lessons,packageID,isVisible};
         setVehicleData(newVehicleData);
-      }, [typeID, autoOrManual, ID,lessons]);
+      }, [lessons,typeID, autoOrManual, ID,isVisible]);
+    useEffect(() => {
+        const filteredData = vehicleData.filter(item =>
+            item?.autoOrManual !== undefined &&
+            item?.autoOrManual !== null &&
+            item?.autoOrManual !== '--' &&
+            item?.lessons !== undefined &&
+            item?.lessons !== null &&
+            item?.lessons !== 0
+        );
+        setFilteredData(filteredData);
+    }, [vehicleData]);
+    useEffect(() => {
+        console.log(filteredData);
+    }, [filteredData]);
+    useEffect(() => {
+        console.log("vehicle Data",vehicleData);
+    }, [vehicleData]);
 
 
     //   useEffect(()=>{
@@ -259,14 +271,14 @@ export default function AddPackages() {
                             <Form.Group required>
                                   <Dropdown>
                                     <Dropdown.Toggle variant="outline-secondary" size="sm">
-                                      Type
+                                        {vehicleData[i]?.autoOrManual || "Type"}
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu>
                                       {item?.typeAuto && (
                                         <Dropdown.Item
                                         //{...formik.getFieldProps("vehicleType")}
                                           onClick={() => {
-                                            setSelectedType(item?.typeID);
+                                            setSelectedType(vehicleType[i]?.typeID);
                                             setAutoOrManual("Auto");
                                             setID(i);
                                             setIsVisible(true);
@@ -281,7 +293,7 @@ export default function AddPackages() {
                                         <Dropdown.Item
                                         //{...formik.getFieldProps("vehicleType")}
                                           onClick={() => {
-                                            setSelectedType(item?.typeID);
+                                            setSelectedType(vehicleType[i]?.typeID)
                                             setAutoOrManual("Manual");
                                             setID(i);
                                             setIsVisible(true);
@@ -294,12 +306,11 @@ export default function AddPackages() {
                                       )}
                                       <Dropdown.Item
                                         onClick={() => {
-                                          setSelectedType(null);
-                                          setAutoOrManual(null);
                                           setID(i);
+                                          setSelectedType("--");
+                                          setAutoOrManual("--");
                                           setIsVisible(false);
                                           setLessons(0);
-                                          setVehicleData([]);
                                           //formik.setFieldValue("vehicleType", "");
                                         }}
                                       >
@@ -313,17 +324,19 @@ export default function AddPackages() {
                             <td className='flex flex-row mt-1 items-center justify-center'>
                                 <Col md={6}>
                                     <Form.Control
-                                        key={i}
                                         type="number"
                                         min={1}
                                         max={50}
                                         defaultValue={0}
                                         placeholder="0"
-                                        onBlur={(e) => {
+                                        onChange={(e) => {
+                                            setID(i);
                                             setLessons(e.target.value);
-                                            setID(i); 
+                                            setSelectedType(vehicleType[i]?.typeID)
+                                            setAutoOrManual(vehicleData[i]?.autoOrManual);
+                                            setIsVisible(true);
                                         }}
-                                        disabled={(vehicleData[i]?.typeID === undefined || vehicleData[i]?.typeID === null || vehicleData[i]?.typeID === "")}
+                                        disabled={!vehicleData[i]?.isVisible}
                                         required
                                     />
                                 </Col>

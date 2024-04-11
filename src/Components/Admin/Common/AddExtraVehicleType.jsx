@@ -11,10 +11,8 @@ const AddExtraVehicleType = ({stdID,setShowModal,packID}) => {
     const [extraSessions, setExtraSessions] = useState([]);
     const [ID, setID] = useState('');
     const [extraLessons, setExtraLessons] = useState(0);
-    const [priceForExtraLesson, setPriceForExtraLesson] = useState([]);
     const [extraLessonVehicleType, setExtraLessonVehicleType] = useState('');
     const [saveData, setSaveData] = useState([]);
-    const [totalLessons, setTotalLessons] = useState(0);
     const [price, setPrice] = useState(0);
     const [extasID, setExtrasID] = useState('');
     const [filteredData, setFilteredData] = useState([]);

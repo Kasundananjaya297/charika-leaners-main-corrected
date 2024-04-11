@@ -1,5 +1,6 @@
 import { HiHome, HiViewGrid } from "react-icons/hi";
 import { GoPackage } from "react-icons/go";
+import { FaCar } from "react-icons/fa";
 
 export const SIDEBAR_LINKS = [
   {
@@ -21,4 +22,10 @@ export const SIDEBAR_LINKS = [
     path: "/studentprofile",
     icon: <HiViewGrid />,
   },
+  {
+    key: "Vehicle",
+    lable: "Vehicle",
+    path: "/vehicle",
+    icon: <FaCar />,
+  }
 ];

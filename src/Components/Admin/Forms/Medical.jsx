@@ -234,7 +234,7 @@ function Medical(props) {
                                     </Form.Label>
                                     <Dropdown>
                                         <Dropdown.Toggle variant="outline-secondary" size="sm">
-                                            {bloodType}
+                                           {(formik.values.bloodType||"Type")}
                                         </Dropdown.Toggle>
                                         <Dropdown.Menu>
                                             <Dropdown.Item onClick={()=>{formik.setFieldValue("bloodType","A+")}} >A+</Dropdown.Item>

@@ -5,9 +5,14 @@ import { IoRefreshCircle } from "react-icons/io5";
 import Form from "react-bootstrap/Form";
 import Swal from "sweetalert2";
 import { IoMdAdd } from "react-icons/io";
-import {getExtraSessionNotInAgreement, updateExtraSession, updateExtraSessionsTotalAmount} from "../../ApiService/api";
+import {
+    getExtraSessionNotInAgreement,
+    updateExtraSession,
+    updateExtraSessionNotInAgreement,
+    updateExtraSessionsTotalAmount
+} from "../../ApiService/api";
 import AddExtraVehicleType from "./AddExtraVehicleType";
-import {BiCaptions} from "react-icons/bi";
+
 
 
 
@@ -31,6 +36,35 @@ export default function SessionCard({packeData,setPackgeID,stdID, interrupt,setI
     const[priceDisabled,setPriceDisabled] = useState(true);
     const [showModaladdSession, setShowModalAddSession] = useState(false);
     const [extraSessionNotINAgreement,setExtraSessionNotInAgreement] = useState([]);
+    const [filteredData,setFilteredData] = useState([]);
+
+
+    //Extras Not In agreement
+    const [extrasID,setExtrasID] = useState('');
+    const [extrasCount,setExtrasCount] = useState('');
+    const [extrasPricePerLesson,setExtrasPricePerLesson] = useState('');
+    const [extrasDataToSave,setExtrasDataToSave] = useState([]);
+    const [isButtonDisabled,setIsButtonDisabled] = useState(true);
+    const [extraTypeID,setExtraTypeID] = useState();
+    useEffect(() => {
+        const newArray = [...extrasDataToSave];
+        newArray[extrasID] = {stdID,extraLessons:extrasCount,price:extrasPricePerLesson,packageID:packeData?.packageID,typeID:extraTypeID,priceForExtraLesson:(extrasCount*extrasPricePerLesson)};
+        setExtrasDataToSave(newArray);
+        if(extrasCount>0){
+            setIsButtonDisabled(false);}
+    }, [extrasID,extrasCount,extrasPricePerLesson,extraTypeID]);
+
+    useEffect(() => {
+        const filteredData = extrasDataToSave.filter(item =>
+        item?.extraLessons !==null &&
+        item?.extraLessons !==undefined &&
+        item?.extraLessons !=='' &&
+        item?.stdID !==null
+        )
+        setFilteredData(filteredData);
+    }, [extrasDataToSave]);
+
+
 
 console.log(packeData)
     useEffect(()=>{
@@ -50,13 +84,20 @@ console.log(packeData)
             item?.extraLessons !==null &&
             item?.stdID !==null&&
             item?.stdID !==undefined
-
         )
         setFilteredDataToSave(filteredData)
     }, [saveData]);
     useEffect(() => {
-        console.log("Filtered Data",filteredDataToSave)
-    },[filteredDataToSave]);
+        let total = 0;
+        for(let i=0; i<extrasDataToSave.length; i++){
+            total = total + extrasDataToSave[i]?.priceForExtraLesson;
+        }
+        setTotalPriceForExtrasNotInAgreement(total);
+    }, [extrasDataToSave]);
+
+    useEffect(()=>{
+        console.log("Extras Data",extrasDataToSave)
+    },[extrasDataToSave])
 
     useEffect(() => {
         const saveDataNew = [...saveData];
@@ -85,6 +126,7 @@ console.log(packeData)
                 const response = await getExtraSessionNotInAgreement(stdID,packeData?.packageID);
                 console.log(response)
                 setExtraSessionNotInAgreement(response?.data?.content);
+                setExtrasDataToSave(response?.data?.content);
             }catch (e){
                 console.log(e)
             }
@@ -115,7 +157,7 @@ console.log(packeData)
                         icon:"success",
                         title:"Success",
                         text: "Updated Successfully"
-                    }).then(()=>{setInterrupt(!interrupt)})
+                    }).then(()=>{setInterrupt(!interrupt);setSaveButtonState(true)})
                 }else if(response?.data?.code ==="01"){
                     Swal.fire({
                         icon:"error",
@@ -133,6 +175,39 @@ console.log(packeData)
             }
         })
 
+    }
+    const saveExtras = async () =>{
+        Swal.fire({
+            icon:"warning",
+            title:"Are you sure?",
+            text:"Ready to update Extra Sessions"
+        }).then(async ()=>{
+            try {
+                console.log("Filtered Data",filteredData)
+                //const response2 = await updateExtraSessionsTotalAmount({stdID,packageID,totalAmountToPay:(totalPriceOfExtraSession+totalPriceForExtrasNotInAgreement)})
+                const response = await updateExtraSessionNotInAgreement(filteredData);
+                if(response?.data?.code==="00"){
+                    Swal.fire({
+                        icon:"success",
+                        title:"Success",
+                        text: "Updated Successfully"
+                    }).then(()=>{setInterrupt(!interrupt);setIsButtonDisabled(true)})
+                }else if(response?.data?.code ==="01"){
+                    Swal.fire({
+                        icon:"error",
+                        title:"Error",
+                        text: "Failed to update"
+                    })
+                }
+            }catch (e){
+                console.log(e)
+                Swal.fire({
+                    icon:"error",
+                    title:"Error",
+                    text: "Axios Error"
+                })
+            }
+        })
     }
   return (
     <div>
@@ -301,6 +376,12 @@ console.log(packeData)
                                                                 <Form.Control
                                                                     type="number"
                                                                     min={0}
+                                                                    onChange={(e)=>{
+                                                                        setExtrasID(i);
+                                                                        setExtraTypeID(data?.typeID);
+                                                                        setExtrasCount(e.target.value === '' ? data?.extraLessons : e.target.value);
+                                                                        setExtrasPricePerLesson(data?.price);
+                                                                    }}
                                                                     defaultValue={data?.extraLessons}
                                                                 />
                                                             </InputGroup>
@@ -313,12 +394,18 @@ console.log(packeData)
                                                                     type="number"
                                                                     min={0}
                                                                     defaultValue={data?.price}
+                                                                    onChange={(e)=>{
+                                                                        setExtrasID(i);
+                                                                        setExtraTypeID(data?.typeID);
+                                                                        setExtrasCount(data?.extraLessons);
+                                                                        setExtrasPricePerLesson(e.target.value === '' ? data?.price : e.target.value);
+                                                                    }}
                                                                 />
                                                             </InputGroup>
                                                         </Form.Group>
                                                     </td>
                                                     <td className='px-3 py-2 whitespace-nowrap w-32'>
-                                                        Rs. {data?.priceForExtraLesson}
+                                                        Rs. {(extrasDataToSave[i]?.priceForExtraLesson===undefined? data?.priceForExtraLesson: extrasDataToSave[i]?.priceForExtraLesson)}
                                                     </td>
                                                 </tr>
                                             ))}
@@ -327,11 +414,10 @@ console.log(packeData)
                                     </div>
                                 </div>
                                 <Card.Footer className="flex items-end justify-end">
-                                    <Button >Save Changes</Button>
+                                    <Button disabled={isButtonDisabled} onClick={(e)=>{saveExtras(e)}}>Save Changes</Button>
                                 </Card.Footer>
                             </Card>
                         </div>
-
                     </Card>
                 </Form>
             </Col>

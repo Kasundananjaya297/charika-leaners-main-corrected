@@ -198,3 +198,6 @@ export const saveExtralessonsNotInAgreement =(data)=>{
 export const getExtraSessionNotInAgreement = (stdID,packID) =>{
     return AxiosInstance.get(`admin/getExtraSessionNotINAgreement/${stdID}/${packID}`);
 }
+export const updateExtraSessionNotInAgreement = (data) =>{
+    return AxiosInstance.put("admin/updateExtraSessionNotInAgreement",data);
+}
