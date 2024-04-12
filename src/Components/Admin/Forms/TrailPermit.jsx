@@ -241,9 +241,7 @@ export default function TrailPermit() {
     }
     getVehicleTypes();
   },[stdId]);
-  const AddType =() =>{
-    nav("/studentprofile/trail/addtype",{ state: stdId });
-  };
+
   // useEffect(() => {
   //   const dataArray = [];
   //   const data = {selectedType, autoOrManual};
@@ -388,14 +386,7 @@ export default function TrailPermit() {
                       {formik.touched.expDate && formik.errors.vehicleType} 
                   </Form.Text>
                 </Row>
-                <Row className="pl-4 pr-4">
-                  <Button onClick={AddType}>
-                    <div className="flex items-center justify-center gap-x-2">
-                      <IoMdAdd />
-                      <div>Add Type</div>
-                    </div>
-                  </Button>
-                </Row>
+
 
                 <Row className="">
                   <Form.Group controlId="formFile" className="mb-2 mt-2" as={Col} md={8}>

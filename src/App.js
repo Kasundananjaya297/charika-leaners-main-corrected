@@ -18,7 +18,10 @@ import Packages from "./Components/Admin/Packages";
 import AddPackages from "./Components/Admin/Forms/AddPackages";
 import AddPackagesEdit from "./Components/Admin/Forms/AddPackagesEdit";
 import SelectPackage from "./Components/Admin/Forms/SelectPackage";
-import Vehicle from "./Components/Admin/Preview/Vehicle";
+import Vehicle from "./Components/Admin/Vehicle";
+import Trainers from "./Components/Admin/Trainers";
+import Schedule from "./Components/Admin/Schedule";
+import AddNewVehicle from "./Components/Admin/Forms/AddNewVehicle";
 
 function App() {
   return (
@@ -42,7 +45,15 @@ function App() {
           <Route path="/Packages" element={< Packages/>} />
           <Route path = "/Packages/addPackage" element={<AddPackages/>} />
           <Route path = "/Packages/editPackage" element={<AddPackagesEdit/>} />
-          <Route path="/vehicle" element={<Vehicle />}></Route>
+          <Route path="/vehicle" element={<Vehicle />}/>
+          <Route path = "/vehicle/addNewVehicle" element = {<AddNewVehicle />} />
+
+
+          <Route path="/trainer" element = {<Trainers/>} />
+
+
+
+          <Route path ="/Schedule" element = {<Schedule/>} />
 
         
            {/*

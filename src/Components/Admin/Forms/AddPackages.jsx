@@ -349,14 +349,6 @@ export default function AddPackages() {
                         {error}
                     </Form.Text>
                 </Row>
-                <Row className="pl-4 pr-4">
-                  <Button onClick={AddType}>
-                    <div className="flex items-center justify-center gap-x-2">
-                      <IoMdAdd />
-                      <div>Add Type</div>
-                    </div>
-                  </Button>
-                </Row>
                 <Form.Group>
                         <Row>
                             <div

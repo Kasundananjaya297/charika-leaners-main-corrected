@@ -13,7 +13,8 @@ export default function Layout() {
     location.pathname.includes("/medical")||
     location.pathname.includes("/addPackage")||
     location.pathname.includes("/selectPackage")||
-    location.pathname.includes("/editPackage")
+    location.pathname.includes("/editPackage")||
+    location.pathname.includes("/addNewVehicle")
   );
 
   return (

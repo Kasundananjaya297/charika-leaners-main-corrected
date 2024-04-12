@@ -16,8 +16,7 @@ function AddVehicleTypeEdit(props) {
             typeID: parsedData?.typeID,
             engineCapacity: parsedData?.engineCapacity,
             typeName: parsedData?.typeName,
-            typeAuto: parsedData?.typeAuto,
-            typeManual: parsedData?.typeManual,
+
         },
         validationSchema: Yup.object({
             //typeID: Yup.string().required("Required").matches(/^[A-Z][0-9]+$/, "No spaces allowed").matches(/^[A-Z]+$/,"Capital letters allowed"),
@@ -38,7 +37,7 @@ function AddVehicleTypeEdit(props) {
         nav("/studentprofile/trail",{ state: stdId });
     }
     const save = async () => {
-
+            console.log(formik.values);
         try {
             const result = await Swal.fire({
                 icon: "warning",
@@ -46,7 +45,7 @@ function AddVehicleTypeEdit(props) {
                 showCancelButton: true,
             });
             if (result.isConfirmed) {
-                const response = await UpdateVehicleTypes(formik.values);
+               const response = await UpdateVehicleTypes(formik.values);
                 if(response?.data?.code==="00"){
                     Swal.fire(
                         {
@@ -146,7 +145,7 @@ function AddVehicleTypeEdit(props) {
                                     type="radio"
                                     label="Manual"
                                     name="Control"
-                                    checked={formik.values.typeManual}
+                                    checked={parsedData?.typeManual}
                                     onChange={() => {
                                         formik.setFieldValue("typeManual", true);
                                         formik.setFieldValue("typeAuto", false);
@@ -156,7 +155,7 @@ function AddVehicleTypeEdit(props) {
                                 <Form.Check
                                     type="radio"
                                     label="Auto"
-                                    checked={formik.values.typeAuto}
+                                    checked={parsedData?.typeAuto}
                                     name="Control"
                                     onChange={() => {
                                         formik.setFieldValue("typeAuto", true);
@@ -167,7 +166,7 @@ function AddVehicleTypeEdit(props) {
                                 <Form.Check
                                     type="radio"
                                     label="Both"
-                                    checked={formik.values.typeAuto && formik.values.typeManual}
+                                    checked={parsedData?.typeAuto && parsedData?.typeManual}
                                     name="Control"
                                     onChange={() => {
                                         formik.setFieldValue("typeAuto", true);

@@ -83,16 +83,9 @@ function AddVehicleType(props) {
         }
     }, [nav]);
     return (
-        <div className="flex items-center justify-center h-screen">
+        <div className="flex items-center justify-center">
             <Card style={{ width: '40rem' }}>
             <Card.Body>
-                <div className="p-4">
-                    <Row>
-                        <div className="flex justify-center p-2 bg-neutral-100 mt-3 rounded-md text-2xl ">
-                            Add new vehicle type
-                        </div>
-                    </Row>
-                </div>
                 <Form className="p-4" onSubmit={formik.handleSubmit}>
                     <Row>
                         <Form.Group as={Col} md={6} className="mb-3">
@@ -126,7 +119,7 @@ function AddVehicleType(props) {
                     <Row className="">
                         <Form.Group as={Col} md={6}>
                             <Form.Label>
-                                Description:<span className="text-red-500"> *</span>
+                                Class Of Vehicle:<span className="text-red-500"> *</span>
                             </Form.Label>
                             <Form.Control
                                 type="text"
@@ -179,10 +172,7 @@ function AddVehicleType(props) {
                     <Form.Group>
                         <Row>
                             <div
-                                className="flex flex-row justify-between items-center bg-neutral-100 p-2 rounded-md mt-4">
-                                <Button variant="danger" onClick={back}>
-                                    Back
-                                </Button>
+                                className="flex flex-row justify-end items-center bg-neutral-100 p-2 rounded-md mt-4">
                                 <Button
                                     type="submit"
                                     variant="success"
@@ -193,7 +183,6 @@ function AddVehicleType(props) {
                         </Row>
                     </Form.Group>
                 </Form>
-
             </Card.Body>
             </Card>
         </div>

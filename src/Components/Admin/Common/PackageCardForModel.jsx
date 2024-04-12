@@ -125,10 +125,8 @@ export default function PackageCardForModel({packeData,setPackgeID,stdID,setInte
                                             }}>Select
                                     </button>
                                 </div>
-
                             </Row>
                         </Card.Body>
-
                     </div>
                 </Card>
             </Col>

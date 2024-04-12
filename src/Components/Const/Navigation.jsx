@@ -1,6 +1,9 @@
 import { HiHome, HiViewGrid } from "react-icons/hi";
 import { GoPackage } from "react-icons/go";
 import { FaCar } from "react-icons/fa";
+import { PiStudentBold } from "react-icons/pi";
+import { FaChalkboardTeacher } from "react-icons/fa";
+import { FaCalendarAlt } from "react-icons/fa";
 
 export const SIDEBAR_LINKS = [
   {
@@ -8,6 +11,12 @@ export const SIDEBAR_LINKS = [
     lable: "Home",
     path: "/Home",
     icon: <HiHome />,
+  },
+  {
+    key: "Vehicle",
+    lable: "Vehicle",
+    path: "/vehicle",
+    icon: <FaCar />,
   },
   {
     key:"Packages",
@@ -20,12 +29,18 @@ export const SIDEBAR_LINKS = [
     key: "StudentProfile",
     lable: "Student Profile",
     path: "/studentprofile",
-    icon: <HiViewGrid />,
+    icon: <PiStudentBold />,
   },
   {
-    key: "Vehicle",
-    lable: "Vehicle",
-    path: "/vehicle",
-    icon: <FaCar />,
+    key: "Trainers",
+    lable: "Trainers",
+    path: "/Trainer",
+    icon: <FaChalkboardTeacher />,
+  },
+  {
+    key: "Schedule",
+    lable: "Schedule",
+    path: "/Schedule",
+    icon: <FaCalendarAlt />,
   }
 ];

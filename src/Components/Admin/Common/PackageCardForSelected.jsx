@@ -32,6 +32,12 @@ export default function PackageCardForSelected({packeData,setPackgeID}) {
                         title: "Error",
                         text: "Failed to delete agreement"
                     })
+                }else if(response?.data?.code === "10"){
+                    Swal.fire({
+                        icon: "error",
+                        title: "Failed to delete",
+                        text: "Payment Is collected try Visit Session to add extra Lessons"
+                    })
                 }
             }})
     }
@@ -159,7 +165,6 @@ export default function PackageCardForSelected({packeData,setPackgeID}) {
                                         </table>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                         </Row>

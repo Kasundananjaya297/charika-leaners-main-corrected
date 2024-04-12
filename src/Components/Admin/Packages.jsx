@@ -70,8 +70,7 @@ export default function () {
           <div className="bg-neutral-50">
               <PackageNavBar setPackageID={setPackageID} setOrder={setOrder} setfiled={setFeild}/>
           </div>
-
-          <div className="flex flex-col overflow-y-scroll">
+          <div className="flex flex-col overflow-y-scroll  h-full">
               <div className="flex flex-wrap">
                   {packages?.map((data, i) => (
                       <div className="pl-16 mt-4 gap-x-16 gap-y-4 mb-9" key={i}>

@@ -53,13 +53,13 @@ export const getTrailPermit = (stdID) =>{
 export  const app = initializeApp(firebaseConfig);
 export const storage = getStorage(app);
 
-export const uploadFile = ({ fileLocation, stdId, setUploadProgress, setUploadState, setDownloadURL,setProgressBarVisible,category }) => {
-  console.log(fileLocation);
+export const uploadFile = ({ Type,fileLocation, Id, setUploadProgress, setUploadState, setDownloadURL,setProgressBarVisible,category }) => {
+ // console.log(fileLocation);
   if (!fileLocation) {
     return;
   }
 
-  const storageRef = ref(storage, `student/${stdId}/${category}/${fileLocation.name}`);
+  const storageRef = ref(storage, `${Type}/${Id}/${category}/${fileLocation.name}`);
 
   const uploadTask = uploadBytesResumable(storageRef, fileLocation);
   // Set up event listeners for the upload task
@@ -200,4 +200,10 @@ export const getExtraSessionNotInAgreement = (stdID,packID) =>{
 }
 export const updateExtraSessionNotInAgreement = (data) =>{
     return AxiosInstance.put("admin/updateExtraSessionNotInAgreement",data);
+}
+export const getFuelType=()=>{
+    return AxiosInstance.get('admin/getFuelTypes');
+}
+export const saveFuelType=(data)=>{
+    return AxiosInstance.post('admin/saveFuelType',data);
 }
