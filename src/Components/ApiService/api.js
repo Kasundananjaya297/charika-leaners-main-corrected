@@ -207,3 +207,24 @@ export const getFuelType=()=>{
 export const saveFuelType=(data)=>{
     return AxiosInstance.post('admin/saveFuelType',data);
 }
+export const saveNewVehicle =(data) =>{
+    return AxiosInstance.post('admin/saveVehicle',data);
+}
+export const getVehicles = (field,order,pageSize,offset) =>{
+    return AxiosInstance.get(`admin/getVehicles/${field}/${order}/${pageSize}/${offset}`);
+}
+export const updateUrlBook = (data) =>{
+    return AxiosInstance.put('admin/updateVehicleBook',data);
+}
+export const saveVehicleLicense =(data) =>{
+    return AxiosInstance.post('admin/saveVehicleLicense',data);
+}
+export const saveNewVehicleInsuranceType =(data) =>{
+    return AxiosInstance.post('admin/saveNewVehicleInsuranceType',data);
+}
+export const getVehicleInsuranceTypes = () =>{
+    return AxiosInstance.get('admin/getInsuranceTypes');
+}
+export const saveInsurance = (data) =>{
+    return AxiosInstance.post('admin/saveInsurance',data);
+}

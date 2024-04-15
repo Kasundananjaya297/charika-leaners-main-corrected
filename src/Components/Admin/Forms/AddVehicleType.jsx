@@ -8,9 +8,7 @@ import {saveVehicleType,uploadFile} from "../../ApiService/api";
 import {useLocation, useNavigate} from "react-router-dom";
 import Swal from "sweetalert2";
 
-function AddVehicleType(props) {
-    const location = useLocation();
-    const stdId = location.state;
+function AddVehicleType({setShowModal}) {
     const formik = useFormik({
         initialValues: {
             typeID: "",
@@ -35,12 +33,7 @@ function AddVehicleType(props) {
             }
         },
     });
-    const nav = useNavigate();
-    const back = () => {
-        console.log(stdId);
-        //nav("/studentprofile/trail",{ state: stdId });
-        nav(-1);
-    }
+
     const save = async () => {
         try {
             const result = await Swal.fire({
@@ -57,9 +50,7 @@ function AddVehicleType(props) {
                             html:"Vehicle type has been saved.",
                             icon:"success",
                         });
-                    //nav("/studentprofile/trail",{ state: stdId });
-                    nav(-1);
-
+                    setShowModal(false);
                 }else if(response?.data?.code==="06"){
                     Swal.fire({
                         title:"Failed!",
@@ -75,13 +66,6 @@ function AddVehicleType(props) {
             });
         }
     };
-    useEffect(() => {
-        let role = sessionStorage.getItem("role");
-        console.log("role: " + role);
-        if (!(role === "ADMIN" && sessionStorage.getItem("token") !== null)) {
-            nav("/");
-        }
-    }, [nav]);
     return (
         <div className="flex items-center justify-center">
             <Card style={{ width: '40rem' }}>
