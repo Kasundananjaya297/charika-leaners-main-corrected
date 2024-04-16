@@ -31,8 +31,8 @@ const Vehicle = () => {
     return (
         <div className="flex flex-col h-dvh mb-2">
             <VehicleNavBar/>
-            <div className="h-full">
-                <div className="flex flex-col overflow-y-scroll h-full">
+            <div className="flex flex-col overflow-y-scroll h-full">
+                <div className="">
                     <div className="flex flex-wrap">
                         {vehicleData.map((data,i) => (
                             <div className="pl-16 mt-4 gap-x-16 gap-y-4 mb-9" key={i}>

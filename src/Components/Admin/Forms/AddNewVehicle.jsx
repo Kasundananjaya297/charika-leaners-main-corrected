@@ -32,7 +32,9 @@ function AddNewVehicle(props) {
             urlOfBook:"",//
             typeID:"",
             autoOrManual:"",
-            vehiclePhoto:""
+            vehiclePhoto:"",
+            modal:"",
+            dateOfRegistration:""
         },
         validationSchema:Yup.object({
             registrationNo: Yup.string().required("Required").min(5,"Min 5 characters required").max(10,"Max 10 characters allowed").matches(/^[A-Z]{1,5}-\d{4}$/,"Your vehicle number: ABCDE-1234. Five letters, a hyphen, four digits."),
@@ -43,7 +45,9 @@ function AddNewVehicle(props) {
             cylinderCapacity: Yup.number().required("Required").min(50,"Min 50cc required").max(10000,"Max 1000cc allowed"),
             urlOfBook: Yup.string().required("Required to Upload Image"),
             autoOrManual: Yup.string().required("Required Select One Vehicle Type"),
-            vehiclePhoto: Yup.string().required("Required to Upload Image")
+            vehiclePhoto: Yup.string().required("Required to Upload Image"),
+            modal: Yup.string().required("Required").matches(/^[A-Z-\d{4}s]*$/,"Only capital alphabets and hyphen allowed"),
+            dateOfRegistration:Yup.date().required("Required")
         }),onSubmit: async (values) => {
             try{
                 Swal.fire({
@@ -258,7 +262,7 @@ function AddNewVehicle(props) {
         nav(-1);
     }
     return (
-        <div className="flex flex-row justify-center items-center w-screen h-screen">
+        <div className="flex flex-row justify-center items-center w-screen h-screen overflow-auto pt-40 mb-4">
             <Form onSubmit={formik.handleSubmit}>
             <Card style={{ width: "40em" }}>
                 <Card.Body className="overflow-auto h-full">
@@ -307,16 +311,16 @@ function AddNewVehicle(props) {
                                     as={Col}
                                 >
                                     <Form.Label>
-                                        Color:<span className="text-red-500"> *</span>
+                                        Model:<span className="text-red-500"> *</span>
                                     </Form.Label>
                                     <Form.Control
                                         type="text"
-                                        placeholder="color"
-                                        {...formik.getFieldProps("color")}
+                                        placeholder="Enter Model"
+                                        {...formik.getFieldProps("modal")}
                                         required
                                     />
                                     <Form.Text className="text-danger">
-                                        {formik.touched.color && formik.errors.color}
+                                        {formik.touched.modal && formik.errors.modal}
                                     </Form.Text>
                                 </Form.Group>
                                 <Form.Group
@@ -336,21 +340,55 @@ function AddNewVehicle(props) {
                                     </Form.Text>
                                 </Form.Group>
                             </Row>
+                        <Row className="mb-3">
+                            <Form.Group
+                                as={Col}
+                            >
+                                <Form.Label>
+                                    Color:<span className="text-red-500"> *</span>
+                                </Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Enter Color"
+                                    {...formik.getFieldProps("color")}
+                                    required
+                                />
+                                <Form.Text className="text-danger">
+                                    {formik.touched.color && formik.errors.color}
+                                </Form.Text>
+                            </Form.Group>
+                            <Form.Group
+                                as={Col}
+                            >
+                                <Form.Label>
+                                    Passenger Count:<span className="text-red-500"> *</span>
+                                </Form.Label>
+                                <Form.Control
+                                    type="number"
+                                    placeholder="1.."
+                                    {...formik.getFieldProps("passengerCapacity")}
+                                    required
+                                />
+                                <Form.Text className="text-danger">
+                                    {formik.touched.passengerCapacity && formik.errors.passengerCapacity}
+                                </Form.Text>
+                            </Form.Group>
+                        </Row>
                             <Row className='mb-3'>
                                 <Form.Group
                                     as={Col}
                                 >
                                     <Form.Label>
-                                        Passenger Count:<span className="text-red-500"> *</span>
+                                        Manufactured Year:<span className="text-red-500"> *</span>
                                     </Form.Label>
                                     <Form.Control
-                                        type="number"
-                                        placeholder="1.."
-                                        {...formik.getFieldProps("passengerCapacity")}
+                                        min ={new Date("1950-01-01").toISOString().split('T')[0]}
+                                        type="date"
+                                        {...formik.getFieldProps("dateOfRegistration")}
                                         required
                                     />
                                     <Form.Text className="text-danger">
-                                        {formik.touched.passengerCapacity && formik.errors.passengerCapacity}
+                                        {formik.touched.dateOfRegistration && formik.errors.dateOfRegistration}
                                     </Form.Text>
                                 </Form.Group>
                                 <Form.Group

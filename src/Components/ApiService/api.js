@@ -228,3 +228,6 @@ export const getVehicleInsuranceTypes = () =>{
 export const saveInsurance = (data) =>{
     return AxiosInstance.post('admin/saveInsurance',data);
 }
+export const saveEmissionTest =(data)=>{
+    return AxiosInstance.post('admin/saveEmissionTest',data);
+}

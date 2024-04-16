@@ -9,7 +9,7 @@ import { Document, Page ,pdfjs} from 'react-pdf';
 import Form from "react-bootstrap/Form";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import {
-    getVehicleInsuranceTypes, saveInsurance,
+    getVehicleInsuranceTypes, saveEmissionTest, saveInsurance,
     saveNewVehicleInsuranceType,
     saveVehicleLicense,
     updateUrlBook,
@@ -41,6 +41,10 @@ function VehicleCard({vehicleData,interrupt,setInterrupt}) {
     const [showModalAddInsuranceType, setShowModalAddInsuranceType] = useState(false);
     //hook for show InsuranceModal
     const [showInsuranceModal, setShowInsuranceModal] = useState(false);
+    //hook for emission Test
+    const [showEmissionTestModal,setEmissionTestModal] = useState(false);
+    //hook for emission test Show
+    const [showEmissionTestShowModal,setEmissionTestShowModal] = useState(false);
 
     //upload book
     const [uploadState, setUploadState] = useState(true);
@@ -48,7 +52,6 @@ function VehicleCard({vehicleData,interrupt,setInterrupt}) {
     const [uploadProgress, setUploadProgress] = useState(0);
     const[downloadURL, setDownloadURL] = useState("");
     const [progressBarVisible,setProgressBarVisible] = useState(false);
-
 
 
 
@@ -92,6 +95,13 @@ function VehicleCard({vehicleData,interrupt,setInterrupt}) {
     const[downloadURL3, setDownloadURL3] = useState("");
     const [progressBarVisible3,setProgressBarVisible3] = useState(false);
 
+    //emission test report
+    const [uploadState4, setUploadState4] = useState(true);
+    const [fileLocation4, setFileLocation4] = useState("");
+    const [uploadProgress4, setUploadProgress4] = useState(0);
+    const[downloadURL4, setDownloadURL4] = useState("");
+    const [progressBarVisible4,setProgressBarVisible4] = useState(false);
+
 
 
     const uploadInsurance = async () => {
@@ -101,6 +111,15 @@ function VehicleCard({vehicleData,interrupt,setInterrupt}) {
             setDownloadURL3(downloadURL3);
             // console.log(uploadProgress2)
             // console.log(fileLocation2)
+        } catch (error) {
+            console.error("Error in uploadFileTrail:", error);
+        }
+    }
+    const uploadVehicleEmissionTest = async () => {
+        try {
+            await uploadFile({ Type: "Vehicle", fileLocation:fileLocation4, Id: saveEmissionFromik.getFieldProps("registrationNo").value, setUploadProgress:setUploadProgress4, setUploadState:setUploadState4, setDownloadURL:setDownloadURL4,setProgressBarVisible:setProgressBarVisible4,category: "EmissionTest"});
+            //console.log("url.............." + downloadURL);
+            setDownloadURL4(downloadURL4);
         } catch (error) {
             console.error("Error in uploadFileTrail:", error);
         }
@@ -291,6 +310,55 @@ function VehicleCard({vehicleData,interrupt,setInterrupt}) {
             })
         }
     })
+    const saveEmissionFromik = useFormik({
+        initialValues:{
+            serialNo:"",
+            registrationNo: vehicleData?.registrationNo,
+            issuedDate:"",
+            expiryDate:"",
+            emissionTestFee:"",
+            urlOfDocument:"",
+        },
+        validationSchema: Yup.object({
+            serialNo:Yup.string().required("Please enter Serial Number").max(8,"maximum characters is 8").min(8,"minimum characters is 8").matches(/^[A-Z0-9]+$/,"Invalid Serial Number Capital Letters and Numbers only"),
+            issuedDate:Yup.date().required("Please enter Issued Date"),
+            expiryDate:Yup.date().required("Please enter Expiry Date"),
+            emissionTestFee:Yup.number().required("Please enter Emission Test Fee"),
+            urlOfDocument:Yup.string().required("upload Emission Test file"),
+
+        }),
+        onSubmit:(values)=>{
+            Swal.fire({
+                icon:"warning",
+                title : "Are you sure",
+                text:"Going to Add Emission Test",
+            }).then(async (result)=>{
+                if(result.isConfirmed){
+                    try {
+                        const response = await saveEmissionTest(values);
+                        if(response?.data.code ==="00"){
+                            Swal.fire({
+                                icon:"success",
+                                title:"Emission Test Added Successfully",
+                            }).then(()=>setInterrupt(!interrupt));
+                            setEmissionTestModal(false);
+                        }else if(response?.data.code ==="06"){
+                            Swal.fire({
+                                icon:"error",
+                                title:"Already exist",
+                            });
+                        }
+                    }catch (error) {
+                        Swal.fire({
+                            icon:"error",
+                            title:"Emission Test Add Failed",
+                        })
+                    }
+
+                }
+            })
+        }
+    })
 
     //set min date for expiry date
     //validate Licence issued Date
@@ -333,10 +401,26 @@ function VehicleCard({vehicleData,interrupt,setInterrupt}) {
     currentDateInsurance.setDate(currentDateInsurance.getDate() - 1);
     const minDateForStartDateInsurance = currentDateInsurance.toISOString().split('T')[0];
 
+    //minimumemission Date
+    const minEmissionDate = vehicleData && vehicleData.emissionTests && vehicleData.emissionTests.length > 0
+        ? new Date(new Date(new Date(vehicleData.emissionTests[0].issuedDate).setFullYear(new Date(vehicleData.emissionTests[0].issuedDate).getFullYear() + 1)).setDate(new Date(vehicleData.emissionTests[0].issuedDate).getDate() - 20)).toISOString().split('T')[0]
+        : new Date(new Date().setDate(new Date().getDate() - 20)).toISOString().split('T')[0];
+
+// max date
+    const maxDateForEmission = vehicleData && vehicleData.emissionTests && vehicleData.emissionTests.length > 0
+        ? new Date(new Date(new Date(vehicleData.emissionTests[0].issuedDate).setFullYear(new Date(vehicleData.emissionTests[0].issuedDate).getFullYear() + 1)).setDate(new Date(vehicleData.emissionTests[0].issuedDate).getDate() + 20)).toISOString().split('T')[0]
+        : new Date(new Date().setDate(new Date().getDate() + 20)).toISOString().split('T')[0];
+
+    //min date for expire date
+    const selectedEmissionDate = saveEmissionFromik.getFieldProps("issuedDate").value||minEmissionDate||vehicleData.emissionTests[0]?.issuedDate||new Date();
+    const minDateForExpiryDate = new Date(new Date(new Date(minEmissionDate).setFullYear(new Date(minEmissionDate).getFullYear() + 1)).setDate(new Date(minEmissionDate).getDate()-20)).toISOString().split('T')[0];
+    const maxDateForExpiryDate = new Date(new Date(new Date(selectedEmissionDate||minEmissionDate).setFullYear(new Date(selectedEmissionDate||minEmissionDate).getFullYear() + 1)).setDate(new Date(selectedEmissionDate||minEmissionDate).getDate()+20)).toISOString().split('T')[0];
 
     useEffect(() => {formik.setFieldValue("urlOfBook", downloadURL);}, [downloadURL])
     useEffect(() => {saveLicenceFormik.setFieldValue("licenseLink", downloadURL2);}, [downloadURL2])
     useEffect(() => {saveInsuranceFormik.setFieldValue("insuranceLink", downloadURL3)}, [downloadURL3]);
+    useEffect(() => {saveEmissionFromik.setFieldValue("urlOfDocument", downloadURL4);}, [downloadURL4]);
+
     useEffect(() => {
         const getInsuranceType = async () => {
             try {
@@ -350,7 +434,6 @@ function VehicleCard({vehicleData,interrupt,setInterrupt}) {
         }
         getInsuranceType();
     }, [showModalAddInsuranceType]);
-
     return (
         <div>
             <Row className="flex overflow-hidden text-sm item-center">
@@ -385,9 +468,21 @@ function VehicleCard({vehicleData,interrupt,setInterrupt}) {
                                 </Col>
                             </Row>
                             <Row className="mb-2">
+                                <Col xs={4}>Model:</Col>
+                                <Col xs={8} className="pl-4">
+                                    {vehicleData?.modal}
+                                </Col>
+                            </Row>
+                            <Row className="mb-2">
                                 <Col xs={4}>Body Color:</Col>
                                 <Col xs={8} className="pl-4">
                                     {vehicleData?.color}
+                                </Col>
+                            </Row>
+                            <Row className="mb-2">
+                                <Col xs={4}>Manufactured:</Col>
+                                <Col xs={8} className="pl-4">
+                                    {vehicleData?.dateOfRegistration}
                                 </Col>
                             </Row>
                             <Row className="mb-2">
@@ -494,6 +589,232 @@ function VehicleCard({vehicleData,interrupt,setInterrupt}) {
                                     </Form>
                                 </Modal.Body>
                             </Modal>
+                            <Row className="mb-2 flex items-center">
+                                <Col xs={4}>Emission:</Col>
+                                <Col xs={8} className="pl-4">
+                                    <Button
+                                        className="flex w-18 h-8 justify-center items-center"
+                                        variant="outline-success"
+                                        style={{ fontSize: "small" }}
+                                        onClick={()=>{setEmissionTestModal(true)}}
+                                    >
+                                        Add
+                                    </Button>
+                                    <Button
+                                        className="flex w-18 h-8 justify-center items-center ml-4"
+                                        variant="link"
+                                        style={{ fontSize: "small" }}
+                                        onClick={() => {
+                                            setEmissionTestShowModal(true);
+                                        }}
+                                    >
+                                        View
+                                    </Button>
+                                </Col>
+                            </Row>
+                            <Modal show={showEmissionTestModal} onHide={()=>{setEmissionTestModal(false)}}>
+                                <Modal.Header closeButton>
+                                    <Modal.Title>
+                                        Add Emission Test
+                                    </Modal.Title>
+                                </Modal.Header>
+                                <Form onSubmit={saveEmissionFromik.handleSubmit}>
+                                    {(vehicleData?.emissionTests.length !==0 && vehicleData?.emissionTests[0]?.validMonths !== 0)?(
+                                        <Modal.Body>
+                                            <div>Not Expired Current Emission Test</div>
+                                            <div>There is {vehicleData?.emissionTests[0]?.validMonths} months have to expire current emission test</div>
+                                        </Modal.Body>
+                                    ):(
+                                        <Modal.Body>
+                                            <Row>
+                                                <Form.Group
+                                                    as={Col}
+                                                >
+                                                    <Form.Label>
+                                                        Serial No:<span
+                                                        className="text-red-500"> *</span>
+                                                    </Form.Label>
+                                                    <Form.Control
+                                                        type="text"
+                                                        placeholder="Enter Serial no"
+                                                        {...saveEmissionFromik.getFieldProps("serialNo")}
+                                                        required
+                                                    />
+                                                    <Form.Text className="text-danger">
+                                                        {saveEmissionFromik.touched.serialNo && saveEmissionFromik.errors.serialNo}
+                                                    </Form.Text>
+                                                </Form.Group>
+                                                <Form.Group
+                                                    as={Col}
+                                                >
+                                                    <Form.Label>
+                                                        Test Fee:<span className="text-red-500"> *</span>
+                                                    </Form.Label>
+                                                    <Form.Control
+                                                        type="number"
+                                                        placeholder="Enter Test fee"
+                                                        {...saveEmissionFromik.getFieldProps("emissionTestFee")}
+                                                        required
+                                                    />
+                                                    <Form.Text className="text-danger">
+                                                        {saveEmissionFromik.touched.emissionTestFee && saveEmissionFromik.errors.emissionTestFee}
+                                                    </Form.Text>
+                                                </Form.Group>
+                                            </Row>
+                                            <Row className='mt-3'>
+                                                <Form.Group
+                                                    as={Col}
+                                                >
+                                                    <Form.Label>
+                                                        Issued Date:<span
+                                                        className="text-red-500"> *</span>
+                                                    </Form.Label>
+                                                    <Form.Control
+                                                        min={minEmissionDate}
+                                                        max={maxDateForEmission}
+                                                        type="date"
+                                                        placeholder="Enter Serial no"
+                                                        {...saveEmissionFromik.getFieldProps("issuedDate")}
+                                                        required
+                                                    />
+                                                    <Form.Text className="text-danger">
+                                                        {saveEmissionFromik.touched.issuedDate && saveEmissionFromik.errors.issuedDate}
+                                                    </Form.Text>
+                                                </Form.Group>
+                                                <Form.Group
+                                                    as={Col}
+                                                >
+                                                    <Form.Label>
+                                                        Expire Date:<span className="text-red-500"> *</span>
+                                                    </Form.Label>
+                                                    <Form.Control
+                                                        type="date"
+                                                        min={minDateForExpiryDate}
+                                                        max={maxDateForExpiryDate}
+                                                        placeholder="Enter Test fee"
+                                                        {...saveEmissionFromik.getFieldProps("expiryDate")}
+                                                        required
+                                                    />
+                                                    <Form.Text className="text-danger">
+                                                        {saveEmissionFromik.touched.expiryDate && saveEmissionFromik.errors.expiryDate}
+                                                    </Form.Text>
+                                                </Form.Group>
+                                            </Row>
+                                            <Row className='mt-3'>
+                                                <Form.Group
+                                                    as={Col}
+                                                >
+                                                    <Form.Label>
+                                                        Emission Report:<span className="text-red-500"> *</span>
+                                                    </Form.Label>
+                                                    <div className='flex gap-x-2 w-96'>
+                                                        <Form.Control
+                                                            type="file"
+                                                            onChange={(e) => {
+                                                                setFileLocation4(e.target.files[0]);
+                                                                setUploadState4(false);
+                                                            }}
+                                                            required
+                                                        />
+                                                        <Button disabled={uploadState4} onClick={()=>{
+                                                            setUploadState4(true);
+                                                            setProgressBarVisible4(true);
+                                                            uploadVehicleEmissionTest();}}>
+                                                            <div className=" flex items-center gap-x-2">
+                                                                <FaCloudUploadAlt/>
+                                                                <div>Upload</div>
+                                                            </div>
+                                                        </Button>
+                                                    </div>
+                                                    <div className="flex flex-row">
+                                                        {uploadProgress4 <= 100 && progressBarVisible4 && (
+                                                            <ProgressBar now={uploadProgress4} label={`${uploadProgress4}%`}
+                                                                         className="mt-3  w-full"/>
+                                                        )}
+                                                    </div>
+                                                    <Form.Text className="text-danger">
+                                                        {saveEmissionFromik.touched.urlOfDocument && saveEmissionFromik.errors.urlOfDocument}
+                                                    </Form.Text>
+                                                </Form.Group>
+                                            </Row>
+                                            <Modal.Footer className="mt-3">
+                                                <div className="w-full justify-end items-end flex">
+                                                    <Button type="submit">Save</Button>
+                                                </div>
+                                            </Modal.Footer>
+                                        </Modal.Body>
+                                    )}
+                                </Form>
+                            </Modal>
+                            <Modal show={showEmissionTestShowModal} onHide={()=>{setEmissionTestShowModal(false)}}>
+                                <Modal.Header closeButton>
+                                    <Modal.Title>Emission Tests</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body className="flex flex-wrap h-96 items-center justify-center overflow-y-scroll flex-row">
+                                    {
+                                        vehicleData?.emissionTests?.map((data, i) => (
+                                            <div className ={(data?.validMonths === 0 ?"bg-red-100 p-4 w-96 items-center text-sm mb-4 rounded overflow-auto":"bg-green-100 p-4 w-96 items-center text-sm mb-4 rounded overflow-auto")} key={i}>
+                                                {data?.validMonths === 0 && vehicleData?.emissionTests?.length ===1 ? (
+                                                    <Row>
+                                                        <div className="mb-1 text-danger italic flex-row flex gap-x-4 items-center" >
+                                                            <AiFillWarning/>
+                                                            <div>Renew Emission Test</div>
+                                                        </div>
+                                                    </Row>
+                                                ) : ""}
+                                                {data?.validMonths === 0 && data?.validDays ===0? (
+                                                    <Row>
+                                                        <div className="mb-1 text-danger italic flex-row flex gap-x-4 items-center" >
+                                                            <AiFillWarning/>
+                                                            <div>Emission Test Is Expired</div>
+                                                        </div>
+                                                    </Row>
+                                                ) : ""}
+
+                                                <Row className="mb-1">
+                                                    <Col xs={4}>Reg No:</Col>
+                                                    <Col xs={8} className="pl-4">
+                                                        {data?.registrationNo}
+                                                    </Col>
+                                                </Row>
+                                                <Row className="mb-1">
+                                                    <Col xs={4}>Serial No:</Col>
+                                                    <Col xs={8} className="pl-4">
+                                                        {data?.serialNo}
+                                                    </Col>
+                                                </Row>
+                                                <Row className="mb-1">
+                                                    <Col xs={4}>Issued Date:</Col>
+                                                    <Col xs={8} className="pl-4">
+                                                        {data?.issuedDate}
+                                                    </Col>
+                                                </Row>
+                                                <Row className="mb-1">
+                                                    <Col xs={4}>Expire Date:</Col>
+                                                    <Col xs={8} className="pl-4">
+                                                        {data?.expiryDate}
+                                                    </Col>
+                                                </Row>
+                                                <Row className="mb-1">
+                                                    <Col xs={4}>Test Fee:</Col>
+                                                    <Col xs={8} className="pl-4">
+                                                        Rs. {data?.emissionTestFee}
+                                                    </Col>
+                                                </Row>
+                                                <Row className="mb-1">
+                                                    <Col xs={4}>Valid:</Col>
+                                                    <Col xs={8} className="pl-4">
+                                                        {data?.validMonths} Months {((data?.validMonths)<=0? data?.validDays +" Days":"")}
+                                                    </Col>
+                                                </Row>
+                                                <Row className="mt-4">
+                                                    <Button onClick={()=>{window.open(data?.urlOfDocument, '_blank');}}>View Licence</Button>
+                                                </Row>
+                                            </div>
+                                        ))}
+                                </Modal.Body>
+                            </Modal>
+
                             <Row className="mb-2">
                                 <Col xs={4}>Licence:</Col>
                                 <Col xs={8} className="pl-4">
@@ -522,7 +843,7 @@ function VehicleCard({vehicleData,interrupt,setInterrupt}) {
                                     <Modal.Header closeButton>
                                         <Modal.Title>Add Licence</Modal.Title>
                                     </Modal.Header>
-                                    {vehicleData?.licenses[0]?.validMonths !==0?(
+                                    {vehicleData?.licenses[0]?.validMonths !== 0 && vehicleData?.licenses?.length !==0?(
                                     <Modal.Body>
                                         <div>Not Expired Current Licence</div>
                                         <div>There is {vehicleData?.licenses[0]?.validMonths} months have to expire current licence</div>
@@ -831,237 +1152,236 @@ function VehicleCard({vehicleData,interrupt,setInterrupt}) {
                                     <Modal.Header closeButton>
                                         <Modal.Title>Add Insurance</Modal.Title>
                                     </Modal.Header>
-                                        {vehicleData?.insurances[0]?.validMonths !== 0 ?
+                                    {console.log("months",vehicleData?.insurances?.length)}
+                                        {(vehicleData?.insurances?.length === 0 || vehicleData?.insurances[0]?.validMonths === 0 )?
                                             (<Modal.Body>
+                                                    <Card.Body className="overflow-auto h-full">
+                                                        <div className="p-4">
+                                                            <Row>
+                                                                <Form.Group
+                                                                    as={Col}
+                                                                >
+                                                                    <Form.Label>
+                                                                        Certificate No:<span className="text-red-500"> *</span>
+                                                                    </Form.Label>
+                                                                    <Form.Control
+                                                                        type="text"
+                                                                        placeholder="Enter Licence number"
+                                                                        {...saveInsuranceFormik.getFieldProps("certificateNo")}
+                                                                        required
+                                                                    />
+                                                                    <Form.Text className="text-danger">
+                                                                        {saveInsuranceFormik.touched.certificateNo && saveInsuranceFormik.errors.certificateNo}
+                                                                    </Form.Text>
+                                                                </Form.Group>
+                                                                <Form.Group
+                                                                    as={Col}
+                                                                    className="mb-3">
+                                                                    <Form.Label>
+                                                                        Annual Fee:<span className="text-red-500"> *</span>
+                                                                    </Form.Label>
+                                                                    <Form.Control
+                                                                        min={0}
+                                                                        type="number"
+                                                                        placeholder="Enter Fee"
+                                                                        {...saveInsuranceFormik.getFieldProps("annualFee")}
+                                                                        required
+                                                                    />
+                                                                    <Form.Text className="text-danger">
+                                                                        {saveInsuranceFormik.touched.annualFee && saveInsuranceFormik.errors.annualFee}
+                                                                    </Form.Text>
+                                                                </Form.Group>
+                                                            </Row>
+                                                            <Row>
+                                                                <Form.Group
+                                                                    as={Col}
+                                                                >
+                                                                    <Form.Label>
+                                                                        Insurance Company:<span
+                                                                        className="text-red-500"> *</span>
+                                                                    </Form.Label>
+                                                                    <Form.Control
+                                                                        type="text"
+                                                                        placeholder="Enter areas fee"
+                                                                        {...saveInsuranceFormik.getFieldProps("insuranceCompany")}
+                                                                        required
+                                                                    />
+                                                                    <Form.Text className="text-danger">
+                                                                        {saveInsuranceFormik.touched.insuranceCompany && saveInsuranceFormik.errors.insuranceCompany}
+                                                                    </Form.Text>
+                                                                </Form.Group>
+                                                                <Form.Group
+                                                                    as={Col}
+                                                                >
+                                                                    <Form.Label>
+                                                                        Issued Date:<span className="text-red-500"> *</span>
+                                                                    </Form.Label>
+                                                                    <Form.Control
+                                                                        type="date"
+                                                                        min={mindateForInsuranceIssuedDate}
+                                                                        placeholder="Enter areas fee"
+                                                                        {...saveInsuranceFormik.getFieldProps("issuedDate")}
+                                                                        required
+                                                                    />
+                                                                    <Form.Text className="text-danger">
+                                                                        {saveInsuranceFormik.touched.issuedDate && saveInsuranceFormik.errors.issuedDate}
+                                                                    </Form.Text>
+                                                                </Form.Group>
+                                                            </Row>
+                                                            <Row className="mt-3">
+                                                                <Form.Group
+                                                                    as={Col}
+                                                                    className="mb-3">
+                                                                    <Form.Label>
+                                                                        Start Date:<span className="text-red-500"> *</span>
+                                                                    </Form.Label>
+                                                                    <Form.Control
+                                                                        min={new Date(new Date(minDateForStartDateInsurance).setDate(new Date(minDateForStartDateInsurance).getDate() - 15)).toISOString().split('T')[0]}
+                                                                        max={new Date(new Date(minDateForStartDateInsurance).setDate(new Date(minDateForStartDateInsurance).getDate() + 5)).toISOString().split('T')[0]}
+                                                                        type="date"
+                                                                        {...saveInsuranceFormik.getFieldProps("startDate")}
+                                                                        required
+                                                                    />
+                                                                    <Form.Text className="text-danger">
+                                                                        {saveInsuranceFormik.touched.startDate && saveInsuranceFormik.errors.startDate}
+                                                                    </Form.Text>
+                                                                </Form.Group>
+                                                                <Form.Group
+                                                                    as={Col}
+                                                                    className="mb-3">
+                                                                    <Form.Label>
+                                                                        Expire Date:<span className="text-red-500"> *</span>
+                                                                    </Form.Label>
+                                                                    <Form.Control
+                                                                        min={new Date(new Date(minDateForStartDateInsurance).setFullYear(new Date(minDateForStartDateInsurance).getFullYear() + 1)).toISOString().split('T')[0]}
+                                                                        max={new Date(new Date(new Date(minDateForStartDateInsurance).setFullYear(new Date(minDateForStartDateInsurance).getFullYear() + 1)).setDate(new Date(minDateForStartDateInsurance).getDate() + 15)).toISOString().split('T')[0]}
+                                                                        type="date"
+                                                                        {...saveInsuranceFormik.getFieldProps("endDate")}
+                                                                        required
+                                                                    />
+                                                                    <Form.Text className="text-danger">
+                                                                        {saveInsuranceFormik.touched.endDate && saveInsuranceFormik.errors.endDate}
+                                                                    </Form.Text>
+                                                                </Form.Group>
+                                                            </Row>
+                                                            <Row className="mt-3">
+                                                                <Form.Group
+                                                                    as={Col}
+                                                                    className='flex gap-x-4 items-center mb-4'
+                                                                >
+                                                                    <Form.Label>
+                                                                        Insurance Type:<span className="text-red-500"> *</span>
+                                                                    </Form.Label>
+                                                                    <Dropdown>
+                                                                        <Dropdown.Toggle variant="outline-secondary" size="sm"
+                                                                                         className="h-9 w-52">
+                                                                            {saveInsuranceFormik.getFieldProps("insuranceType").value === "" ? "Select Insurance Type" : saveInsuranceFormik.getFieldProps("insuranceType").value}
+                                                                        </Dropdown.Toggle>
+                                                                        <Dropdown.Menu>
+                                                                            {insuranceType?.map((data, i) => (
+                                                                                <Dropdown.Item key={i} onClick={() => {
+                                                                                    saveInsuranceFormik.setFieldValue("insuranceType", data?.type);
+                                                                                }}>{data?.type}</Dropdown.Item>))}
+                                                                            <Dropdown.Item className="bg-blue-700 text-white"
+                                                                                           style={{backgroundColor: 'gray'}}
+                                                                                           onClick={() => {
+                                                                                               setShowModalAddInsuranceType(true);
+                                                                                           }}>
+                                                                                New Insurance Type
+                                                                            </Dropdown.Item>
+                                                                        </Dropdown.Menu>
+                                                                    </Dropdown>
+                                                                    <Form.Text className="text-danger">
+                                                                        {saveInsuranceFormik.touched.insuranceType && saveInsuranceFormik.errors.insuranceType}
+                                                                    </Form.Text>
+                                                                </Form.Group>
+                                                            </Row>
+                                                            <Modal show={showModalAddInsuranceType} onHide={() => {
+                                                                setShowModalAddInsuranceType(false)
+                                                            }}>
+                                                                <Form onSubmit={formikAddNewInsuranceType.handleSubmit}>
+                                                                    <Modal.Header closeButton>
+                                                                        <Modal.Title>Add New Insurance Type</Modal.Title>
+                                                                    </Modal.Header>
+                                                                    <Modal.Body>
+                                                                        <Form.Group>
+                                                                            <Form.Label>
+                                                                                Insurance Type:<span
+                                                                                className="text-red-500"> *</span>
+                                                                            </Form.Label>
+                                                                            <Form.Control
+                                                                                type="text"
+                                                                                placeholder="Insurance Type"
+                                                                                required
+                                                                                {...formikAddNewInsuranceType.getFieldProps("type")}
+                                                                            />
+                                                                        </Form.Group>
+                                                                        <Form.Text className="text-danger">
+                                                                            {formikAddNewInsuranceType.touched.type && formikAddNewInsuranceType.errors.type}
+                                                                        </Form.Text>
+                                                                    </Modal.Body>
+                                                                    <Modal.Footer>
+                                                                        <Button variant="secondary" onClick={() => {
+                                                                            setShowModalAddInsuranceType(false)
+                                                                        }}>
+                                                                            Close
+                                                                        </Button>
+                                                                        <Button variant="primary" type="submit">
+                                                                            Save Changes
+                                                                        </Button>
+                                                                    </Modal.Footer>
+                                                                </Form>
+                                                            </Modal>
+                                                            <Row className='mb-3'>
+                                                                <Form.Group
+                                                                    as={Col}
+                                                                >
+                                                                    <Form.Label>
+                                                                        Upload Licence:<span className="text-red-500"> *</span>
+                                                                    </Form.Label>
+                                                                    <div className='flex gap-x-2 w-96'>
+                                                                        <Form.Control
+                                                                            type="file"
+                                                                            onChange={(e) => {
+                                                                                setFileLocation3(e.target.files[0]);
+                                                                                setUploadState3(false);
+                                                                            }}
+                                                                        />
+                                                                        <Button disabled={uploadState3} onClick={() => {
+                                                                            setUploadState3(true);
+                                                                            setProgressBarVisible3(true);
+                                                                            uploadInsurance();
+                                                                        }}>
+                                                                            <div className=" flex items-center gap-x-2">
+                                                                                <FaCloudUploadAlt/>
+                                                                                <div>Upload</div>
+                                                                            </div>
+                                                                        </Button>
+                                                                    </div>
+                                                                    <div className="flex flex-row">
+                                                                        {uploadProgress3 <= 100 && progressBarVisible3 && (
+                                                                            <ProgressBar now={uploadProgress3}
+                                                                                         label={`${uploadProgress3}%`}
+                                                                                         className="mt-3  w-full"/>
+                                                                        )}
+                                                                    </div>
+                                                                    <Form.Text className="text-danger">
+                                                                        {saveInsuranceFormik.touched.insuranceLink && saveInsuranceFormik.errors.insuranceLink}
+                                                                    </Form.Text>
+                                                                </Form.Group>
+                                                            </Row>
+                                                        </div>
+                                                    </Card.Body>
+                                                </Modal.Body>
+                                            )
+                                            :( <Modal.Body>
                                                 <div>Not Expired Current Insurance</div>
                                                 <div>There is {vehicleData?.insurances[0]?.validMonths} months have to
                                                     expire current
                                                     Insurance
                                                 </div>
-                                            </Modal.Body>) :
-                                            (
-                                                <Modal.Body>
-                                                    <Card.Body className="overflow-auto h-full">
-                                                        <div className="p-4">
-                                                    <Row>
-                                                        <Form.Group
-                                                            as={Col}
-                                                        >
-                                                            <Form.Label>
-                                                                Certificate No:<span className="text-red-500"> *</span>
-                                                            </Form.Label>
-                                                            <Form.Control
-                                                                type="text"
-                                                                placeholder="Enter Licence number"
-                                                                {...saveInsuranceFormik.getFieldProps("certificateNo")}
-                                                                required
-                                                            />
-                                                            <Form.Text className="text-danger">
-                                                                {saveInsuranceFormik.touched.certificateNo && saveInsuranceFormik.errors.certificateNo}
-                                                            </Form.Text>
-                                                        </Form.Group>
-                                                        <Form.Group
-                                                            as={Col}
-                                                            className="mb-3">
-                                                            <Form.Label>
-                                                                Annual Fee:<span className="text-red-500"> *</span>
-                                                            </Form.Label>
-                                                            <Form.Control
-                                                                min={0}
-                                                                type="number"
-                                                                placeholder="Enter Fee"
-                                                                {...saveInsuranceFormik.getFieldProps("annualFee")}
-                                                                required
-                                                            />
-                                                            <Form.Text className="text-danger">
-                                                                {saveInsuranceFormik.touched.annualFee && saveInsuranceFormik.errors.annualFee}
-                                                            </Form.Text>
-                                                        </Form.Group>
-                                                    </Row>
-                                                    <Row>
-                                                        <Form.Group
-                                                            as={Col}
-                                                        >
-                                                            <Form.Label>
-                                                                Insurance Company:<span
-                                                                className="text-red-500"> *</span>
-                                                            </Form.Label>
-                                                            <Form.Control
-                                                                type="text"
-                                                                placeholder="Enter areas fee"
-                                                                {...saveInsuranceFormik.getFieldProps("insuranceCompany")}
-                                                                required
-                                                            />
-                                                            <Form.Text className="text-danger">
-                                                                {saveInsuranceFormik.touched.insuranceCompany && saveInsuranceFormik.errors.insuranceCompany}
-                                                            </Form.Text>
-                                                        </Form.Group>
-                                                        <Form.Group
-                                                            as={Col}
-                                                        >
-                                                            <Form.Label>
-                                                                Issued Date:<span className="text-red-500"> *</span>
-                                                            </Form.Label>
-                                                            <Form.Control
-                                                                type="date"
-                                                                min={mindateForInsuranceIssuedDate}
-                                                                placeholder="Enter areas fee"
-                                                                {...saveInsuranceFormik.getFieldProps("issuedDate")}
-                                                                required
-                                                            />
-                                                            <Form.Text className="text-danger">
-                                                                {saveInsuranceFormik.touched.issuedDate && saveInsuranceFormik.errors.issuedDate}
-                                                            </Form.Text>
-                                                        </Form.Group>
-
-                                                    </Row>
-                                                    <Row className="mt-3">
-                                                        <Form.Group
-                                                            as={Col}
-                                                            className="mb-3">
-                                                            <Form.Label>
-                                                                Start Date:<span className="text-red-500"> *</span>
-                                                            </Form.Label>
-                                                            <Form.Control
-                                                                min={new Date(new Date(minDateForStartDateInsurance).setDate(new Date(minDateForStartDateInsurance).getDate() - 15)).toISOString().split('T')[0]}
-                                                                max={new Date(new Date(minDateForStartDateInsurance).setDate(new Date(minDateForStartDateInsurance).getDate() + 5)).toISOString().split('T')[0]}
-                                                                type="date"
-                                                                {...saveInsuranceFormik.getFieldProps("startDate")}
-                                                                required
-                                                            />
-                                                            <Form.Text className="text-danger">
-                                                                {saveInsuranceFormik.touched.startDate && saveInsuranceFormik.errors.startDate}
-                                                            </Form.Text>
-                                                        </Form.Group>
-                                                        <Form.Group
-                                                            as={Col}
-                                                            className="mb-3">
-                                                            <Form.Label>
-                                                                Expire Date:<span className="text-red-500"> *</span>
-                                                            </Form.Label>
-                                                            <Form.Control
-                                                                min={new Date(new Date(minDateForStartDateInsurance).setFullYear(new Date(minDateForStartDateInsurance).getFullYear() + 1)).toISOString().split('T')[0]}
-                                                                max={new Date(new Date(new Date(minDateForStartDateInsurance).setFullYear(new Date(minDateForStartDateInsurance).getFullYear() + 1)).setDate(new Date(minDateForStartDateInsurance).getDate() + 15)).toISOString().split('T')[0]}
-                                                                type="date"
-                                                                {...saveInsuranceFormik.getFieldProps("endDate")}
-                                                                required
-                                                            />
-                                                            <Form.Text className="text-danger">
-                                                                {saveInsuranceFormik.touched.endDate && saveInsuranceFormik.errors.endDate}
-                                                            </Form.Text>
-                                                        </Form.Group>
-                                                    </Row>
-                                                    <Row className="mt-3">
-                                                        <Form.Group
-                                                            as={Col}
-                                                            className='flex gap-x-4 items-center mb-4'
-                                                        >
-                                                            <Form.Label>
-                                                                Insurance Type:<span className="text-red-500"> *</span>
-                                                            </Form.Label>
-                                                            <Dropdown>
-                                                                <Dropdown.Toggle variant="outline-secondary" size="sm"
-                                                                                 className="h-9 w-52">
-                                                                    {saveInsuranceFormik.getFieldProps("insuranceType").value === "" ? "Select Insurance Type" : saveInsuranceFormik.getFieldProps("insuranceType").value}
-                                                                </Dropdown.Toggle>
-                                                                <Dropdown.Menu>
-                                                                    {insuranceType?.map((data, i) => (
-                                                                        <Dropdown.Item key={i} onClick={() => {
-                                                                            saveInsuranceFormik.setFieldValue("insuranceType", data?.type);
-                                                                        }}>{data?.type}</Dropdown.Item>))}
-                                                                    <Dropdown.Item className="bg-blue-700 text-white"
-                                                                                   style={{backgroundColor: 'gray'}}
-                                                                                   onClick={() => {
-                                                                                       setShowModalAddInsuranceType(true);
-                                                                                   }}>
-                                                                        New Insurance Type
-                                                                    </Dropdown.Item>
-                                                                </Dropdown.Menu>
-                                                            </Dropdown>
-                                                            <Form.Text className="text-danger">
-                                                                {saveInsuranceFormik.touched.insuranceType && saveInsuranceFormik.errors.insuranceType}
-                                                            </Form.Text>
-                                                        </Form.Group>
-                                                    </Row>
-                                                    <Modal show={showModalAddInsuranceType} onHide={() => {
-                                                        setShowModalAddInsuranceType(false)
-                                                    }}>
-                                                        <Form onSubmit={formikAddNewInsuranceType.handleSubmit}>
-                                                            <Modal.Header closeButton>
-                                                                <Modal.Title>Add New Insurance Type</Modal.Title>
-                                                            </Modal.Header>
-                                                            <Modal.Body>
-                                                                <Form.Group>
-                                                                    <Form.Label>
-                                                                        Insurance Type:<span
-                                                                        className="text-red-500"> *</span>
-                                                                    </Form.Label>
-                                                                    <Form.Control
-                                                                        type="text"
-                                                                        placeholder="Insurance Type"
-                                                                        required
-                                                                        {...formikAddNewInsuranceType.getFieldProps("type")}
-                                                                    />
-                                                                </Form.Group>
-                                                                <Form.Text className="text-danger">
-                                                                    {formikAddNewInsuranceType.touched.type && formikAddNewInsuranceType.errors.type}
-                                                                </Form.Text>
-                                                            </Modal.Body>
-                                                            <Modal.Footer>
-                                                                <Button variant="secondary" onClick={() => {
-                                                                    setShowModalAddInsuranceType(false)
-                                                                }}>
-                                                                    Close
-                                                                </Button>
-                                                                <Button variant="primary" type="submit">
-                                                                    Save Changes
-                                                                </Button>
-                                                            </Modal.Footer>
-                                                        </Form>
-                                                    </Modal>
-
-                                                    <Row className='mb-3'>
-                                                        <Form.Group
-                                                            as={Col}
-                                                        >
-                                                            <Form.Label>
-                                                                Upload Licence:<span className="text-red-500"> *</span>
-                                                            </Form.Label>
-                                                            <div className='flex gap-x-2 w-96'>
-                                                                <Form.Control
-                                                                    type="file"
-                                                                    onChange={(e) => {
-                                                                        setFileLocation3(e.target.files[0]);
-                                                                        setUploadState3(false);
-                                                                    }}
-                                                                />
-                                                                <Button disabled={uploadState3} onClick={() => {
-                                                                    setUploadState3(true);
-                                                                    setProgressBarVisible3(true);
-                                                                    uploadInsurance();
-                                                                }}>
-                                                                    <div className=" flex items-center gap-x-2">
-                                                                        <FaCloudUploadAlt/>
-                                                                        <div>Upload</div>
-                                                                    </div>
-                                                                </Button>
-                                                            </div>
-                                                            <div className="flex flex-row">
-                                                                {uploadProgress3 <= 100 && progressBarVisible3 && (
-                                                                    <ProgressBar now={uploadProgress3}
-                                                                                 label={`${uploadProgress3}%`}
-                                                                                 className="mt-3  w-full"/>
-                                                                )}
-                                                            </div>
-                                                            <Form.Text className="text-danger">
-                                                                {saveInsuranceFormik.touched.insuranceLink && saveInsuranceFormik.errors.insuranceLink}
-                                                            </Form.Text>
-                                                        </Form.Group>
-                                                    </Row>
-                                                </div>
-                                            </Card.Body>
-                                            </Modal.Body>
-                                        )}
+                                            </Modal.Body>)
+                                            }
                                     <Modal.Footer>
                                         <Button variant="secondary" onClick={() => {
                                             setShowAddInsuranceModal(false)
