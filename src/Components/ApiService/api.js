@@ -146,7 +146,6 @@ export const AddPackage = (data)=>{
   return AxiosInstance.post('admin/AddPackage',data);
 }
 export const getPackages = (field,order,pageSize,offset)=>{
-  console.log(field,order,pageSize,offset)
   return AxiosInstance.get(`admin/getAllPackage/${field}/${order}/${pageSize}/${offset}`);
 }
 export const upDatePackage = (data)=>{

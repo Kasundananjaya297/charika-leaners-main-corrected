@@ -16,6 +16,7 @@ import Swal from "sweetalert2";
 import {IoMdAdd} from "react-icons/io";
 import AddVehicleType from "./AddVehicleType";
 import {useNavigate} from "react-router-dom";
+import AddVehicleTypeEdit from "./AddVehicleTypeEdit";
 
 function AddNewVehicle(props) {
     //data filtering hook
@@ -113,12 +114,15 @@ function AddNewVehicle(props) {
     const [ID,setID] = useState("");
     const [autoOrManual, setAutoOrManual] = useState('');
     const [typeID, setTypeID] = useState('');
+    const [parseID,setParseID] = useState('');
 
 
 
     //modal for add new fuel type
     const [showModalAddFuel, setShowModalAddFuel] = useState(false);
     const [showModalAddVehicleType, setShowModalAddVehicleType] = useState(false);
+    //hook for edit vehicle Modal
+    const [showModalEditVehicle, setEditVehicleModal] = useState(false);
 
     const nav = useNavigate();
 
@@ -477,15 +481,8 @@ function AddNewVehicle(props) {
                                                         </Form.Group>
                                                     </td>
                                                     <td className="gap-x-10"><FaUserEdit onClick={() => {
-                                                        // edit({
-                                                        //     stdId,
-                                                        //     typeID: item?.typeID,
-                                                        //     typeName: item?.typeName,
-                                                        //     engineCapacity: item?.engineCapacity,
-                                                        //     typeAuto: item?.typeAuto,
-                                                        //     typeManual: item?.typeManual
-                                                        // });
-                                                        // setDatatoParse();
+                                                        setParseID(i)
+                                                        setEditVehicleModal(true);
                                                     }}/></td>
                                                 </tr>
 
@@ -496,6 +493,14 @@ function AddNewVehicle(props) {
                                         {formik.touched.autoOrManual && formik.errors.autoOrManual}
                                     </Form.Text>
                                 </Row>
+                                <Modal show={showModalEditVehicle} onHide={()=>{setEditVehicleModal(false)}}>
+                                    <Modal.Header closeButton>
+                                        <Modal.Title>Edit Vehicle Type</Modal.Title>
+                                    </Modal.Header>
+                                    <Modal.Body>
+                                        <AddVehicleTypeEdit setShowModal={setEditVehicleModal} data={vehicleType[parseID]}/>
+                                    </Modal.Body>
+                                </Modal>
                                 <Row className='items-center justify-center flex'>
                                     <Button onClick={()=>{setShowModalAddVehicleType(true)}} className='ml-6'>
                                         <div className="flex items-center justify-center gap-x-2">

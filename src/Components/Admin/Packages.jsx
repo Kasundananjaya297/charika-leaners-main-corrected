@@ -11,27 +11,22 @@ export default function () {
     const [feildName, setFeild] = useState("packagePrice");
     const [order, setOrder] = useState("DESC");
     const [offset, setOffset] = useState(0);
-    const [stdID, setStdID] = useState("");
 
     useEffect(() => {
         const onFetch = async () => {
             try {
-                console.log("onFetch");
                 const response = await getPackages(
                     feildName,
                     order,
                     itemsPerPage,
                     offset
                 );
-                console.log(response?.data?.content);
+
                 if (response && response?.data?.code === "00") {
-                    console.log(response?.data?.content);
                     setPackages(response?.data?.content);
-                } else {
-                    console.log("Error fetching data:", response);
                 }
             } catch (error) {
-                console.error("An error occurred:", error);
+                //console.error("An error occurred:", error);
             }
         };
         onFetch();
@@ -40,12 +35,18 @@ export default function () {
     useEffect(() =>{
         const fetchPackages = async () =>{
             try{
-                const response = await getPackages();
-                console.log(response.data);
-                setPackages(response.data?.content);
+                const response = await getPackages(
+                    feildName,
+                    order,
+                    itemsPerPage,
+                    offset);
+                if (response && response?.data?.code === "00"){
+                    setPackages(response.data?.content);
+                }
+
             }
             catch(error){
-                console.log(error);
+                //console.log(error);
             }
         }
         fetchPackages();
@@ -54,10 +55,9 @@ export default function () {
         const getchPacks = async () =>{
             try{
                 const response = await getPackgeByID(packageID);
-                console.log(response.data);
                 setPackages([response?.data?.content]);
             }catch(error){
-                console.log(error);
+                //console.log(error);
             }
         }
         getchPacks();

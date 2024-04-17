@@ -5,17 +5,20 @@ import Form from "react-bootstrap/Form";
 import {useFormik} from "formik";
 import * as Yup from "yup";
 import {UpdateVehicleTypes} from "../../ApiService/api";
-import {useLocation, useNavigate} from "react-router-dom";
 import Swal from "sweetalert2";
-function AddVehicleTypeEdit(props) {
-    const location = useLocation();
-    const [parsedData, setParsedData] =useState(location.state);
-    const stdId = parsedData?.stdId;
+function AddVehicleTypeEdit({data,setShowModal}) {
+    console.log(data);
+
+    const [parsedData, setParsedData] =useState(data);
+    const [isVissibleAuto, setIsVisibleAuto] = useState(false);
+    const [isVissibleManual, setIsVisibleManual] = useState(false);
     const formik = useFormik({
         initialValues: {
             typeID: parsedData?.typeID,
             engineCapacity: parsedData?.engineCapacity,
             typeName: parsedData?.typeName,
+            typeAuto: parsedData?.typeAuto,
+            typeManual: parsedData?.typeManual,
 
         },
         validationSchema: Yup.object({
@@ -31,11 +34,6 @@ function AddVehicleTypeEdit(props) {
             }
         },
     });
-    const nav = useNavigate();
-    const back = () => {
-        console.log(stdId);
-        nav("/studentprofile/trail",{ state: stdId });
-    }
     const save = async () => {
             console.log(formik.values);
         try {
@@ -53,7 +51,6 @@ function AddVehicleTypeEdit(props) {
                             html:"Vehicle type has been Updated.",
                             icon:"success",
                         });
-                    nav("/studentprofile/trail",{ state: stdId });
 
                 }else if(response?.data?.code==="06"){
                     Swal.fire({
@@ -70,26 +67,10 @@ function AddVehicleTypeEdit(props) {
             });
         }
     };
-    useEffect(() => {
-        let role = sessionStorage.getItem("role");
-        console.log("role: " + role);
-        if (!(role === "ADMIN" && sessionStorage.getItem("token") !== null)) {
-            nav("/");
-        } else if (stdId === null) {
-            nav("/studentprofile");
-        }
-    }, [nav]);
     return (
-        <div className="flex items-center justify-center h-screen">
+        <div className="flex items-center justify-center ">
             <Card style={{ width: '40rem' }}>
             <Card.Body>
-                <div className="p-4">
-                    <Row>
-                        <div className="flex justify-center p-2 bg-neutral-100 mt-3 rounded-md text-2xl ">
-                            Add new vehicle type
-                        </div>
-                    </Row>
-                </div>
                 <Form className="p-4" onSubmit={formik.handleSubmit}>
                     <Row>
                         <Form.Group as={Col} md={6} className="mb-3">
@@ -145,28 +126,37 @@ function AddVehicleTypeEdit(props) {
                                     type="radio"
                                     label="Manual"
                                     name="Control"
-                                    checked={parsedData?.typeManual}
+                                    checked={formik.getFieldProps("typeManual").value||parsedData?.typeManual}
                                     onChange={() => {
                                         formik.setFieldValue("typeManual", true);
                                         formik.setFieldValue("typeAuto", false);
+                                        setIsVisibleManual(true)
                                     }}
                                     required
+                                    disabled={formik.getFieldProps("typeAuto").value||isVissibleAuto||(formik.getFieldProps("typeManual").value && formik.getFieldProps("typeAuto").value)||parsedData?.typeAuto}
                                 />
                                 <Form.Check
                                     type="radio"
                                     label="Auto"
-                                    checked={parsedData?.typeAuto}
+                                    checked={formik.getFieldProps("typeAuto").value||parsedData?.typeAuto}
                                     name="Control"
                                     onChange={() => {
                                         formik.setFieldValue("typeAuto", true);
                                         formik.setFieldValue("typeManual", false);
+                                        setIsVisibleAuto(true);
                                     }}
                                     required
+                                    disabled={formik.getFieldProps("typeManual").value||isVissibleManual||(formik.getFieldProps("typeManual").value && formik.getFieldProps("typeAuto").value)||parsedData?.typeManual}
                                 />
                                 <Form.Check
                                     type="radio"
                                     label="Both"
-                                    checked={parsedData?.typeAuto && parsedData?.typeManual}
+
+                                    Copy code
+                                    checked={
+                                        (formik.getFieldProps("typeAuto").value && formik.getFieldProps("typeManual").value) ||
+                                        (parsedData && parsedData.typeAuto && parsedData.typeManual)
+                                    }
                                     name="Control"
                                     onChange={() => {
                                         formik.setFieldValue("typeAuto", true);
@@ -180,15 +170,11 @@ function AddVehicleTypeEdit(props) {
                     <Form.Group>
                         <Row>
                             <div
-                                className="flex flex-row justify-between items-center bg-neutral-100 p-2 rounded-md mt-4">
-                                <Button variant="danger" onClick={back}>
-                                    Back
-                                </Button>
+                                className="flex flex-row justify-end items-center bg-neutral-100 p-2 rounded-md mt-4">
                                 <Button
                                     type="submit"
-                                    variant="success"
                                 >
-                                    Save
+                                    Save Changes
                                 </Button>
                             </div>
                         </Row>
