@@ -435,6 +435,7 @@ function AddNewVehicle(props) {
                                                 type="text"
                                                 placeholder="Fuel Type"
                                                 required
+                                                {...formikFuelType.getFieldProps("fuelType")}
                                             />
                                         </Form.Group>
                                         <Form.Text className="text-danger">

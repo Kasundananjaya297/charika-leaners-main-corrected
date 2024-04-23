@@ -230,3 +230,15 @@ export const saveInsurance = (data) =>{
 export const saveEmissionTest =(data)=>{
     return AxiosInstance.post('admin/saveEmissionTest',data);
 }
+export const saveVehicleServiceOrRepair =(data) =>{
+    return AxiosInstance.post('admin/saveVehicleServiceOrRepair',data);
+}
+export const commonItemsOrServiceOfferdByService =(data) =>{
+    return AxiosInstance.post('admin/commonItemsOrServiceOfferdByService',data);
+}
+export const getCommonItemsOrServiceOfferdByService =()=>{
+    return AxiosInstance.get('admin/getCommonItemsOrServiceOfferdByService');
+}
+export const VehicleServicesAndRepairEndUpdate = (data) =>{
+    return AxiosInstance.put('admin/updateCommonItemsOrServiceOfferdByServiceEnd',data);
+}

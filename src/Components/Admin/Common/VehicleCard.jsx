@@ -21,6 +21,9 @@ import Swal from "sweetalert2";
 import {AiFillWarning} from "react-icons/ai";
 import Dropdown from "react-bootstrap/Dropdown";
 import addVehicleTypeEdit from "../Forms/AddVehicleTypeEdit";
+import VehicleServieAndRepair from "../Forms/ModalsForVehicleCard/VehicleServieAndRepair";
+import ServiceAndRepairEnd from "../Forms/ModalsForVehicleCard/ServiceAndRepairEnd";
+import ViewRepair from "../Forms/ModalsForVehicleCard/ViewRepair";
 
 
 function VehicleCard({vehicleData,interrupt,setInterrupt}) {
@@ -45,6 +48,12 @@ function VehicleCard({vehicleData,interrupt,setInterrupt}) {
     const [showEmissionTestModal,setEmissionTestModal] = useState(false);
     //hook for emission test Show
     const [showEmissionTestShowModal,setEmissionTestShowModal] = useState(false);
+    // hook for vehicle service show modal
+    const [showModalVehicleService,setShowModalVehicleService] = useState(false)
+    //hook for ServiceAndRepairEnd show modal
+    const [showModalServiceAndRepairEnd,setShowModalServiceAndRepairEnd] = useState(false);
+    //hook for view show repair or service modal
+    const [viewRepairOrServiceModalView,setViewRepairOrServiceModalView] = useState(false);
 
     //upload book
     const [uploadState, setUploadState] = useState(true);
@@ -52,12 +61,6 @@ function VehicleCard({vehicleData,interrupt,setInterrupt}) {
     const [uploadProgress, setUploadProgress] = useState(0);
     const[downloadURL, setDownloadURL] = useState("");
     const [progressBarVisible,setProgressBarVisible] = useState(false);
-
-
-
-
-
-
 
     const uploadFileVehicleBook = async () => {
         try {
@@ -439,7 +442,7 @@ function VehicleCard({vehicleData,interrupt,setInterrupt}) {
             <Row className="flex overflow-hidden text-sm item-center">
                 <Col sm={12} md={6} lg={4}>
                     <Card style={{ width: "25rem"}}>
-                        <div className="flex  justify-between pr-1 pl-5 pt-3 w-wrap h-wrap mb-2 " >
+                        <div className="flex  justify-between pr-1 pl-5 pt-3 w-wrap h-wrap mb-2" >
                             <FaUserEdit size={24} onClick={""}/>
                             <Col xs={1} sm={3}>
                                 <div className="flex justify-center rounded-full items-center  w-fit h-fit bg-gray-200">
@@ -454,7 +457,7 @@ function VehicleCard({vehicleData,interrupt,setInterrupt}) {
                                 <Image src={`${vehicleData?.vehiclePhoto}`} rounded />
                             </Modal.Body>
                         </Modal>
-                        <Card.Body className="p-4">
+                        <Card.Body className="p-4 pt-1">
                             <Row className="mb-2">
                                 <Col xs={4}>Reg No:</Col>
                                 <Col xs={8} className="pl-4">
@@ -513,6 +516,12 @@ function VehicleCard({vehicleData,interrupt,setInterrupt}) {
                                 <Col xs={4}>Class:</Col>
                                 <Col xs={8} className="pl-4">
                                     {vehicleData?.typeID} - {vehicleData?.vehicleClass}
+                                </Col>
+                            </Row>
+                            <Row className="mb-2">
+                                <Col xs={4}>Milage:</Col>
+                                <Col xs={8} className="pl-4">
+                                    {vehicleData?.vehicleServiceORRepairs[0]?.milage} Km
                                 </Col>
                             </Row>
                             <Row className="mb-2 flex items-center">
@@ -1147,12 +1156,55 @@ function VehicleCard({vehicleData,interrupt,setInterrupt}) {
                                     </Col>
                                 </Col>
                             </Row>
+                            <Row className="mb-2 flex flex-row ">
+                                <Col xs={4}>Service & Repair:</Col>
+                                <Col xs={8} className="pl-4">
+                                    <Col xs={8} className="flex">
+                                        <Button
+                                            className="flex w-18 h-8 justify-center items-center"
+                                            variant="outline-success"
+                                            style={{ fontSize: "small" }}
+                                            onClick={()=>{setShowModalVehicleService(true)}}
+                                        >
+                                            Start
+                                        </Button>
+                                        <Button
+                                            className="flex w-18 h-8 justify-center items-center ml-4"
+                                            variant="outline-danger"
+                                            style={{ fontSize: "small" }}
+                                            onClick={() => {
+                                                setShowModalServiceAndRepairEnd(true);
+                                            }}
+                                        >
+                                            End
+                                        </Button>
+                                        <Button
+                                            className="flex w-18 h-8 justify-center items-center ml-4"
+                                            variant="link"
+                                            style={{ fontSize: "small" }}
+                                            onClick={() => {
+                                                setViewRepairOrServiceModalView(true);
+                                            }}
+                                        >
+                                            View
+                                        </Button>
+                                    </Col>
+                                </Col>
+                            </Row>
+                            <Row className="mb-2 items-center">
+                                <Col xs={4}>Vehicle status:</Col>
+                                <Col xs={8} className="pl-4">
+                                    <Button size={'sm'} disabled={true}>{vehicleData?.vehicleStatus}</Button>
+                                </Col>
+                            </Row>
+                                <VehicleServieAndRepair vehicleData={vehicleData} show={showModalVehicleService} onHide={()=>{setShowModalVehicleService(false)}} interrupt={interrupt} setInterrupt={setInterrupt}/>
+                                <ServiceAndRepairEnd data={vehicleData} show={showModalServiceAndRepairEnd} onHide={()=>{setShowModalServiceAndRepairEnd(false)}} interrupts={interrupt} setInterrupts={setInterrupt}/>
+                                <ViewRepair show={viewRepairOrServiceModalView} onHide={setViewRepairOrServiceModalView}  vehicleData={vehicleData}/>
                             <Modal show={showAddInsuranceModal} onHide={()=>{setShowAddInsuranceModal(false)}} size={'lg'}>
                                 <Form onSubmit={saveInsuranceFormik.handleSubmit}>
                                     <Modal.Header closeButton>
                                         <Modal.Title>Add Insurance</Modal.Title>
                                     </Modal.Header>
-                                    {console.log("months",vehicleData?.insurances?.length)}
                                         {(vehicleData?.insurances?.length === 0 || vehicleData?.insurances[0]?.validMonths === 0 )?
                                             (<Modal.Body>
                                                     <Card.Body className="overflow-auto h-full">
@@ -1475,5 +1527,4 @@ function VehicleCard({vehicleData,interrupt,setInterrupt}) {
         </div>
     );
 }
-
 export default VehicleCard;
