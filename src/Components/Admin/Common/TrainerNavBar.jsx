@@ -14,7 +14,7 @@ export default function TrainerNavBar({ setfiled, setOrder, setStudentID }) {
   //props for set nav bar selections
   const nav = useNavigate();
   const GoToRegisterForm1 = () => {
-    nav("/studentprofile/Form1");
+    nav("/trainer/registertrainer");
   };
   //search result dropdown
   const [search, setSearch] = useState("");

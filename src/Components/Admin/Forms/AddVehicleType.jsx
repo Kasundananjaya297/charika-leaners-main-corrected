@@ -16,14 +16,16 @@ function AddVehicleType({setShowModal}) {
             typeName: "",
             typeAuto: false,
             typeManual: false,
+            isHeavy:"",
         },
         validationSchema: Yup.object({
             typeID: Yup.string()
                 .required("Required")
                 .matches(/^[A-Z]{1,3}[1-9]*$/, { message: "Capital letters allowed, Sapce Not allowed and maximum length is 3" }),
 
-            engineCapacity: Yup.string().matches(/^[0-9<>= ]+$/, "Must be a number or a number with >,<,.."),
+            engineCapacity: Yup.string().matches(/^[0-9<>= CcKg]+$/, "Must be a number,or CC/Kg a number with >,<,.."),
             typeName: Yup.string().required("Required").matches(/^[a-zA-Z ]+$/, "Must be a string"),
+            isHeavy:Yup.boolean().required("Required"),
         }),
         onSubmit: async (values) => {
             try {
@@ -88,7 +90,7 @@ function AddVehicleType({setShowModal}) {
                         </Form.Group>
                         <Form.Group as={Col} md={6} className="mb-3">
                             <Form.Label>
-                                Engine Capacity:<span className="text-red-500"></span>
+                                Engine Capacity/Weight:<span className="text-red-500"></span>
                             </Form.Label>
                             <Form.Control
                                 type="text"
@@ -147,6 +149,35 @@ function AddVehicleType({setShowModal}) {
                                     onChange={() => {
                                         formik.setFieldValue("typeAuto", true);
                                         formik.setFieldValue("typeManual", true);
+                                    }}
+                                    required
+                                />
+                            </div>
+                        </Form.Group>
+                    </Row>
+                    <Row className='mt-3'>
+                        <Form.Group as={Col} md={6} className="mb-3">
+                            <Form.Label>
+                                Heavy Vehicle:<span className="text-red-500"> *</span>
+                            </Form.Label>
+                            <div className='flex-row flex gap-x-4 pl-4 small'>
+                                <Form.Check
+                                    type="radio"
+                                    label="Yes"
+                                    name="isHeavy"
+                                    size='sm'
+                                    onChange={() => {
+                                        formik.setFieldValue("isHeavy", true);
+                                    }}
+                                    required
+                                />
+                                <Form.Check
+                                    type="radio"
+                                    label="No"
+                                    name="isHeavy"
+                                    size='sm'
+                                    onChange={() => {
+                                        formik.setFieldValue("isHeavy", false);
                                     }}
                                     required
                                 />

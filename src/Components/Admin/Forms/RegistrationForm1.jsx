@@ -19,6 +19,8 @@ import {
   ValidateNonRequiredName,
 } from "../../Validation/validation";
 import * as Yup from "yup";
+import {Modal} from "react-bootstrap";
+import Camera from "../Common/Camera";
 export default function RegistrationForm1() {
   const nav = useNavigate();
   const back = () => {
@@ -34,6 +36,10 @@ export default function RegistrationForm1() {
     const [submitButton, setSubmitButton] = useState(false);
     const[downloadURL, setDownloadURL] = useState("");
     const [progressBarVisible,setProgressBarVisible] = useState(false);
+
+    //hook for take photo modal
+  const [showModalCamera,setShowModalCamera] = useState(false);
+
   useEffect(() => {formik.setFieldValue("profilePhotoURL", downloadURL);}, [downloadURL])
   const formik = useFormik({
     initialValues: {
@@ -167,7 +173,7 @@ export default function RegistrationForm1() {
                               setUploadState(false);
                             }}
                         />
-                        <Button onClick={tekePhoto}>
+                        <Button onClick={()=>{setShowModalCamera(true)}}>
                             <div className=" flex items-center gap-x-2" >
                               <FaCamera />
                               <div>Take</div>
@@ -429,6 +435,14 @@ export default function RegistrationForm1() {
           </div>
         </Card.Body>
       </Card>
+      <Modal show={showModalCamera} onHide={()=>{setShowModalCamera(false)}}>
+        <Modal.Header>
+          <Modal.Title>Take Photo</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Camera />
+        </Modal.Body>
+      </Modal>
     </div>
   );
 }

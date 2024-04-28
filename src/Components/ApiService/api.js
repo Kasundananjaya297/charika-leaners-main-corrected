@@ -242,3 +242,12 @@ export const getCommonItemsOrServiceOfferdByService =()=>{
 export const VehicleServicesAndRepairEndUpdate = (data) =>{
     return AxiosInstance.put('admin/updateCommonItemsOrServiceOfferdByServiceEnd',data);
 }
+export const saveTrainer = (data) =>{
+    return AxiosInstance.post('admin/saveTrainer',data);
+}
+export const getTrainers = (field,order,pageSize,offset) =>{
+    return AxiosInstance.get(`admin/getAllTrainers/${field}/${order}/${pageSize}/${offset}`);
+}
+export const saveTrainerLicence = (data) =>{
+    return AxiosInstance.post('admin/saveTrainerDrivingLicence',data);
+}

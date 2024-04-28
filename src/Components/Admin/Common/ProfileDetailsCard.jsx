@@ -264,7 +264,6 @@ const viewTrail = (stdID) =>{
                           <SessionCard key={i} packeData={data} stdID ={studentData?.stdID} setInterrupt={setInterrupt}/>
                       ))}
                     </Modal.Body>
-
               </Modal>
               <Row className="mb-2">
                 <Col xs={4}>Full-Payment:</Col>
@@ -322,22 +321,3 @@ const viewTrail = (stdID) =>{
     </div>
   );
 }
-// addressNo: "325A2";
-// adl1: "Boralugoda";
-// adl2: "Athurugiriya";
-// age: 0;
-// balance: null;
-// city: "Colombo";
-// email: "Kasun.dananjaya297@gmail.com";
-// fname: "Kasun";
-// fullPayment: null;
-// guardianName: "R.A.S";
-// guardianTelephone: 771701288;
-// isMale: true;
-// lname: "Dhananjaya";
-// nic: "2001172021";
-// pack: null;
-// registered: "2020-12-13";
-// registrationStatus: false;
-// stdID: "CN-5001";
-// telephone: 771701289;

@@ -141,10 +141,7 @@ function AddNewVehicle(props) {
     const uploadVehiclePhoto = async () => {
         try {
             await uploadFile({ Type: "Vehicle", fileLocation:fileLocation2, Id: formik.getFieldProps("registrationNo").value, setUploadProgress:setUploadProgress2, setUploadState:setUploadState2, setDownloadURL:setDownloadURL2,setProgressBarVisible:setProgressBarVisible2,category: "vehiclePhoto"});
-            //console.log("url..............2222" , downloadURL2);
             setDownloadURL2(downloadURL2);
-            // console.log(uploadProgress2)
-            // console.log(fileLocation2)
         } catch (error) {
             console.error("Error in uploadFileTrail:", error);
         }

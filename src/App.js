@@ -22,6 +22,7 @@ import Vehicle from "./Components/Admin/Vehicle";
 import Trainers from "./Components/Admin/Trainers";
 import Schedule from "./Components/Admin/Schedule";
 import AddNewVehicle from "./Components/Admin/Forms/AddNewVehicle";
+import TrainerRegistrationForm from "./Components/Admin/Forms/TrainerRegistrationForm";
 
 function App() {
   return (
@@ -47,6 +48,7 @@ function App() {
           <Route path = "/Packages/editPackage" element={<AddPackagesEdit/>} />
           <Route path="/vehicle" element={<Vehicle />}/>
           <Route path = "/vehicle/addNewVehicle" element = {<AddNewVehicle />} />
+          <Route path= "/trainer/registertrainer" element={<TrainerRegistrationForm />} />
 
 
           <Route path="/trainer" element = {<Trainers/>} />

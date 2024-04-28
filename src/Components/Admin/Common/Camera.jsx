@@ -29,22 +29,15 @@ export default function Camera({}) {
         icon: 'info',
         title: 'Image Downloaded in your download Folder',
         text: 'Please upload the image in the form'
-    }).then(()=>{
-        nav(-1)
     })
 })
   };
 
   return (
-    <div className="flex items-center justify-center h-screen">
+    <div className="flex items-center justify-center">
       <Card style={{ width: '38rem' }}>
         <Card.Body>
           <div className="p-4">
-            <Row>
-              <div className="flex justify-center p-2 bg-neutral-100 rounded-md text-2xl mb-4">
-                Take Photo
-              </div>
-            </Row>
             <Row>
               <div>
                 <Webcam ref={webcamRef} />
