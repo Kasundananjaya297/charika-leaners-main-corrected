@@ -34,19 +34,18 @@ function Trainers(props) {
 
     return (
         <div className="flex flex-col h-dvh mb-2">
-            <div className="bg-neutral-50">
                 <TrainerNavBar/>
-            </div>
-            <div className="flex flex-col overflow-y-scroll  h-full w-overflow-hidden">
+            <div className="flex flex-col overflow-y-scroll h-full">
+                <div className="">
                 <div className="flex flex-wrap">
                     {trainersDetails?.map((data,i)=>(
-                        <div className="pl-20 mt-4 gap-x-16 gap-y-6 mb-9" key={i}>
+                        <div className="pl-16 mt-4 gap-x-16 gap-y-4 mb-9" key={i}>
                             <TrainerCard data={data}/>
                         </div>
                     ))}
                 </div>
+                </div>
             </div>
-
             <div className="flex-1">
                 <div className="flex bg-white h-16 items-center justify-end p-4 gap-x-4">
                     <div className="text-gray-400">Items per Page</div>
@@ -54,7 +53,6 @@ function Trainers(props) {
                         <Dropdown.Toggle variant="outline-secondary" id="dropdown-basic">
                             {itemsPerPage}
                         </Dropdown.Toggle>
-
                         <Dropdown.Menu>
                             <Dropdown.Item onClick={() => handleItemsPerPageChange(5)}>
                                 5

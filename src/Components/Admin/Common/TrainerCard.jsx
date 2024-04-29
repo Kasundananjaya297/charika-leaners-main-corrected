@@ -15,7 +15,9 @@ function TrainerCard({data}) {
     //modal for trainer licence
      const [showLicenceModal, setShowLicenceModal] = useState(false);
      //modal for trainer licence View
-        const [showLicenceViewModal, setShowLicenceViewModal] = useState(false);
+    const [showLicenceViewModal, setShowLicenceViewModal] = useState(false);
+    //modal for trainer permit
+    const [showPermitModal, setShowPermitModal] = useState(false);
     return (
         <div>
             <Row className="flex overflow-hidden text-sm item-center">
@@ -110,10 +112,17 @@ function TrainerCard({data}) {
                                 </Col>
                             </Row>
                             <Row className='mb-2 items-center'>
-                                <Col xs={4}>Licence:</Col>
+                                <Col xs={4}>Driv. Licence:</Col>
                                 <Col xs={8} className="pl-4">
                                     <Button size='sm' variant='outline-success' onClick={()=>{setShowLicenceModal(true)}}>Add</Button>
                                     <Button size='sm' variant='link' className='ml-4' onClick={()=>{setShowLicenceViewModal(true)}}>View</Button>
+                                </Col>
+                            </Row>
+                            <Row className='mb-2 items-center'>
+                                <Col xs={4}>Train. Licence:</Col>
+                                <Col xs={8} className="pl-4">
+                                    <Button size='sm' variant='outline-success' onClick={()=>{setShowPermitModal(true)}}>Add</Button>
+                                    <Button size='sm' variant='link' className='ml-4' onClick={()=>{setShowPermitModal(true)}}>View</Button>
                                 </Col>
                             </Row>
                         </Card.Body>
@@ -136,9 +145,17 @@ function TrainerCard({data}) {
                     <TrainerLicenceView data={data?.trainerDrivingLicences}/>
                 </Modal.Body>
             </Modal>
+            <Modal show={showPermitModal} onHide={()=>{setShowPermitModal(false)}}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Add Trainer Permit</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+
+                </Modal.Body>
+            </Modal>
+
         </div>
 
     );
 }
-
 export default TrainerCard;
