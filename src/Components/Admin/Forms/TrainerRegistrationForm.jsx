@@ -84,6 +84,8 @@ function TrainerRegistrationForm(props) {
             licenceNo: "",
             licenceIssuedOn: "",
             bloodType: "",
+            trainerLicenceID:"",
+            trainerLicenceIssuedON:"",
         },validationSchema: Yup.object({
             fname: validateName("First name"),
             lname: validateName("Last name"),
@@ -100,6 +102,8 @@ function TrainerRegistrationForm(props) {
             licenceNo: Yup.string().required("Licence ID is required").min(7,"Licence ID must be 7 characters").max(7,"Licence ID must be 7 characters"),
             licenceIssuedOn: Yup.date().required("Licence Issued Date is required,License must be older than 5 years").max(new Date(new Date().setFullYear(new Date().getFullYear() - 5)), "License must be older than 5 years"),
             bloodType: Yup.string().required("Blood Type is required"),
+            trainerLicenceID:Yup.number().required("Required to add trainer Licence").min(1,"3 digit"),
+            trainerLicenceIssuedON:Yup.date().required("Date is required"),
         }),
         onSubmit: async (values) => {
             console.log(values);
@@ -357,7 +361,7 @@ function TrainerRegistrationForm(props) {
                                 </Form.Label>
                                 <Form.Control
                                     type="date"
-                                    max = {new Date(new Date().setFullYear(new Date().getFullYear()-23)).toISOString().split("T")[0]}
+                                    max = {new Date(new Date().setFullYear(new Date().getFullYear()-18)).toISOString().split("T")[0]}
                                     min = {new Date(new Date().setFullYear(new Date().getFullYear()-55)).toISOString().split("T")[0]}
                                     placeholder="Date of Birth"
                                     {...formik.getFieldProps("dateOfBirth")}
@@ -367,11 +371,9 @@ function TrainerRegistrationForm(props) {
                                     {formik.touched.dateOfBirth && formik.errors.dateOfBirth}
                                 </Form.Text>
                             </Form.Group>
-                        </Row>
-                        <Row className="mb-3">
                             <Form.Group as={Col} md={6}>
                                 <Form.Label>
-                                    Licence No<span className="text-red-500"> *</span>
+                                    Driv. Licence No<span className="text-red-500"> *</span>
                                 </Form.Label>
                                 <Form.Control
                                     type="text"
@@ -383,13 +385,15 @@ function TrainerRegistrationForm(props) {
                                     {formik.touched.licenceNo && formik.errors.licenceNo}
                                 </Form.Text>
                             </Form.Group>
+                        </Row>
+                        <Row className="mb-3">
                             <Form.Group as={Col} md={6}>
                                 <Form.Label>
-                                    Licence Issued On<span className="text-red-500"> *</span>
+                                    Driv. Licence Issued On<span className="text-red-500"> *</span>
                                 </Form.Label>
                                 <Form.Control
                                     type="date"
-                                    min={new Date(new Date().setFullYear(new Date(formik.getFieldProps("dateOfBirth").value).getFullYear()+22) || new Date()).toISOString().split("T")[0]}
+                                    min={new Date(new Date(new Date(formik.getFieldProps("dateOfBirth").value)).setFullYear(new Date(formik.getFieldProps("dateOfBirth").value).getFullYear()+18) || new Date()).toISOString().split("T")[0]}
                                     max = {new Date().toISOString().split("T")[0]}
                                     {...formik.getFieldProps("licenceIssuedOn")}
                                     required
@@ -398,8 +402,6 @@ function TrainerRegistrationForm(props) {
                                     {formik.touched.licenceIssuedOn && formik.errors.licenceIssuedOn}
                                 </Form.Text>
                             </Form.Group>
-                        </Row>
-                        <Row className="mt-3">
                             <Form.Group as={Col} md={6} className="flex items-center gap-x-4 pl-1">
                                 <Form.Label>
                                     Blood Type:<span className="text-red-500"> *</span>
@@ -423,6 +425,37 @@ function TrainerRegistrationForm(props) {
                                     {formik.touched.bloodType && formik.errors.bloodType}
                                 </Form.Text>
                             </Form.Group>
+                        </Row>
+                        <Row className="mt-3">
+                            <Form.Group as={Col} md={6}>
+                                <Form.Label>
+                                    Trainer Licence ID<span className="text-red-500"> *</span>
+                                </Form.Label>
+                                <Form.Control
+                                    type="number"
+                                    {...formik.getFieldProps("trainerLicenceID")}
+                                    required
+                                />
+                                <Form.Text className="text-danger">
+                                    {formik.touched.trainerLicenceID && formik.errors.trainerLicenceID}
+                                </Form.Text>
+                            </Form.Group>
+                            <Form.Group as={Col} md={6}>
+                                <Form.Label>
+                                    Trainer Licence Issued On<span className="text-red-500"> *</span>
+                                </Form.Label>
+                                <Form.Control
+                                    type="date"
+                                    min={new Date(new Date(new Date(formik.getFieldProps("licenceIssuedOn").value)).setFullYear(new Date(formik.getFieldProps("licenceIssuedOn").value).getFullYear()+5) || new Date()).toISOString().split("T")[0]}
+                                    max = {new Date().toISOString().split("T")[0]}
+                                    {...formik.getFieldProps("trainerLicenceIssuedON")}
+                                    required
+                                />
+                                <Form.Text className="text-danger">
+                                    {formik.touched.trainerLicenceIssuedON && formik.errors.trainerLicenceIssuedON}
+                                </Form.Text>
+                            </Form.Group>
+
                         </Row>
                     </div>
                 </Card.Body>

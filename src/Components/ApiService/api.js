@@ -24,8 +24,11 @@ const firebaseConfig = {
 //   };
 // };
 
+// export const ValidateUser = (userData) => {
+//   return axios.post("http://127.0.0.1:8080/api/authentication/ValidateUser", userData);
+// };
 export const ValidateUser = (userData) => {
-  return axios.post("http://127.0.0.1:8080/api/authentication/ValidateUser", userData);
+  return axios.post("http://172.16.16.130:8080/api/authentication/ValidateUser", userData);
 };
 
 export const SaveStudent = (stdData) => {
@@ -250,4 +253,7 @@ export const getTrainers = (field,order,pageSize,offset) =>{
 }
 export const saveTrainerLicence = (data) =>{
     return AxiosInstance.post('admin/saveTrainerDrivingLicence',data);
+}
+export const saveTrainerPermit = (data) =>{
+    return AxiosInstance.post('admin/saveTrainerPermit',data);
 }

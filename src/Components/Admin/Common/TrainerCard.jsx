@@ -7,6 +7,7 @@ import Image from "react-bootstrap/Image";
 import {Button, Modal} from "react-bootstrap";
 import TrainerLicence from "../Forms/ModalForTrainer/TrainerLicence";
 import TrainerLicenceView from "../Forms/ModalForTrainer/TrainerLicenceView";
+import TrainerPermit from "../Forms/ModalForTrainer/TrainerPermit";
 
 
 function TrainerCard({data}) {
@@ -94,15 +95,27 @@ function TrainerCard({data}) {
                                 </Col>
                             </Row>
                             <Row className='mb-2'>
-                                <Col xs={4}>Licence ID:</Col>
+                                <Col xs={4}>Dr. Licence ID:</Col>
                                 <Col xs={8} className="pl-4">
                                     {data?.licenceNo}
                                 </Col>
                             </Row>
                             <Row className='mb-2'>
-                                <Col xs={4}>Issued on:</Col>
+                                <Col xs={4}>Dr. Issued on:</Col>
                                 <Col xs={8} className="pl-4">
                                     {data?.licenceIssuedOn}
+                                </Col>
+                            </Row>
+                            <Row className='mb-2'>
+                                <Col xs={4}>Tr. Licence ID:</Col>
+                                <Col xs={8} className="pl-4">
+                                    {data?.trainerLicenceID}
+                                </Col>
+                            </Row>
+                            <Row className='mb-2'>
+                                <Col xs={4}>Tr. Issued on:</Col>
+                                <Col xs={8} className="pl-4">
+                                    {data?.trainerLicenceIssuedON}
                                 </Col>
                             </Row>
                             <Row className="mb-2">
@@ -150,7 +163,7 @@ function TrainerCard({data}) {
                     <Modal.Title>Add Trainer Permit</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-
+                    <TrainerPermit data={data}/>
                 </Modal.Body>
             </Modal>
 
