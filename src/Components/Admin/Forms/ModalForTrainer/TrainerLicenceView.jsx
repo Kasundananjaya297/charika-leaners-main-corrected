@@ -5,9 +5,9 @@ import {Button} from "react-bootstrap";
 
 function TrainerLicenceView({data}) {
     return (
-        <div className="flex items-center justify-center flex-col">
+        <div>
             {data?.map((data, i) => (
-                <div className={(data?.monthsForExpiireHevyDuty===0||data?.monthsForExpireLightWeight===0?"bg-red-100 p-4 w-96  items-center text-sm mb-4 rounded overflow-auto":"bg-green-100 p-4 w-96  items-center text-sm mb-4 rounded overflow-auto")} key={i}>
+                <div className={(data?.monthsForExpiireHevyDuty===0||data?.monthsForExpireLightWeight===0?"bg-red-100 p-4 w-96  items-center text-sm mb-4 rounded ":"bg-green-100 p-4 w-96  items-center text-sm mb-4 rounded")} key={i}>
                     <Row className="mb-1">
                         <Col xs={4}>Trainer ID:</Col>
                         <Col xs={8} className="">

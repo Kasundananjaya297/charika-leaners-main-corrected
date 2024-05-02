@@ -8,6 +8,7 @@ import {Button, Modal} from "react-bootstrap";
 import TrainerLicence from "../Forms/ModalForTrainer/TrainerLicence";
 import TrainerLicenceView from "../Forms/ModalForTrainer/TrainerLicenceView";
 import TrainerPermit from "../Forms/ModalForTrainer/TrainerPermit";
+import TrainerPermitPreview from "../Forms/ModalForTrainer/TrainerPermitPreview";
 
 
 function TrainerCard({data}) {
@@ -19,6 +20,8 @@ function TrainerCard({data}) {
     const [showLicenceViewModal, setShowLicenceViewModal] = useState(false);
     //modal for trainer permit
     const [showPermitModal, setShowPermitModal] = useState(false);
+    //show modal for preiew trainer permit
+    const [showModalTrainerPermit, setShowModalTrainerPermit] = useState(false);
     return (
         <div>
             <Row className="flex overflow-hidden text-sm item-center">
@@ -132,10 +135,10 @@ function TrainerCard({data}) {
                                 </Col>
                             </Row>
                             <Row className='mb-2 items-center'>
-                                <Col xs={4}>Train. Licence:</Col>
+                                <Col xs={4}>Train. Permit:</Col>
                                 <Col xs={8} className="pl-4">
                                     <Button size='sm' variant='outline-success' onClick={()=>{setShowPermitModal(true)}}>Add</Button>
-                                    <Button size='sm' variant='link' className='ml-4' onClick={()=>{setShowPermitModal(true)}}>View</Button>
+                                    <Button size='sm' variant='link' className='ml-4' onClick={()=>{setShowModalTrainerPermit(true)}}>View</Button>
                                 </Col>
                             </Row>
                         </Card.Body>
@@ -154,7 +157,7 @@ function TrainerCard({data}) {
                 <Modal.Header closeButton>
                     <Modal.Title>View Trainer Licence</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
+                <Modal.Body className='flex flex-wrap h-96 items-center justify-center overflow-y-scroll flex-row'>
                     <TrainerLicenceView data={data?.trainerDrivingLicences}/>
                 </Modal.Body>
             </Modal>
@@ -162,8 +165,16 @@ function TrainerCard({data}) {
                 <Modal.Header closeButton>
                     <Modal.Title>Add Trainer Permit</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
+                <Modal.Body className='flex flex-wrap h-96 items-center justify-center overflow-y-scroll flex-row'>
                     <TrainerPermit data={data}/>
+                </Modal.Body>
+            </Modal>
+            <Modal show={showModalTrainerPermit} onHide={()=>{setShowModalTrainerPermit(false)}}>
+                <Modal.Header closeButton>
+                    <Modal.Title>View Trainer Permit</Modal.Title>
+                </Modal.Header>
+                <Modal.Body className='flex flex-wrap h-96 items-center justify-center overflow-y-scroll flex-row'>
+                    <TrainerPermitPreview datas = {data} />
                 </Modal.Body>
             </Modal>
 
