@@ -1,3 +1,4 @@
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Layout from "./Components/Admin/Common/Layout";
 import Home from "./Components/Admin/Home";
@@ -17,7 +18,6 @@ import Camera from "./Components/Admin/Common/Camera";
 import Packages from "./Components/Admin/Packages";
 import AddPackages from "./Components/Admin/Forms/AddPackages";
 import AddPackagesEdit from "./Components/Admin/Forms/AddPackagesEdit";
-import SelectPackage from "./Components/Admin/Forms/SelectPackage";
 import Vehicle from "./Components/Admin/Vehicle";
 import Trainers from "./Components/Admin/Trainers";
 import Schedule from "./Components/Admin/Schedule";
