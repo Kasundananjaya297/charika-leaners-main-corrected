@@ -127,6 +127,9 @@ function TrainerCard({data}) {
                                     {data?.bloodType}
                                 </Col>
                             </Row>
+                            <Row className="mb-2">
+
+                            </Row>
                             <Row className='mb-2 items-center'>
                                 <Col xs={4}>Driv. Licence:</Col>
                                 <Col xs={8} className="pl-4">

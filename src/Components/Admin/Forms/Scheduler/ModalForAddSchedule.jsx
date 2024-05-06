@@ -8,12 +8,13 @@ import * as Yup from "yup";
 import {Button} from "react-bootstrap";
 import Dropdown from "react-bootstrap/Dropdown";
 import {AiFillWarning} from "react-icons/ai";
-import {getAllVehicleClasses, getVehicleByClass} from "../../../ApiService/api";
+import {getAllVehicleClasses, getTrainerByVehicleClass, getVehicleByClass} from "../../../ApiService/api";
 
 function ModalForAddSchedule({setEventList,selectedDate}) {
 
     const[vehicleClasses, setVehicleClasses] = useState([]);
     const [vehicleData, setVehicleData] = useState([]);
+    const [trainers, setTrainers] = useState([]);
     useEffect(() => {
         const fetch = async () => {
             try {
@@ -88,6 +89,20 @@ function ModalForAddSchedule({setEventList,selectedDate}) {
                 const response = await getVehicleByClass(formik.values.vehicleClass);
                 if(response?.data?.code ==="00"){
                     setVehicleData(response.data?.content);
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        }
+        fetch();
+    }, [formik.values.vehicleClass]);
+    //get trainers by vehicle Class
+    useEffect(() => {
+        const fetch = async () => {
+            try {
+                const response = await getTrainerByVehicleClass(formik.values.vehicleClass);
+                if(response?.data?.code ==="00"){
+                    setTrainers(response.data?.content);
                 }
             } catch (e) {
                 console.log(e);
@@ -258,6 +273,30 @@ function ModalForAddSchedule({setEventList,selectedDate}) {
                                 </Dropdown>
                             </td>
                             <td></td>
+                        </tr>
+                        <tr>
+                            <td>Trainers<span className='text-danger'> *</span></td>
+                            <td className='pl-4'>
+                                <Dropdown>
+                                    <Dropdown.Toggle variant='outline-secondary' id="dropdown-basic" size='sm'>
+                                        {formik.values.trainerID || "Select"}
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu className='overflow-y-scroll h-24'>
+                                        {trainers.map((item, i) =>(
+                                            <Dropdown.Item onClick={() => formik.setFieldValue("trainerID", item?.trainerID)}>
+                                                <div className='text-sx' style={{fontSize: 'smaller'}}>
+                                                    <div>
+                                                        {`${item?.fname}`}
+                                                    </div>
+                                                    <div className='italic'>
+                                                        {item?.nic}
+                                                    </div>
+                                                </div>
+                                            </Dropdown.Item>
+                                        ))}
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            </td>
                         </tr>
                     </table>
                 <Row className="mb-3 p-4">

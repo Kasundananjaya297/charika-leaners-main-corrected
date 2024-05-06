@@ -263,3 +263,6 @@ export const getAllVehicleClasses = () =>{
 export const getVehicleByClass = (vclass) =>{
     return AxiosInstance.get(`admin/getVehicelByClass/${vclass}`);
 }
+export const getTrainerByVehicleClass = (vclass) =>{
+    return AxiosInstance.get(`admin/getTrainerByVehicleClass/${vclass}`);
+}
