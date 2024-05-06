@@ -24,6 +24,7 @@ const localizer = momentLocalizer(moment);
 function ScheduleCalander(props) {
 
     const [eventList, setEventList] = useState([])
+    const [selectedDate, setSelectedDate] = useState('')
     //hook for add new event
     const[showModalAddEvent, setShowModalAddEvent] = useState(false)
     return (
@@ -34,7 +35,7 @@ function ScheduleCalander(props) {
                 startAccessor="start"
                 endAccessor="end"
                 onSelectEvent={event => {console.log("clicked event", event)}}
-                onSelectSlot={() => {setShowModalAddEvent(true)}}
+                onSelectSlot={(e) => {setSelectedDate(new Date(e.start));setShowModalAddEvent(true)}}
                 selectable
                 style={{ height: 800 }}
             />
@@ -43,7 +44,7 @@ function ScheduleCalander(props) {
                     <Modal.Title>Create New Schedule</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <ModalForAddSchedule />
+                    <ModalForAddSchedule setEventList={setEventList} selectedDate={selectedDate}/>
                 </Modal.Body>
             </Modal>
         </div>

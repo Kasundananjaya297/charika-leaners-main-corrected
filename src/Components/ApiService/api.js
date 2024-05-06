@@ -257,3 +257,9 @@ export const saveTrainerLicence = (data) =>{
 export const saveTrainerPermit = (data) =>{
     return AxiosInstance.post('admin/saveTrainerPermit',data);
 }
+export const getAllVehicleClasses = () =>{
+    return AxiosInstance.get('admin/getAllVehicleClassIn');
+}
+export const getVehicleByClass = (vclass) =>{
+    return AxiosInstance.get(`admin/getVehicelByClass/${vclass}`);
+}
