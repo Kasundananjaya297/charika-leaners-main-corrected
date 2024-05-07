@@ -23,7 +23,15 @@ function ScheduleCalander(props) {
         const fetchData = async () => {
             const response = await getAllSchedules();
             if(response?.data?.code ==="00"){
-                setEventList(response.data.content)
+                const data = response?.data?.content;
+                const events = data.map((event) => {
+                    return {
+                        start: new Date(event.start),
+                        end: new Date(event.end),
+                        title: event.title
+                    }
+                })
+                setEventList(events)
             }
         }
         fetchData();
