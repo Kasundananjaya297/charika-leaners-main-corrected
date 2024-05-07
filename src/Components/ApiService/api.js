@@ -266,3 +266,9 @@ export const getVehicleByClass = (vclass) =>{
 export const getTrainerByVehicleClass = (vclass) =>{
     return AxiosInstance.get(`admin/getTrainerByVehicleClass/${vclass}`);
 }
+export const saveSchedules = (data) =>{
+    return AxiosInstance.post('admin/saveSchedules',data);
+}
+export const getAllSchedules = () =>{
+    return AxiosInstance.get('admin/getAllSchedules');
+}

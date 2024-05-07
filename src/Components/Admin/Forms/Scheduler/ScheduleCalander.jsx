@@ -1,32 +1,33 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import {Calendar, momentLocalizer} from "react-big-calendar";
 import {Modal} from "react-bootstrap";
 import ModalForAddSchedule from "./ModalForAddSchedule";
+import {getAllSchedules} from "../../../ApiService/api";
 
 const localizer = momentLocalizer(moment);
 
-// // Define your events list
-// const myEventsList = [
-//     {
-//         title: 'Event 1',
-//         start: new Date(2024, 3, 1), // Month is 0-indexed (April)
-//         end: new Date(2024, 3, 2), // Month is 0-indexed (April)
-//     },
-//     {
-//         title: 'Event 2',
-//         start: new Date(2024, 3, 5), // Month is 0-indexed (April)
-//         end: new Date(2024, 3, 6), // Month is 0-indexed (April)
-//     },
-//     // Add more events as needed
-// ];
+
 function ScheduleCalander(props) {
 
     const [eventList, setEventList] = useState([])
     const [selectedDate, setSelectedDate] = useState('')
     //hook for add new event
     const[showModalAddEvent, setShowModalAddEvent] = useState(false)
+    const [interrupt, setInterrupt] = useState(false)
+
+
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await getAllSchedules();
+            if(response?.data?.code ==="00"){
+                setEventList(response.data.content)
+            }
+        }
+        fetchData();
+    }, [interrupt]);
     return (
         <div>
             <Calendar
@@ -44,7 +45,7 @@ function ScheduleCalander(props) {
                     <Modal.Title>Create New Schedule</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <ModalForAddSchedule setEventList={setEventList} selectedDate={selectedDate}/>
+                    <ModalForAddSchedule setEventList={setEventList} selectedDate={selectedDate} eventList={eventList} interrupt={interrupt} setInterrupt={setInterrupt}/>
                 </Modal.Body>
             </Modal>
         </div>

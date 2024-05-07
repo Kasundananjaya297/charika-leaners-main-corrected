@@ -8,13 +8,22 @@ import * as Yup from "yup";
 import {Button} from "react-bootstrap";
 import Dropdown from "react-bootstrap/Dropdown";
 import {AiFillWarning} from "react-icons/ai";
-import {getAllVehicleClasses, getTrainerByVehicleClass, getVehicleByClass} from "../../../ApiService/api";
+import {
+    getAllVehicleClasses,
+    getTrainerByVehicleClass,
+    getVehicleByClass,
+    saveSchedules
+} from "../../../ApiService/api";
+import Swal from "sweetalert2";
 
-function ModalForAddSchedule({setEventList,selectedDate}) {
+function ModalForAddSchedule({setEventList,selectedDate,eventList,interrupt,setInterrupt}) {
 
     const[vehicleClasses, setVehicleClasses] = useState([]);
     const [vehicleData, setVehicleData] = useState([]);
     const [trainers, setTrainers] = useState([]);
+    const [listOfEvents, setListOfEvents] = useState([]);
+    const [repeatFrequency, setRepeatFrequency] = useState(0);
+    const [newEventLists, setNewEventList] = useState([]);
     useEffect(() => {
         const fetch = async () => {
             try {
@@ -33,7 +42,7 @@ function ModalForAddSchedule({setEventList,selectedDate}) {
     const formik = useFormik({
         initialValues: {
             title: "",
-            date: new Date(selectedDate).toISOString().split('T')[0],
+            date: new Date(new Date(selectedDate).setDate(new Date(selectedDate).getDate()+1)).toISOString().split('T')[0],
             startTime: "",
             endTime: "",
             studentCount: "",
@@ -52,12 +61,98 @@ function ModalForAddSchedule({setEventList,selectedDate}) {
             studentCount: Yup.string().required("Required"),
             repeat: Yup.string().required("Required"),
             registrationNo: Yup.string().required("Required"),
-            vehicleClass:"",
+            vehicleClass: Yup.string().required("Required"),
         }),
         onSubmit: values => {
-
+            setListOfEvents(values);
         }
     });
+    useEffect(() => {
+        if (repeatFrequency > 0) {
+            const newEventList = [];
+            const startDate = new Date(formik.values.start);
+            const endDate = new Date(formik.values.end);
+            const date = new Date(formik.values.date);
+
+            for (let i = 0; i < 90; i += repeatFrequency) {
+                const start = new Date(startDate);
+                start.setDate(date.getDate() + i);
+                const end = new Date(endDate);
+                end.setDate(date.getDate() + i);
+
+                const event = {
+                    title:formik.values.title,
+                    startTime: formik.values.startTime,
+                    endTime: formik.values.endTime,
+                    studentCount: formik.values.studentCount,
+                    trainerID: formik.values.trainerID,
+                    registrationNo: formik.values.registrationNo,
+                    vehicleClass: formik.values.vehicleClass,
+                    start: start,
+                    end: end
+                };
+
+                newEventList.push(event);
+            }
+            setNewEventList(newEventList);
+        }else {
+            let event = {
+                title:formik.values.title,
+                startTime: formik.values.startTime,
+                endTime: formik.values.endTime,
+                studentCount: formik.values.studentCount,
+                trainerID: formik.values.trainerID,
+                registrationNo: formik.values.registrationNo,
+                vehicleClass: formik.values.vehicleClass,
+                start: formik.values.start,
+                end: formik.values.end
+            };
+            setNewEventList([event]);
+        }
+    }, [listOfEvents]);
+    //useEffect to add new event to the list
+    useEffect(() => {
+        if(newEventLists.length > 0 && newEventLists[0].title !== ""){
+            try {
+                Swal.fire({
+                    icon:"warning",
+                    title:"Are you sure?",
+                    showCancelButton:true,
+                }).then(async (result)=>{
+                    if(result.isConfirmed){
+                        const response = await saveSchedules(newEventLists);
+                        if(response?.data?.code ==="00"){
+                            Swal.fire({
+                                icon:"success",
+                                title:"Schedule Added Successfully"
+                            });
+                            setInterrupt(!interrupt);
+                        }else if(response?.data?.code ==="06"){
+                            Swal.fire({
+                                icon:"warning",
+                                title:"Some of the schedules are overlapped",
+                                text:"Then overlapped schedules are not added",
+                            })
+                        }else if(response?.data?.code ==="10"){
+                            Swal.fire({
+                                icon:"error",
+                                title:"Error",
+                                text:"Trainer/Vehicle is already assigned for another schedule",
+                            })
+                        }
+                    }
+                })
+            }catch (e) {
+                Swal.fire({
+                    icon:"error",
+                    title:"Something went wrong",
+                    text:"Please try again"
+                })
+            }
+
+        }
+    }, [newEventLists]);
+
     //set Start
     useEffect(() => {
         formik.setFieldValue("start", formik.values.date + "T" + formik.values.startTime + ":00.000Z");
@@ -67,21 +162,6 @@ function ModalForAddSchedule({setEventList,selectedDate}) {
         formik.setFieldValue("end", formik.values.date + "T" + formik.values.endTime + ":00.000Z");
     }, [formik.values.date, formik.values.endTime]);
 
-    useEffect(() => {
-        setEventList(prevState => {
-            return [...prevState, {
-                title: <div className='text-sx' style={{fontSize: '80%'}}>
-                        {`${formik.values.title} ${formik.values.startTime} - ${formik.values.endTime}`}
-                    </div>,
-                start: new Date(formik.values.start),
-                end: new Date(formik.values.end),
-                studentCount: formik.values.studentCount,
-                trainerID: formik.values.trainerID,
-                repeat: formik.values.repeat,
-                registrationNo: formik.values.registrationNo,
-            }];
-        });
-    }, [formik.values.end]);
 
     useEffect(() => {
         const fetch = async () => {
@@ -110,6 +190,8 @@ function ModalForAddSchedule({setEventList,selectedDate}) {
         }
         fetch();
     }, [formik.values.vehicleClass]);
+
+
     return (
         <div>
             <Form onSubmit={formik.handleSubmit}>
@@ -158,9 +240,12 @@ function ModalForAddSchedule({setEventList,selectedDate}) {
                             </Form.Label>
                             <Form.Control
                                 type="time"
+                                step={1800}
+                                min ={"07:00"}
+                                max ={"18:00"}
                                 {...formik.getFieldProps("startTime")}
                                 required
-                            />
+                                />
                             <Form.Text className="text-danger">
                                 {formik.touched.startTime && formik.errors.startTime}
                             </Form.Text>
@@ -173,6 +258,8 @@ function ModalForAddSchedule({setEventList,selectedDate}) {
                             </Form.Label>
                             <Form.Control
                                 type="time"
+                                step={1800}
+                                min={(formik.values.startTime+1)}
                                 {...formik.getFieldProps("endTime")}
                                 required
                             />
@@ -189,12 +276,23 @@ function ModalForAddSchedule({setEventList,selectedDate}) {
                                     <Dropdown.Toggle variant='outline-secondary' id="dropdown-basic" size='sm'>
                                         {formik.values.repeat || "Select"}
                                     </Dropdown.Toggle>
-
                                     <Dropdown.Menu>
-                                        <Dropdown.Item onClick={() => formik.setFieldValue("repeat", "Nerver")}>Daily</Dropdown.Item>
-                                        <Dropdown.Item onClick={() => formik.setFieldValue("repeat", "Daily")}>Daily</Dropdown.Item>
-                                        <Dropdown.Item onClick={() => formik.setFieldValue("repeat", "Weekly")}>Weekly</Dropdown.Item>
-                                        <Dropdown.Item onClick={() => formik.setFieldValue("repeat", "Monthly")}>Monthly</Dropdown.Item>
+                                        <Dropdown.Item onClick={() => {
+                                            formik.setFieldValue("repeat", "Never");
+                                            setRepeatFrequency(0);
+                                        }}>Never</Dropdown.Item>
+                                        <Dropdown.Item onClick={() => {
+                                            formik.setFieldValue("repeat", "Daily");
+                                            setRepeatFrequency(1);
+                                        }}>Daily</Dropdown.Item>
+                                        <Dropdown.Item onClick={() => {
+                                            formik.setFieldValue("repeat", "Weekly");
+                                            setRepeatFrequency(7);
+                                        }}>Weekly</Dropdown.Item>
+                                        <Dropdown.Item onClick={() => {
+                                            formik.setFieldValue("repeat", "Monthly");
+                                            setRepeatFrequency(28);
+                                        }}>Monthly</Dropdown.Item>
                                     </Dropdown.Menu>
                                 </Dropdown>
                                 <Form.Text className="text-danger">
@@ -216,7 +314,9 @@ function ModalForAddSchedule({setEventList,selectedDate}) {
                                     <Dropdown.Menu className='overflow-y-scroll h-24'>
                                         {vehicleClasses.map((item,i) => (
                                             <Dropdown.Item
-                                                onClick={() => formik.setFieldValue("vehicleClass", item?.typeID)}>
+                                                onClick={() => {
+                                                    formik.setFieldValue("vehicleClass", item?.typeID)
+                                                }}>
                                                 <div className='text-sx' style={{fontSize: 'smaller'}}>
                                                     {`${item?.typeID} - ${item?.typeName}`}
                                                 </div>
@@ -241,7 +341,7 @@ function ModalForAddSchedule({setEventList,selectedDate}) {
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu className='overflow-y-scroll h-24'>
                                         {vehicleData?.map((item, i) =>
-                                            <Dropdown.Item className='flex'>
+                                            <Dropdown.Item className='flex' onClick={()=>formik.setFieldValue("registrationNo",item?.registrationNo)}>
                                                 <div className='w-40'>
                                                     <div className='flex items-center justify-between'>
                                                         <div className='text-sx font-bold' style={{ fontSize: 'smaller' }}>
@@ -299,6 +399,25 @@ function ModalForAddSchedule({setEventList,selectedDate}) {
                             </td>
                         </tr>
                     </table>
+                <Row className="mb-3">
+                    <Form.Group
+                        as={Col}
+                    >
+                        <Form.Label>
+                            Student Count<span className="text-red-500"> *</span>
+                        </Form.Label>
+                        <Form.Control
+                            type="number"
+                            placeholder="Enter Student Count"
+                            {...formik.getFieldProps("studentCount")}
+                            required
+                        />
+                        <Form.Text className="text-danger">
+                            {formik.touched.studentCount && formik.errors.studentCount}
+                        </Form.Text>
+                    </Form.Group>
+
+                </Row>
                 <Row className="mb-3 p-4">
                     <Button type="submit">Add Schedule</Button>
                 </Row>
