@@ -115,6 +115,7 @@ function ModalForAddSchedule({setEventList,selectedDate,eventList,interrupt,setI
     //useEffect to add new event to the list
     useEffect(() => {
         if(newEventLists.length > 0 && newEventLists[0].title !== ""){
+            console.log(newEventLists)
             try {
                 Swal.fire({
                     icon:"warning",
@@ -134,7 +135,9 @@ function ModalForAddSchedule({setEventList,selectedDate,eventList,interrupt,setI
                                 icon:"warning",
                                 title:"Some of the schedules are overlapped",
                                 text:"Then overlapped schedules are not added",
+
                             })
+                            setInterrupt(!interrupt);
                         }else if(response?.data?.code ==="10"){
                             Swal.fire({
                                 icon:"error",
@@ -157,11 +160,15 @@ function ModalForAddSchedule({setEventList,selectedDate,eventList,interrupt,setI
 
     //set Start
     useEffect(() => {
-        formik.setFieldValue("start", formik.values.date + "T" + formik.values.startTime + ":00.000Z");
+        const startDateTimeString = `${formik.values.date}T${formik.values.startTime}:00`;
+        const startDateTime = new Date(startDateTimeString);
+        formik.setFieldValue("start", startDateTime);
     }, [formik.values.date, formik.values.startTime]);
     //set End
     useEffect(() => {
-        formik.setFieldValue("end", formik.values.date + "T" + formik.values.endTime + ":00.000Z");
+        const endDateTimeString = `${formik.values.date}T${formik.values.endTime}:00`;
+        const endDateTime = new Date(endDateTimeString);
+        formik.setFieldValue("end", endDateTime);
     }, [formik.values.date, formik.values.endTime]);
 
 

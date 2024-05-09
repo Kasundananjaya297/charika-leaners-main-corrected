@@ -23,6 +23,7 @@ import Trainers from "./Components/Admin/Trainers";
 import Schedule from "./Components/Admin/Schedule";
 import AddNewVehicle from "./Components/Admin/Forms/AddNewVehicle";
 import TrainerRegistrationForm from "./Components/Admin/Forms/TrainerRegistrationForm";
+import StudentDashBoard from "./Components/Student/StudentDashBoard";
 
 function App() {
   return (
@@ -57,9 +58,9 @@ function App() {
 
           <Route path ="/Schedule" element = {<Schedule/>} />
 
-        
-           {/*
-          <Route path="/Form2" element={<Form2 />} /> */}
+        </Route>
+        <Route path="/Student" element={<StudentDashBoard />}>
+
         </Route>
       </Routes>
     </Router>

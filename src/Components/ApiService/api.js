@@ -272,3 +272,6 @@ export const saveSchedules = (data) =>{
 export const getAllSchedules = () =>{
     return AxiosInstance.get('admin/getAllSchedules');
 }
+export const updateSchedules = (data) =>{
+    return AxiosInstance.put('admin/updateSchedules',data);
+}
