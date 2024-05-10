@@ -17,9 +17,6 @@ function AddVehicleTypeEdit({data,setShowModal}) {
             typeID: parsedData?.typeID,
             engineCapacity: parsedData?.engineCapacity,
             typeName: parsedData?.typeName,
-            typeAuto: parsedData?.typeAuto,
-            typeManual: parsedData?.typeManual,
-
         },
         validationSchema: Yup.object({
             //typeID: Yup.string().required("Required").matches(/^[A-Z][0-9]+$/, "No spaces allowed").matches(/^[A-Z]+$/,"Capital letters allowed"),
@@ -117,55 +114,55 @@ function AddVehicleTypeEdit({data,setShowModal}) {
                                 {formik.touched.typeName && formik.errors.typeName}
                             </Form.Text>
                         </Form.Group>
-                        <Form.Group as={Col} md={6}>
-                            <Form.Label>
-                                Control:<span className="text-red-500"> *</span>
-                            </Form.Label>
-                            <div className="flex flex-row gap-x-4 pl-2 text-sm">
-                                <Form.Check
-                                    type="radio"
-                                    label="Manual"
-                                    name="Control"
-                                    checked={formik.getFieldProps("typeManual").value||parsedData?.typeManual}
-                                    onChange={() => {
-                                        formik.setFieldValue("typeManual", true);
-                                        formik.setFieldValue("typeAuto", false);
-                                        setIsVisibleManual(true)
-                                    }}
-                                    required
-                                    disabled={formik.getFieldProps("typeAuto").value||isVissibleAuto||(formik.getFieldProps("typeManual").value && formik.getFieldProps("typeAuto").value)||parsedData?.typeAuto}
-                                />
-                                <Form.Check
-                                    type="radio"
-                                    label="Auto"
-                                    checked={formik.getFieldProps("typeAuto").value||parsedData?.typeAuto}
-                                    name="Control"
-                                    onChange={() => {
-                                        formik.setFieldValue("typeAuto", true);
-                                        formik.setFieldValue("typeManual", false);
-                                        setIsVisibleAuto(true);
-                                    }}
-                                    required
-                                    disabled={formik.getFieldProps("typeManual").value||isVissibleManual||(formik.getFieldProps("typeManual").value && formik.getFieldProps("typeAuto").value)||parsedData?.typeManual}
-                                />
-                                <Form.Check
-                                    type="radio"
-                                    label="Both"
+                        {/*<Form.Group as={Col} md={6}>*/}
+                        {/*    <Form.Label>*/}
+                        {/*        Control:<span className="text-red-500"> *</span>*/}
+                        {/*    </Form.Label>*/}
+                        {/*    <div className="flex flex-row gap-x-4 pl-2 text-sm">*/}
+                        {/*        <Form.Check*/}
+                        {/*            type="radio"*/}
+                        {/*            label="Manual"*/}
+                        {/*            name="Control"*/}
+                        {/*            checked={formik.getFieldProps("typeManual").value||parsedData?.typeManual}*/}
+                        {/*            onChange={() => {*/}
+                        {/*                formik.setFieldValue("typeManual", true);*/}
+                        {/*                formik.setFieldValue("typeAuto", false);*/}
+                        {/*                setIsVisibleManual(true)*/}
+                        {/*            }}*/}
+                        {/*            required*/}
+                        {/*            disabled={formik.getFieldProps("typeAuto").value||isVissibleAuto||(formik.getFieldProps("typeManual").value && formik.getFieldProps("typeAuto").value)||parsedData?.typeAuto}*/}
+                        {/*        />*/}
+                        {/*        <Form.Check*/}
+                        {/*            type="radio"*/}
+                        {/*            label="Auto"*/}
+                        {/*            checked={formik.getFieldProps("typeAuto").value||parsedData?.typeAuto}*/}
+                        {/*            name="Control"*/}
+                        {/*            onChange={() => {*/}
+                        {/*                formik.setFieldValue("typeAuto", true);*/}
+                        {/*                formik.setFieldValue("typeManual", false);*/}
+                        {/*                setIsVisibleAuto(true);*/}
+                        {/*            }}*/}
+                        {/*            required*/}
+                        {/*            disabled={formik.getFieldProps("typeManual").value||isVissibleManual||(formik.getFieldProps("typeManual").value && formik.getFieldProps("typeAuto").value)||parsedData?.typeManual}*/}
+                        {/*        />*/}
+                        {/*        <Form.Check*/}
+                        {/*            type="radio"*/}
+                        {/*            label="Both"*/}
 
-                                    Copy code
-                                    checked={
-                                        (formik.getFieldProps("typeAuto").value && formik.getFieldProps("typeManual").value) ||
-                                        (parsedData && parsedData.typeAuto && parsedData.typeManual)
-                                    }
-                                    name="Control"
-                                    onChange={() => {
-                                        formik.setFieldValue("typeAuto", true);
-                                        formik.setFieldValue("typeManual", true);
-                                    }}
-                                    required
-                                />
-                            </div>
-                        </Form.Group>
+                        {/*            Copy code*/}
+                        {/*            checked={*/}
+                        {/*                (formik.getFieldProps("typeAuto").value && formik.getFieldProps("typeManual").value) ||*/}
+                        {/*                (parsedData && parsedData.typeAuto && parsedData.typeManual)*/}
+                        {/*            }*/}
+                        {/*            name="Control"*/}
+                        {/*            onChange={() => {*/}
+                        {/*                formik.setFieldValue("typeAuto", true);*/}
+                        {/*                formik.setFieldValue("typeManual", true);*/}
+                        {/*            }}*/}
+                        {/*            required*/}
+                        {/*        />*/}
+                        {/*    </div>*/}
+                        {/*</Form.Group>*/}
                     </Row>
                     <Form.Group>
                         <Row>

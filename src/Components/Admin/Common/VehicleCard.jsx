@@ -823,7 +823,31 @@ function VehicleCard({vehicleData,interrupt,setInterrupt}) {
                                         ))}
                                 </Modal.Body>
                             </Modal>
-
+                            <Row className="mb-2">
+                                <Col xs={4}>Insurance:</Col>
+                                <Col xs={8} className="pl-4">
+                                    <Col xs={8}>
+                                        <Button
+                                            className="flex w-18 h-8 justify-center items-center"
+                                            variant="outline-success"
+                                            style={{ fontSize: "small" }}
+                                            onClick={()=>{setShowAddInsuranceModal(true)}}
+                                        >
+                                            Add
+                                        </Button>
+                                        <Button
+                                            className="flex w-18 h-8 justify-center items-center ml-4"
+                                            variant="link"
+                                            style={{ fontSize: "small" }}
+                                            onClick={() => {
+                                                setShowInsuranceModal(true);
+                                            }}
+                                        >
+                                            View
+                                        </Button>
+                                    </Col>
+                                </Col>
+                            </Row>
                             <Row className="mb-2">
                                 <Col xs={4}>Licence:</Col>
                                 <Col xs={8} className="pl-4">
@@ -850,14 +874,22 @@ function VehicleCard({vehicleData,interrupt,setInterrupt}) {
                             <Modal show={showAddLicenceModal} onHide={()=>{setShowaddLicenceModal(false)}} size={'lg'}>
                                 <Form onSubmit={saveLicenceFormik.handleSubmit}>
                                     <Modal.Header closeButton>
-                                        <Modal.Title>Add Licence</Modal.Title>
+                                        <Modal.Title>Add Licence </Modal.Title>
                                     </Modal.Header>
-                                    {vehicleData?.licenses[0]?.validMonths !== 0 && vehicleData?.licenses?.length !==0?(
+                                    {vehicleData?.licenses[0]?.validMonths !== 0 && vehicleData?.licenses?.length !==0 || vehicleData?.insurances?.length === 0?(
                                     <Modal.Body>
-                                        <div>Not Expired Current Licence</div>
-                                        <div>There is {vehicleData?.licenses[0]?.validMonths} months have to expire current licence</div>
+                                        {(vehicleData?.insurances?.length === 0)&&<div>Not Insurance Added </div>}
+                                        {(vehicleData?.insurances?.length !== 0)&&
+                                            <div>
+                                                <div>Current Licence Not Expired</div>
+                                                <div>There is {vehicleData?.licenses[0]?.validMonths} months have to
+                                                    expire
+                                                    current licence
+                                                </div>
+                                            </div>
+                                        }
                                     </Modal.Body>
-                                    ):(
+                                    ) : (
                                         <Modal.Body>
                                         <Card.Body className="overflow-auto h-full">
                                             <div className="p-4">
@@ -1131,31 +1163,6 @@ function VehicleCard({vehicleData,interrupt,setInterrupt}) {
                                     ))}
                                 </Modal.Body>
                             </Modal>
-                            <Row className="mb-2">
-                                <Col xs={4}>Insurance:</Col>
-                                <Col xs={8} className="pl-4">
-                                    <Col xs={8}>
-                                        <Button
-                                            className="flex w-18 h-8 justify-center items-center"
-                                            variant="outline-success"
-                                            style={{ fontSize: "small" }}
-                                            onClick={()=>{setShowAddInsuranceModal(true)}}
-                                        >
-                                            Add
-                                        </Button>
-                                        <Button
-                                            className="flex w-18 h-8 justify-center items-center ml-4"
-                                            variant="link"
-                                            style={{ fontSize: "small" }}
-                                            onClick={() => {
-                                                setShowInsuranceModal(true);
-                                            }}
-                                        >
-                                            View
-                                        </Button>
-                                    </Col>
-                                </Col>
-                            </Row>
                             <Row className="mb-2 flex flex-row ">
                                 <Col xs={4}>Service & Repair:</Col>
                                 <Col xs={8} className="pl-4">

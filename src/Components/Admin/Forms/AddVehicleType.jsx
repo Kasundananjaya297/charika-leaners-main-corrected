@@ -14,8 +14,6 @@ function AddVehicleType({setShowModal}) {
             typeID: "",
             engineCapacity: "",
             typeName: "",
-            typeAuto: false,
-            typeManual: false,
             isHeavy:"",
         },
         validationSchema: Yup.object({
@@ -116,43 +114,6 @@ function AddVehicleType({setShowModal}) {
                             <Form.Text className="text-danger">
                                 {formik.touched.typeName && formik.errors.typeName}
                             </Form.Text>
-                        </Form.Group>
-                        <Form.Group as={Col} md={6}>
-                            <Form.Label>
-                                Control:<span className="text-red-500"> *</span>
-                            </Form.Label>
-                            <div className="flex flex-row gap-x-4 pl-2 text-sm">
-                                <Form.Check
-                                    type="radio"
-                                    label="Manual"
-                                    name="Control"
-                                    onChange={() => {
-                                        formik.setFieldValue("typeManual", true);
-                                        formik.setFieldValue("typeAuto", false);
-                                    }}
-                                    required
-                                />
-                                <Form.Check
-                                    type="radio"
-                                    label="Auto"
-                                    name="Control"
-                                    onChange={() => {
-                                        formik.setFieldValue("typeAuto", true);
-                                        formik.setFieldValue("typeManual", false);
-                                    }}
-                                    required
-                                />
-                                <Form.Check
-                                    type="radio"
-                                    label="Both"
-                                    name="Control"
-                                    onChange={() => {
-                                        formik.setFieldValue("typeAuto", true);
-                                        formik.setFieldValue("typeManual", true);
-                                    }}
-                                    required
-                                />
-                            </div>
                         </Form.Group>
                     </Row>
                     <Row className='mt-3'>

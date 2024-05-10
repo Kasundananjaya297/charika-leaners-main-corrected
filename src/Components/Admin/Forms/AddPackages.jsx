@@ -2,7 +2,7 @@ import React,{useEffect,useState} from 'react'
 import { useFormik } from 'formik'
 import {Card, Form, Row, Col, Button, Dropdown} from "react-bootstrap";
 import { FaUserEdit } from "react-icons/fa";
-import { getVehicleType } from '../../ApiService/api';
+import {getAllVehicleClasses, getVehicleType} from '../../ApiService/api';
 import { IoMdAdd } from "react-icons/io";
 import { useNavigate } from 'react-router-dom';
 import * as Yup from "yup";
@@ -28,7 +28,7 @@ export default function AddPackages() {
     useEffect(()=>{
         const getVehicleTypes = async () =>{
           try {
-            const response = await getVehicleType();
+            const response = await getAllVehicleClasses();
             setVehicleType(response?.data?.content);
             //setVehicleData(response?.data?.content);
             console.log(response?.data);

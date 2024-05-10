@@ -472,8 +472,8 @@ function AddNewVehicle(props) {
                                                                     {selectedVehicleType[i]?.autoOrManual === undefined ? "Select" : selectedVehicleType[i]?.autoOrManual}
                                                                 </Dropdown.Toggle>
                                                                 <Dropdown.Menu>
-                                                                    {(item?.typeAuto)&&<Dropdown.Item onClick={()=>{setID(i);setAutoOrManual("Auto");setTypeID(item?.typeID)}}>Auto</Dropdown.Item>}
-                                                                    {(item?.typeManual)&&<Dropdown.Item onClick={()=>{setID(i);setAutoOrManual("Manual");setTypeID(item?.typeID)}}>Manual</Dropdown.Item>}
+                                                                    <Dropdown.Item onClick={()=>{setID(i);setAutoOrManual("Auto");setTypeID(item?.typeID)}}>Auto</Dropdown.Item>
+                                                                    <Dropdown.Item onClick={()=>{setID(i);setAutoOrManual("Manual");setTypeID(item?.typeID)}}>Manual</Dropdown.Item>
                                                                 </Dropdown.Menu>
                                                             </Dropdown>
                                                         </Form.Group>
