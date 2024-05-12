@@ -7,6 +7,8 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Swal from "sweetalert2";
 import {saveNewVehicle, saveVehicleServiceOrRepair} from "../../../ApiService/api";
+import {validateTelephone} from "../../../Validation/validation";
+
 
 function VehicleServieAndRepair({vehicleData,show, onHide,setInterrupt,interrupt}) {
     //formik to validate the form and save
@@ -23,7 +25,7 @@ function VehicleServieAndRepair({vehicleData,show, onHide,setInterrupt,interrupt
         },validationSchema: Yup.object({
             invoiceNo: Yup.string(),
             milage: Yup.number().required("Milage is required"),
-            contactNumber: Yup.string().required("Contact Number is required"),
+            contactNumber: validateTelephone() ,
             repairCenter: Yup.string().required("Repair Center is required"),
             servicedDate: Yup.date().required("Serviced Date is required"),
             returnDate: Yup.date(),
@@ -161,6 +163,7 @@ function VehicleServieAndRepair({vehicleData,show, onHide,setInterrupt,interrupt
                             </Form.Label>
                             <Form.Control
                                 type="Date"
+                                min={new Date().toISOString().split('T')[0]}
                                 {...saveVehicleServiceDataFormik.getFieldProps("servicedDate")}
                                 required
                             />
@@ -176,6 +179,7 @@ function VehicleServieAndRepair({vehicleData,show, onHide,setInterrupt,interrupt
                             </Form.Label>
                             <Form.Control
                                 type="date"
+                                min={new Date().toISOString().split('T')[0]}
                                 {...saveVehicleServiceDataFormik.getFieldProps("returnDate")}
                                 required
                             />

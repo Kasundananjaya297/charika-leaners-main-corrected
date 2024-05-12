@@ -127,6 +127,12 @@ function TrainerCard({data}) {
                                     {data?.bloodType}
                                 </Col>
                             </Row>
+                            <Row className="mb-2 items-center">
+                                <Col xs={4}>Trainer Status:</Col>
+                                <Col xs={8} className="pl-4">
+                                    <Button size={'sm'} disabled={true}>{data?.trainerStatus}</Button>
+                                </Col>
+                            </Row>
                             <Row className="mb-2">
 
                             </Row>

@@ -56,6 +56,7 @@ function ScheduleCalander(props) {
                         vehicleClassName: event.vehicleClassName,
                         vehiclePhoto: event.vehiclePhoto,
                         trainerPhoto: event.trainerPhoto,
+                        style: {backgroundColor: "red"},
                     }
                 })
                 setEventList(events)
@@ -66,7 +67,7 @@ function ScheduleCalander(props) {
 
 
     return (
-        <div>
+        <div style={{width:1400}}>
             <Calendar
                 localizer={localizer}
                 events={eventList}

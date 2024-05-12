@@ -351,7 +351,7 @@ function ModalForAddSchedule({setEventList,selectedDate,eventList,interrupt,setI
                                     <Dropdown.Menu className='overflow-y-scroll h-24'>
                                         {vehicleData?.map((item, i) =>
                                             <Dropdown.Item className='flex' onClick={()=>formik.setFieldValue("registrationNo",item?.registrationNo)}>
-                                                <div className='w-40'>
+                                                <div className='w-64'>
                                                     <div className='flex items-center justify-between'>
                                                         <div className='text-sx font-bold' style={{ fontSize: 'smaller' }}>
                                                             {`${item?.registrationNo}`}
@@ -394,8 +394,13 @@ function ModalForAddSchedule({setEventList,selectedDate,eventList,interrupt,setI
                                         {trainers.map((item, i) =>(
                                             <Dropdown.Item onClick={() => formik.setFieldValue("trainerID", item?.trainerID)}>
                                                 <div className='text-sx' style={{fontSize: 'smaller'}}>
-                                                    <div>
-                                                        {`${item?.fname}`}
+                                                    <div className='w-72 flex gap-x-4'>
+                                                        <div>
+                                                            {`${item?.fname}`} {`${item?.lname}`}
+                                                        </div>
+                                                        <div>
+                                                            Sts: {item?.trainerStatus}
+                                                        </div>
                                                     </div>
                                                     <div className='italic'>
                                                         {item?.nic}

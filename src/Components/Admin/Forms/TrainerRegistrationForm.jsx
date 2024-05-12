@@ -143,187 +143,188 @@ function TrainerRegistrationForm(props) {
 
 
     return (
-        <div className="flex flex-row justify-center items-center w-screen h-screen">
-            <Card style={{ width: "40em" }}>
-                <Form onSubmit={formik.handleSubmit}>
-                <Card.Body className="overflow-auto h-full">
-                    <div className="p-4">
-                            <Row>
-                                <div className="flex justify-center p-2 bg-neutral-100 rounded-md text-2xl mb-3">
-                                    Trainer Details
-                                </div>
-                            </Row>
-                            <Row className="mb-3">
-                                <Form.Group as={Col} md={12}>
-                                    <Form.Label>Profile Picture<span className="text-red-500"> *</span></Form.Label>
-                                    <div className="flex flex-col">
-                                        <div className="flex gap-x-3">
-                                            <Form.Control
-                                                type="file"
-                                                required={true}
-                                                onChange={(e) => {
-                                                    setFileLocation(e.target.files[0]);
-                                                    setUploadState(false);
-                                                }}
-                                            />
-                                            <Button onClick={()=>{setShowModalCamera(true)}}>
-                                                <div className=" flex items-center gap-x-2" >
-                                                    <FaCamera />
-                                                    <div>Take</div>
-                                                </div>
-                                            </Button>
-                                            <Button disabled={uploadState} onClick={()=>{setUploadState(true);setProgressBarVisible(true);uploadProfilePicture()}}>
-                                                <div className=" flex items-center gap-x-2" >
-                                                    <FaCloudUploadAlt/>
-                                                    <div>Upload</div>
-                                                </div>
-                                            </Button>
-
-                                        </div>
-                                        <div className="flex flex-row">
-                                            {uploadProgress <= 100 && progressBarVisible && (
-                                                <ProgressBar now={uploadProgress} label={`${uploadProgress}%`} className="mt-3  w-full" />
-                                            )}
-                                        </div>
+        <div className="flex flex-col h-dvh mb-2">
+            <div className="flex flex-col overflow-y-scroll h-full items-center">
+                <Card style={{ width: "40em" }}>
+                    <Form onSubmit={formik.handleSubmit}>
+                        <Card.Body className="overflow-auto">
+                            <div className="p-4">
+                                <Row>
+                                    <div className="flex justify-center p-2 bg-neutral-100 rounded-md text-2xl mb-3">
+                                        Trainer Details
                                     </div>
-                                    <Form.Text className="text-danger">
-                                        {formik.touched.profilePhotoURL && formik.errors.profilePhotoURL}
-                                    </Form.Text>
-                                </Form.Group>
-                            </Row>
-                            <Row className="mb-3">
-                                <Form.Group
-                                    as={Col}
-                                >
-                                    <Form.Label>
-                                        First Name<span className="text-red-500"> *</span>
-                                    </Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        placeholder="First Name"
-                                        {...formik.getFieldProps("fname")}
-                                        required
-                                    />
-                                    <Form.Text className="text-danger">
-                                        {formik.touched.fname && formik.errors.fname}
-                                    </Form.Text>
-                                </Form.Group>
-                                <Form.Group as={Col} md={6}>
-                                    <Form.Label>
-                                        Last Name<span className="text-red-500"> *</span>
-                                    </Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        placeholder="Last Name"
-                                        {...formik.getFieldProps("lname")}
-                                        required
-                                    />
-                                    <Form.Text className="text-danger">
-                                        {formik.touched.lname && formik.errors.lname}
-                                    </Form.Text>
-                                </Form.Group>
-                            </Row>
-                            <Row className="mb-3">
-                                <Form.Group as={Col} md={6}>
-                                    <Form.Label>Email <span className="text-red-500"> *</span></Form.Label>
-                                <Form.Control
-                                    type="email"
-                                        placeholder="Email"
-                                        {...formik.getFieldProps("email")}
-                                        required
-                                    />
-                                    <Form.Text className="text-danger">
-                                        {formik.touched.email && formik.errors.email}
-                                    </Form.Text>
-                                </Form.Group>
-                                <Form.Group as={Col} md={6}>
-                                    <Form.Label>
-                                        Telephone<span className="text-red-500"> *</span>
-                                    </Form.Label>
-                                    <Form.Control
-                                        type="number"
-                                        placeholder="Telephone"
-                                        {...formik.getFieldProps("telephone")}
-                                        required
-                                    />
-                                    <Form.Text className="text-danger">
-                                        {formik.touched.telephone && formik.errors.telephone}
-                                    </Form.Text>
-                                </Form.Group>
                                 </Row>
-                            <Row className="mb-3">
-                                <Form.Group as={Col} md={6}>
-                                    <Form.Label>
-                                        Address No
-                                    </Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        placeholder="Address No"
-                                        {...formik.getFieldProps("addressNo")}
-                                    />
-                                    <Form.Text className="text-danger">
-                                        {formik.touched.addressNo && formik.errors.addressNo}
-                                    </Form.Text>
-                                </Form.Group>
-                                <Form.Group as={Col} md={6}>
-                                    <Form.Label>
-                                        Address Line 1<span className="text-red-500"> *</span>
-                                    </Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        placeholder="Address Line 1"
-                                        {...formik.getFieldProps("adl1")}
-                                        required
-                                    />
-                                    <Form.Text className="text-danger">
-                                        {formik.touched.adl1 && formik.errors.adl1}
-                                    </Form.Text>
-                                </Form.Group>
-                            </Row>
-                            <Row className="mb-3">
-                                <Form.Group as={Col} md={6}>
-                                    <Form.Label>
-                                        Address Line 2
-                                    </Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        placeholder="Address Line 2"
-                                        {...formik.getFieldProps("adl2")}
-                                    />
-                                    <Form.Text className="text-danger">
-                                        {formik.touched.adl2 && formik.errors.adl2}
-                                    </Form.Text>
-                                </Form.Group>
-                                <Form.Group as={Col} md={6}>
-                                    <Form.Label>
-                                        City<span className="text-red-500"> *</span>
-                                    </Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        placeholder="City"
-                                        {...formik.getFieldProps("city")}
-                                        required
-                                    />
-                                    <Form.Text className="text-danger">
-                                        {formik.touched.city && formik.errors.city}
-                                    </Form.Text>
-                                </Form.Group>
-                            </Row>
-                            <Row className="mb-3">
-                                <Form.Group as={Col} md={6}>
-                                    <Form.Label>
-                                        NIC<span className="text-red-500"> *</span>
-                                    </Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        placeholder="NIC"
-                                        {...formik.getFieldProps("nic")}
-                                        required
-                                    />
-                                    <Form.Text className="text-danger">
-                                        {formik.touched.nic && formik.errors.nic}
-                                    </Form.Text>
-                                </Form.Group>
+                                <Row className="mb-3">
+                                    <Form.Group as={Col} md={12}>
+                                        <Form.Label>Profile Picture<span className="text-red-500"> *</span></Form.Label>
+                                        <div className="flex flex-col">
+                                            <div className="flex gap-x-3">
+                                                <Form.Control
+                                                    type="file"
+                                                    required={true}
+                                                    onChange={(e) => {
+                                                        setFileLocation(e.target.files[0]);
+                                                        setUploadState(false);
+                                                    }}
+                                                />
+                                                <Button onClick={()=>{setShowModalCamera(true)}}>
+                                                    <div className=" flex items-center gap-x-2" >
+                                                        <FaCamera />
+                                                        <div>Take</div>
+                                                    </div>
+                                                </Button>
+                                                <Button disabled={uploadState} onClick={()=>{setUploadState(true);setProgressBarVisible(true);uploadProfilePicture()}}>
+                                                    <div className=" flex items-center gap-x-2" >
+                                                        <FaCloudUploadAlt/>
+                                                        <div>Upload</div>
+                                                    </div>
+                                                </Button>
+
+                                            </div>
+                                            <div className="flex flex-row">
+                                                {uploadProgress <= 100 && progressBarVisible && (
+                                                    <ProgressBar now={uploadProgress} label={`${uploadProgress}%`} className="mt-3  w-full" />
+                                                )}
+                                            </div>
+                                        </div>
+                                        <Form.Text className="text-danger">
+                                            {formik.touched.profilePhotoURL && formik.errors.profilePhotoURL}
+                                        </Form.Text>
+                                    </Form.Group>
+                                </Row>
+                                <Row className="mb-3">
+                                    <Form.Group
+                                        as={Col}
+                                    >
+                                        <Form.Label>
+                                            First Name<span className="text-red-500"> *</span>
+                                        </Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            placeholder="First Name"
+                                            {...formik.getFieldProps("fname")}
+                                            required
+                                        />
+                                        <Form.Text className="text-danger">
+                                            {formik.touched.fname && formik.errors.fname}
+                                        </Form.Text>
+                                    </Form.Group>
+                                    <Form.Group as={Col} md={6}>
+                                        <Form.Label>
+                                            Last Name<span className="text-red-500"> *</span>
+                                        </Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            placeholder="Last Name"
+                                            {...formik.getFieldProps("lname")}
+                                            required
+                                        />
+                                        <Form.Text className="text-danger">
+                                            {formik.touched.lname && formik.errors.lname}
+                                        </Form.Text>
+                                    </Form.Group>
+                                </Row>
+                                <Row className="mb-3">
+                                    <Form.Group as={Col} md={6}>
+                                        <Form.Label>Email <span className="text-red-500"> *</span></Form.Label>
+                                        <Form.Control
+                                            type="email"
+                                            placeholder="Email"
+                                            {...formik.getFieldProps("email")}
+                                            required
+                                        />
+                                        <Form.Text className="text-danger">
+                                            {formik.touched.email && formik.errors.email}
+                                        </Form.Text>
+                                    </Form.Group>
+                                    <Form.Group as={Col} md={6}>
+                                        <Form.Label>
+                                            Telephone<span className="text-red-500"> *</span>
+                                        </Form.Label>
+                                        <Form.Control
+                                            type="number"
+                                            placeholder="Telephone"
+                                            {...formik.getFieldProps("telephone")}
+                                            required
+                                        />
+                                        <Form.Text className="text-danger">
+                                            {formik.touched.telephone && formik.errors.telephone}
+                                        </Form.Text>
+                                    </Form.Group>
+                                </Row>
+                                <Row className="mb-3">
+                                    <Form.Group as={Col} md={6}>
+                                        <Form.Label>
+                                            Address No
+                                        </Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            placeholder="Address No"
+                                            {...formik.getFieldProps("addressNo")}
+                                        />
+                                        <Form.Text className="text-danger">
+                                            {formik.touched.addressNo && formik.errors.addressNo}
+                                        </Form.Text>
+                                    </Form.Group>
+                                    <Form.Group as={Col} md={6}>
+                                        <Form.Label>
+                                            Address Line 1<span className="text-red-500"> *</span>
+                                        </Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            placeholder="Address Line 1"
+                                            {...formik.getFieldProps("adl1")}
+                                            required
+                                        />
+                                        <Form.Text className="text-danger">
+                                            {formik.touched.adl1 && formik.errors.adl1}
+                                        </Form.Text>
+                                    </Form.Group>
+                                </Row>
+                                <Row className="mb-3">
+                                    <Form.Group as={Col} md={6}>
+                                        <Form.Label>
+                                            Address Line 2
+                                        </Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            placeholder="Address Line 2"
+                                            {...formik.getFieldProps("adl2")}
+                                        />
+                                        <Form.Text className="text-danger">
+                                            {formik.touched.adl2 && formik.errors.adl2}
+                                        </Form.Text>
+                                    </Form.Group>
+                                    <Form.Group as={Col} md={6}>
+                                        <Form.Label>
+                                            City<span className="text-red-500"> *</span>
+                                        </Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            placeholder="City"
+                                            {...formik.getFieldProps("city")}
+                                            required
+                                        />
+                                        <Form.Text className="text-danger">
+                                            {formik.touched.city && formik.errors.city}
+                                        </Form.Text>
+                                    </Form.Group>
+                                </Row>
+                                <Row className="mb-3">
+                                    <Form.Group as={Col} md={6}>
+                                        <Form.Label>
+                                            NIC<span className="text-red-500"> *</span>
+                                        </Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            placeholder="NIC"
+                                            {...formik.getFieldProps("nic")}
+                                            required
+                                        />
+                                        <Form.Text className="text-danger">
+                                            {formik.touched.nic && formik.errors.nic}
+                                        </Form.Text>
+                                    </Form.Group>
                                     <Form.Group as={Col} md={6}>
                                         <Form.Label>NIC Picture<span className="text-red-500"> *</span></Form.Label>
                                         <div className="flex flex-col">
@@ -354,125 +355,127 @@ function TrainerRegistrationForm(props) {
                                         </Form.Text>
                                     </Form.Group>
                                 </Row>
-                        <Row className='mb-3'>
-                            <Form.Group as={Col} md={6}>
-                                <Form.Label>
-                                    Date of Birth<span className="text-red-500"> *</span>
-                                </Form.Label>
-                                <Form.Control
-                                    type="date"
-                                    max = {new Date(new Date().setFullYear(new Date().getFullYear()-18)).toISOString().split("T")[0]}
-                                    min = {new Date(new Date().setFullYear(new Date().getFullYear()-55)).toISOString().split("T")[0]}
-                                    placeholder="Date of Birth"
-                                    {...formik.getFieldProps("dateOfBirth")}
-                                    required
-                                />
-                                <Form.Text className="text-danger">
-                                    {formik.touched.dateOfBirth && formik.errors.dateOfBirth}
-                                </Form.Text>
-                            </Form.Group>
-                            <Form.Group as={Col} md={6}>
-                                <Form.Label>
-                                    Driv. Licence No<span className="text-red-500"> *</span>
-                                </Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Licence Number"
-                                    {...formik.getFieldProps("licenceNo")}
-                                    required
-                                />
-                                <Form.Text className="text-danger">
-                                    {formik.touched.licenceNo && formik.errors.licenceNo}
-                                </Form.Text>
-                            </Form.Group>
-                        </Row>
-                        <Row className="mb-3">
-                            <Form.Group as={Col} md={6}>
-                                <Form.Label>
-                                    Driv. Licence Issued On<span className="text-red-500"> *</span>
-                                </Form.Label>
-                                <Form.Control
-                                    type="date"
-                                    min={new Date(new Date(new Date(formik.getFieldProps("dateOfBirth").value)).setFullYear(new Date(formik.getFieldProps("dateOfBirth").value).getFullYear()+18) || new Date()).toISOString().split("T")[0]}
-                                    max = {new Date().toISOString().split("T")[0]}
-                                    {...formik.getFieldProps("licenceIssuedOn")}
-                                    required
-                                />
-                                <Form.Text className="text-danger">
-                                    {formik.touched.licenceIssuedOn && formik.errors.licenceIssuedOn}
-                                </Form.Text>
-                            </Form.Group>
-                            <Form.Group as={Col} md={6} className="flex items-center gap-x-4 pl-1">
-                                <Form.Label>
-                                    Blood Type:<span className="text-red-500"> *</span>
-                                </Form.Label>
-                                <Dropdown>
-                                    <Dropdown.Toggle variant="outline-secondary" size="sm">
-                                        {(formik.values.bloodType||"Type")}
-                                    </Dropdown.Toggle>
-                                    <Dropdown.Menu>
-                                        <Dropdown.Item onClick={()=>{formik.setFieldValue("bloodType","A+")}} >A+</Dropdown.Item>
-                                        <Dropdown.Item onClick={()=>{formik.setFieldValue("bloodType","A-")}}>A-</Dropdown.Item>
-                                        <Dropdown.Item onClick={()=>{formik.setFieldValue("bloodType","B+")}}>B+</Dropdown.Item>
-                                        <Dropdown.Item onClick={()=>{formik.setFieldValue("bloodType","B-")}}>B-</Dropdown.Item>
-                                        <Dropdown.Item onClick={()=>{formik.setFieldValue("bloodType","O+")}}>O+</Dropdown.Item>
-                                        <Dropdown.Item onClick={()=>{formik.setFieldValue("bloodType","O-")}}>O-</Dropdown.Item>
-                                        <Dropdown.Item onClick={()=>{formik.setFieldValue("bloodType","AB+")}}>AB+</Dropdown.Item>
-                                        <Dropdown.Item onClick={()=>{formik.setFieldValue("bloodType","AB-")}}>AB-</Dropdown.Item>
-                                    </Dropdown.Menu>
-                                </Dropdown>
-                                <Form.Text className="text-danger">
-                                    {formik.touched.bloodType && formik.errors.bloodType}
-                                </Form.Text>
-                            </Form.Group>
-                        </Row>
-                        <Row className="mt-3">
-                            <Form.Group as={Col} md={6}>
-                                <Form.Label>
-                                    Trainer Licence ID<span className="text-red-500"> *</span>
-                                </Form.Label>
-                                <Form.Control
-                                    type="number"
-                                    {...formik.getFieldProps("trainerLicenceID")}
-                                    required
-                                />
-                                <Form.Text className="text-danger">
-                                    {formik.touched.trainerLicenceID && formik.errors.trainerLicenceID}
-                                </Form.Text>
-                            </Form.Group>
-                            <Form.Group as={Col} md={6}>
-                                <Form.Label>
-                                    Trainer Licence Issued On<span className="text-red-500"> *</span>
-                                </Form.Label>
-                                <Form.Control
-                                    type="date"
-                                    min={new Date(new Date(new Date(formik.getFieldProps("licenceIssuedOn").value)).setFullYear(new Date(formik.getFieldProps("licenceIssuedOn").value).getFullYear()+5) || new Date()).toISOString().split("T")[0]}
-                                    max = {new Date().toISOString().split("T")[0]}
-                                    {...formik.getFieldProps("trainerLicenceIssuedON")}
-                                    required
-                                />
-                                <Form.Text className="text-danger">
-                                    {formik.touched.trainerLicenceIssuedON && formik.errors.trainerLicenceIssuedON}
-                                </Form.Text>
-                            </Form.Group>
+                                <Row className='mb-3'>
+                                    <Form.Group as={Col} md={6}>
+                                        <Form.Label>
+                                            Date of Birth<span className="text-red-500"> *</span>
+                                        </Form.Label>
+                                        <Form.Control
+                                            type="date"
+                                            max = {new Date(new Date().setFullYear(new Date().getFullYear()-18)).toISOString().split("T")[0]}
+                                            min = {new Date(new Date().setFullYear(new Date().getFullYear()-55)).toISOString().split("T")[0]}
+                                            placeholder="Date of Birth"
+                                            {...formik.getFieldProps("dateOfBirth")}
+                                            required
+                                        />
+                                        <Form.Text className="text-danger">
+                                            {formik.touched.dateOfBirth && formik.errors.dateOfBirth}
+                                        </Form.Text>
+                                    </Form.Group>
+                                    <Form.Group as={Col} md={6}>
+                                        <Form.Label>
+                                            Driv. Licence No<span className="text-red-500"> *</span>
+                                        </Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            placeholder="Licence Number"
+                                            {...formik.getFieldProps("licenceNo")}
+                                            required
+                                        />
+                                        <Form.Text className="text-danger">
+                                            {formik.touched.licenceNo && formik.errors.licenceNo}
+                                        </Form.Text>
+                                    </Form.Group>
+                                </Row>
+                                <Row className="mb-3">
+                                    <Form.Group as={Col} md={6}>
+                                        <Form.Label>
+                                            Driv. Licence Issued On<span className="text-red-500"> *</span>
+                                        </Form.Label>
+                                        <Form.Control
+                                            type="date"
+                                            min={new Date(new Date(new Date(formik.getFieldProps("dateOfBirth").value)).setFullYear(new Date(formik.getFieldProps("dateOfBirth").value).getFullYear()+18) || new Date()).toISOString().split("T")[0]}
+                                            max = {new Date().toISOString().split("T")[0]}
+                                            {...formik.getFieldProps("licenceIssuedOn")}
+                                            required
+                                        />
+                                        <Form.Text className="text-danger">
+                                            {formik.touched.licenceIssuedOn && formik.errors.licenceIssuedOn}
+                                        </Form.Text>
+                                    </Form.Group>
+                                    <Form.Group as={Col} md={6} className="flex items-center gap-x-4 pl-1">
+                                        <Form.Label>
+                                            Blood Type:<span className="text-red-500"> *</span>
+                                        </Form.Label>
+                                        <Dropdown>
+                                            <Dropdown.Toggle variant="outline-secondary" size="sm">
+                                                {(formik.values.bloodType||"Type")}
+                                            </Dropdown.Toggle>
+                                            <Dropdown.Menu>
+                                                <Dropdown.Item onClick={()=>{formik.setFieldValue("bloodType","A+")}} >A+</Dropdown.Item>
+                                                <Dropdown.Item onClick={()=>{formik.setFieldValue("bloodType","A-")}}>A-</Dropdown.Item>
+                                                <Dropdown.Item onClick={()=>{formik.setFieldValue("bloodType","B+")}}>B+</Dropdown.Item>
+                                                <Dropdown.Item onClick={()=>{formik.setFieldValue("bloodType","B-")}}>B-</Dropdown.Item>
+                                                <Dropdown.Item onClick={()=>{formik.setFieldValue("bloodType","O+")}}>O+</Dropdown.Item>
+                                                <Dropdown.Item onClick={()=>{formik.setFieldValue("bloodType","O-")}}>O-</Dropdown.Item>
+                                                <Dropdown.Item onClick={()=>{formik.setFieldValue("bloodType","AB+")}}>AB+</Dropdown.Item>
+                                                <Dropdown.Item onClick={()=>{formik.setFieldValue("bloodType","AB-")}}>AB-</Dropdown.Item>
+                                            </Dropdown.Menu>
+                                        </Dropdown>
+                                        <Form.Text className="text-danger">
+                                            {formik.touched.bloodType && formik.errors.bloodType}
+                                        </Form.Text>
+                                    </Form.Group>
+                                </Row>
+                                <Row className="mt-3">
+                                    <Form.Group as={Col} md={6}>
+                                        <Form.Label>
+                                            Trainer Licence ID<span className="text-red-500"> *</span>
+                                        </Form.Label>
+                                        <Form.Control
+                                            type="number"
+                                            {...formik.getFieldProps("trainerLicenceID")}
+                                            required
+                                        />
+                                        <Form.Text className="text-danger">
+                                            {formik.touched.trainerLicenceID && formik.errors.trainerLicenceID}
+                                        </Form.Text>
+                                    </Form.Group>
+                                    <Form.Group as={Col} md={6}>
+                                        <Form.Label>
+                                            Trainer Licence Issued On<span className="text-red-500"> *</span>
+                                        </Form.Label>
+                                        <Form.Control
+                                            type="date"
+                                            min={new Date(new Date(new Date(formik.getFieldProps("licenceIssuedOn").value)).setFullYear(new Date(formik.getFieldProps("licenceIssuedOn").value).getFullYear()+5) || new Date()).toISOString().split("T")[0]}
+                                            max = {new Date().toISOString().split("T")[0]}
+                                            {...formik.getFieldProps("trainerLicenceIssuedON")}
+                                            required
+                                        />
+                                        <Form.Text className="text-danger">
+                                            {formik.touched.trainerLicenceIssuedON && formik.errors.trainerLicenceIssuedON}
+                                        </Form.Text>
+                                    </Form.Group>
 
-                        </Row>
-                    </div>
-                </Card.Body>
-                <Card.Footer>
-                    <Row>
-                        <div className="flex flex-row justify-between items-center bg-neutral-100 p-3 rounded-md">
-                            <Button variant="danger" onClick={back}>
-                                Back
-                            </Button>
-                            <Button type="submit" variant="success" disabled={submitButton}>
-                                Save
-                            </Button>
-                        </div>
-                    </Row>
-                </Card.Footer>
-                </Form>
-            </Card>
+                                </Row>
+                            </div>
+                        </Card.Body>
+                        <Card.Footer>
+                            <Row>
+                                <div className="flex flex-row justify-between items-center bg-neutral-100 p-3 rounded-md">
+                                    <Button variant="danger" onClick={back}>
+                                        Back
+                                    </Button>
+                                    <Button type="submit" variant="success" disabled={submitButton}>
+                                        Save
+                                    </Button>
+                                </div>
+                            </Row>
+                        </Card.Footer>
+                    </Form>
+                </Card>
+            </div>
+
             {/*take photo modal*/}
             <Modal show={showModalCamera} onHide={()=>{setShowModalCamera(false)}}>
                 <Modal.Header>

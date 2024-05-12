@@ -150,7 +150,8 @@ export default function RegistrationForm1() {
     }
   }
   return (
-    <div className="flex flex-row justify-center items-center w-screen h-full">
+    <div className="flex flex-col h-dvh mb-2">
+      <div className="flex flex-col overflow-y-scroll h-full items-center">
       <Card style={{ width: "40em" }}>
         <Card.Body className="overflow-auto h-full">
           <div className="p-4">
@@ -435,6 +436,7 @@ export default function RegistrationForm1() {
           </div>
         </Card.Body>
       </Card>
+      </div>
       <Modal show={showModalCamera} onHide={()=>{setShowModalCamera(false)}}>
         <Modal.Header>
           <Modal.Title>Take Photo</Modal.Title>

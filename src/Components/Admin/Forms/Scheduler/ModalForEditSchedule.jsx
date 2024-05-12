@@ -261,13 +261,13 @@ function ModalForEditSchedule({selectedDate,interrupt,setInterrupt,eventDetails}
                                 <Dropdown.Menu className='overflow-y-scroll h-24'>
                                     {vehicleData?.map((item, i) =>
                                         <Dropdown.Item className='flex' onClick={()=>formik.setFieldValue("registrationNo",item?.registrationNo)}>
-                                            <div className='w-40'>
+                                            <div className='w-64'>
                                                 <div className='flex items-center justify-between'>
-                                                    <div className='text-sx font-bold' style={{ fontSize: 'smaller' }}>
+                                                    <div className='text-sx font-bold' style={{fontSize: 'smaller'}}>
                                                         {`${item?.registrationNo}`}
                                                     </div>
                                                     <div>
-                                                        <div className='text-xs' style={{ fontSize: 'smaller' }}>
+                                                        <div className='text-xs' style={{fontSize: 'smaller'}}>
                                                             Sts: {item?.vehicleStatus}
                                                         </div>
                                                     </div>
@@ -281,7 +281,7 @@ function ModalForEditSchedule({selectedDate,interrupt,setInterrupt,eventDetails}
                                                             {item?.modal}
                                                         </div>
                                                     </div>
-                                                    <div className='text-xs italic' style={{ fontSize: 'smaller' }}>
+                                                    <div className='text-xs italic' style={{fontSize: 'smaller'}}>
                                                         trns: {item?.autoOrManual}
                                                     </div>
                                                 </div>
@@ -301,11 +301,17 @@ function ModalForEditSchedule({selectedDate,interrupt,setInterrupt,eventDetails}
                                     {formik.values.trainerID || "Select"}
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu className='overflow-y-scroll h-24'>
-                                    {trainers.map((item, i) =>(
-                                        <Dropdown.Item onClick={() => formik.setFieldValue("trainerID", item?.trainerID)}>
+                                    {trainers.map((item, i) => (
+                                        <Dropdown.Item
+                                            onClick={() => formik.setFieldValue("trainerID", item?.trainerID)}>
                                             <div className='text-sx' style={{fontSize: 'smaller'}}>
-                                                <div>
-                                                    {`${item?.fname}`}
+                                                <div className='w-72 flex gap-x-4'>
+                                                    <div>
+                                                        {`${item?.fname}`} {`${item?.lname}`}
+                                                    </div>
+                                                    <div>
+                                                        Sts: {item?.trainerStatus}
+                                                    </div>
                                                 </div>
                                                 <div className='italic'>
                                                     {item?.nic}
@@ -332,7 +338,7 @@ function ModalForEditSchedule({selectedDate,interrupt,setInterrupt,eventDetails}
                             required
                         />
                         <Form.Text className="text-danger">
-                            {formik.touched.studentCount && formik.errors.studentCount}
+                        {formik.touched.studentCount && formik.errors.studentCount}
                         </Form.Text>
                     </Form.Group>
 
