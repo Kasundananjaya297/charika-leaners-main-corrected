@@ -69,7 +69,7 @@ function ScheduleCalander(props) {
 
 
     return (
-        <div style={{width:1400}}>
+        <div style={{width:1300}}>
             <Calendar
                 localizer={localizer}
                 events={eventList}

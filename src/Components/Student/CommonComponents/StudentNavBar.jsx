@@ -39,23 +39,14 @@ const StudentNavBar = () => {
                     <Navbar.Collapse id="navbarScroll" className='w-full'>
                         <Nav
                             className="me-auto my-2 my-lg-0 justify-end w-full"
-                            style={{ maxHeight: '170px' }}
+                            style={{ maxHeight: '200px' }}
                             navbarScroll
                         >
                             <Nav.Link href="/Student/studentHome">Home</Nav.Link>
                             <Nav.Link href="/Student/studentSchedules">Schedules</Nav.Link>
                             <Nav.Link href="#action3">Feed Backs</Nav.Link>
-                            <Nav.Link href="#action3">Profile</Nav.Link>
-
-                                <div
-                                    className={classNames( "flex items-center gap-2 -ml-4 font-light px-3 py-2 no-underline hover:no-underline","text-red-500", "cursor-pointer")}
-                                    onClick={handleLogOut}
-                                >
-                                 <span className="text-xl">
-                                    <HiOutlineLogout/>
-                                     </span>
-                                    Logout
-                                </div>
+                            <Nav.Link href="/Student/studentProfile">Profile</Nav.Link>
+                            <Nav.Link onClick={handleLogOut} className='text-danger'>Logout</Nav.Link>
                         </Nav>
                     </Navbar.Collapse>
                 </Container>

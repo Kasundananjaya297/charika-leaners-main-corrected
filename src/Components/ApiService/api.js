@@ -275,3 +275,6 @@ export const getAllSchedules = () =>{
 export const updateSchedules = (data) =>{
     return AxiosInstance.put('admin/updateSchedules',data);
 }
+export const getSchedulesforStudent = (stdID) =>{
+    return AxiosInstance.get(`student/getScheduelsByStudentID/${stdID}`);
+}

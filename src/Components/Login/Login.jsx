@@ -52,6 +52,7 @@ export default function Login() {
         nav("/Home");
       } else if (sessionStorage.getItem("role") === "STUDENT") {
         nav("/Student/studentHome");
+        sessionStorage.setItem("username", username);
       }
     } catch (e) {
       console.error(e);

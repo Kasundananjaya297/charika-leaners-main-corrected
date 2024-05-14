@@ -26,6 +26,7 @@ import StudentLayout from "./Components/Student/CommonComponents/StudentLayout";
 import StudentHome from "./Components/Student/StudentHome";
 import StudentSchedules from "./Components/Student/StudentSchedules";
 import Invoice from "./Components/Admin/Common/Invoice";
+import Profile from "./Components/Student/CommonComponents/Profile";
 
 function App() {
   return (
@@ -59,6 +60,7 @@ function App() {
         <Route path="/Student" element={<StudentLayout />}>
           <Route path='/Student/studentHome' element={<StudentHome />} />
           <Route path='/Student/studentSchedules' element={<StudentSchedules />} />
+          <Route path = '/Student/studentProfile' element = {<Profile/>} />
         </Route>
       </Routes>
     </Router>

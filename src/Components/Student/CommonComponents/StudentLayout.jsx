@@ -5,7 +5,7 @@ import StudentNavBar from "./StudentNavBar";
 function StudentLayout(props) {
     return (
         <div className="flex flex-col h-dvh">
-            <div className='flex-row flex mb-1 h-20' >
+            <div className='flex-row flex mb-1' >
                 <StudentNavBar/>
             </div>
             <div className="flex flex-col overflow-y-scroll h-full">
