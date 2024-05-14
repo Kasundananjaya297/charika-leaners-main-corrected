@@ -58,7 +58,8 @@ function ScheduleCalander(props) {
                         vehicleClassName: event.vehicleClassName,
                         vehiclePhoto: event.vehiclePhoto,
                         trainerPhoto: event.trainerPhoto,
-                        style: {backgroundColor}
+                        bookingScheduleDTO: event.bookingScheduleDTO,
+                        color: event.studentCount === event.bookingScheduleDTO?.length ? "red" : event.bookingScheduleDTO?.length !==0? "#BE8400" :"green",
                     }
                 })
                 setEventList(events);
@@ -78,7 +79,7 @@ function ScheduleCalander(props) {
                 onSelectEvent={event => {setSelectedEvent(event);setShowModalEventDetails(true)}}
                 onSelectSlot={(e) => {setSelectedDate(new Date(e.start));setShowModalAddEvent(true)}}
                 eventPropGetter={event => {
-                    const backgroundColor = 'green';
+                    const backgroundColor = event.color;
                     return { style: { backgroundColor } };
                 }}
                 selectable

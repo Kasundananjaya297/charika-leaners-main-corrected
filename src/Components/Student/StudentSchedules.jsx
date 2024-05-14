@@ -47,7 +47,8 @@ const localizer = momentLocalizer(moment);
                     vehicleClassName: event.vehicleClassName,
                     vehiclePhoto: event.vehiclePhoto,
                     trainerPhoto: event.trainerPhoto,
-                    style: {backgroundColor}
+                    style: {backgroundColor},
+                    bookingScheduleDTO: event.bookingScheduleDTO,
                 }
             })
             setEventList(events);

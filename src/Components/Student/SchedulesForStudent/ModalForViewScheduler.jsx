@@ -5,6 +5,8 @@ import Col from "react-bootstrap/Col";
 import {FaUserEdit} from "react-icons/fa";
 import Image from "react-bootstrap/Image";
 import {Button, Modal} from "react-bootstrap";
+import Swal from "sweetalert2";
+import {makeBooking, makeBookingSave} from "../../ApiService/api";
 
 function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
     //hook for preview trainer profile photo
@@ -13,6 +15,46 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
     const [showModaTrainer, setShowModalTrainer] = useState(false)
     //hook for edit schedule
     const [showModalEditSchedule, setShowModalEditSchedule] = useState(false)
+    //save data
+    const makeBooking = () =>{
+        const booking = {
+            bookingDate: new Date().toISOString().split('T')[0],
+            bookingTime: new Date().toTimeString().split(' ')[0],
+            isAccepted: false,
+            isCanceled: false,
+            isCompleted: false,
+            schedulerID: eventDetails.schedulerID,
+            stdID: sessionStorage.getItem('username')
+        }
+        console.log(booking);
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you want to book this schedule?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, book it!'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+               const reponse = await makeBookingSave(booking);
+               console.log(reponse);
+                if(reponse?.data?.code === "00"){
+                    Swal.fire(
+                        'Booked!',
+                        'Your booking has been completed.',
+                        'success'
+                    )
+                }else if (reponse?.data?.code === "06"){
+                    Swal.fire(
+                        'Error!',
+                        'Booking is full',
+                        'error'
+                    )
+                }
+            }
+        })
+    }
 
 
     return (
@@ -103,7 +145,7 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
                 </Card.Body>
             </Card>
             <div className='flex flex-row mt-2 items-end justify-end'>
-                <Button>Book Now</Button>
+                <Button onClick={makeBooking}>Book Now</Button>
             </div>
 
         </div>

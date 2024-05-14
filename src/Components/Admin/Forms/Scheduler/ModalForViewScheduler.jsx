@@ -4,7 +4,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import {FaUserEdit} from "react-icons/fa";
 import Image from "react-bootstrap/Image";
-import {Modal} from "react-bootstrap";
+import {Button, Modal} from "react-bootstrap";
 import ModalForEditSchedule from "./ModalForEditSchedule";
 
 function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
@@ -15,6 +15,7 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
     //hook for edit schedule
     const [showModalEditSchedule, setShowModalEditSchedule] = useState(false)
 
+    console.log(eventDetails)
 
     return (
         <div>
@@ -90,20 +91,54 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
                             {eventDetails.registrationNo}
                         </Col>
                     </Row>
-                    <Row className="mb-2">
+                    <Row>
                         <Col xs={4}>Vehicle:</Col>
                         <Col xs={8} className="pl-4">
                             {eventDetails.make} {eventDetails.model}
                         </Col>
                     </Row>
                 </Card.Body>
+                {/*booking requests*/}
+                <Card.Body className='bg-gray-50'>
+                    <Card.Title>Booking Requests</Card.Title>
+                    <div className='h-28 overflow-y-scroll'>
+                        {eventDetails?.bookingScheduleDTO?.map((request, index) => (
+                                <Row key={index} className='flex flex-row items-center justify-center'>
+                                    <div className='flex justify-between items-center'>
+                                        <div className='mb-1 '>
+                                            <div>
+                                                {request.stdID} - {request.stdFname} {request.stdLname}
+                                            </div>
+                                            <div className='text-xs italic'>
+                                                {request.telephone} | {request.bookingDate} {request.bookingTime}
+                                            </div>
+                                        </div>
+                                        <div className='flex'>
+                                            <Button variant='outline-success' size='sm' className='mr-3'>
+                                                Accept
+                                            </Button>
+                                            <Button variant='outline-danger' size='sm'>
+                                                Reject
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </Row>
+                            )
+                        )
+                        }
+                    </div>
+
+                </Card.Body>
             </Card>
-            <Modal show={showModalEditSchedule} onHide={()=>{setShowModalEditSchedule(false)}}>
+            <Modal show={showModalEditSchedule} onHide={() => {
+                setShowModalEditSchedule(false)
+            }}>
                 <Modal.Header closeButton>
                     <Modal.Title>Edit Schedules</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <ModalForEditSchedule eventDetails={eventDetails} interrupt={interrupt} setInterrupt={setInterrupt} selectedDate={new Date(eventDetails.start)}/>
+                    <ModalForEditSchedule eventDetails={eventDetails} interrupt={interrupt} setInterrupt={setInterrupt}
+                                          selectedDate={new Date(eventDetails.start)}/>
                 </Modal.Body>
             </Modal>
         </div>
