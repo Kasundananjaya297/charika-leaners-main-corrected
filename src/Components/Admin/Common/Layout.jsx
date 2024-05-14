@@ -15,7 +15,8 @@ export default function Layout() {
     location.pathname.includes("/selectPackage")||
     location.pathname.includes("/editPackage")||
     location.pathname.includes("/addNewVehicle")||
-    location.pathname.includes("/registertrainer")
+    location.pathname.includes("/registertrainer")||
+    location.pathname.includes("/invoice")
   );
 
   return (

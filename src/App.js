@@ -17,13 +17,15 @@ import Camera from "./Components/Admin/Common/Camera";
 import Packages from "./Components/Admin/Packages";
 import AddPackages from "./Components/Admin/Forms/AddPackages";
 import AddPackagesEdit from "./Components/Admin/Forms/AddPackagesEdit";
-import SelectPackage from "./Components/Admin/Forms/SelectPackage";
 import Vehicle from "./Components/Admin/Vehicle";
 import Trainers from "./Components/Admin/Trainers";
 import Schedule from "./Components/Admin/Schedule";
 import AddNewVehicle from "./Components/Admin/Forms/AddNewVehicle";
 import TrainerRegistrationForm from "./Components/Admin/Forms/TrainerRegistrationForm";
-import StudentDashBoard from "./Components/Student/StudentDashBoard";
+import StudentLayout from "./Components/Student/CommonComponents/StudentLayout";
+import StudentHome from "./Components/Student/StudentHome";
+import StudentSchedules from "./Components/Student/StudentSchedules";
+import Invoice from "./Components/Admin/Common/Invoice";
 
 function App() {
   return (
@@ -50,17 +52,13 @@ function App() {
           <Route path="/vehicle" element={<Vehicle />}/>
           <Route path = "/vehicle/addNewVehicle" element = {<AddNewVehicle />} />
           <Route path= "/trainer/registertrainer" element={<TrainerRegistrationForm />} />
-
-
           <Route path="/trainer" element = {<Trainers/>} />
-
-
-
           <Route path ="/Schedule" element = {<Schedule/>} />
-
+          <Route path={"/invoice"} element={<Invoice />} />
         </Route>
-        <Route path="/Student" element={<StudentDashBoard />}>
-
+        <Route path="/Student" element={<StudentLayout />}>
+          <Route path='/Student/studentHome' element={<StudentHome />} />
+          <Route path='/Student/studentSchedules' element={<StudentSchedules />} />
         </Route>
       </Routes>
     </Router>

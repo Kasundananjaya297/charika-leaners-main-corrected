@@ -9,23 +9,24 @@ import { eyeOff } from "react-icons-kit/feather/eyeOff";
 import { eye } from "react-icons-kit/feather/eye";
 import "react-toastify/dist/ReactToastify.css";
 import { Icon } from "react-icons-kit";
+import { IoScanCircleOutline } from "react-icons/io5";
+import { Modal } from "react-bootstrap";
+import { Scanner } from "@yudiel/react-qr-scanner";
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const nav = useNavigate();
-
+  const [showModalQrScanner, setShowModalQrScanner] = useState(false);
   const [type, setType] = useState("password");
   const [icon, setIcon] = useState(eyeOff);
+  const [scanSuccess, setScanSuccess] = useState(false);
+
   const handleToggle = () => {
-    if (type === "password") {
-      setIcon(eye);
-      setType("text");
-    } else {
-      setIcon(eyeOff);
-      setType("password");
-    }
+    setType((prevType) => (prevType === "password" ? "text" : "password"));
+    setIcon((prevIcon) => (prevIcon === eyeOff ? eye : eyeOff));
   };
+
   const HandleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -49,13 +50,21 @@ export default function Login() {
       sessionStorage.setItem("role", response.data.role);
       if (sessionStorage.getItem("role") === "ADMIN") {
         nav("/Home");
-      }else if(sessionStorage.getItem("role") === "STUDENT"){
-        nav("/Student")
+      } else if (sessionStorage.getItem("role") === "STUDENT") {
+        nav("/Student/studentHome");
       }
     } catch (e) {
       console.error(e);
     }
   };
+
+
+  const handleScanSuccess = (text) => {
+    setPassword(text);
+    setScanSuccess(true);
+    setShowModalQrScanner(false);
+  };
+
   return (
       <div className="flex justify-center items-center w-screen h-screen">
         <ToastContainer />
@@ -72,16 +81,16 @@ export default function Login() {
                   <Form.Label>Username:</Form.Label>
                   <Form.Control
                       type="Text"
-                      placeholder="Userame..."
+                      placeholder="Username..."
                       value={username}
                       onChange={(e) => {
                         setUsername(e.target.value);
                       }}
                   />
                 </Form.Group>
-                <Form.Group className="mb-3">
+                <Form.Group className="mb-3 flex flex-col w-full relative">
                   <Form.Label>Password:</Form.Label>
-                  <div className="flex">
+                  <div className="flex flex-row w-full relative">
                     <Form.Control
                         type={type}
                         name="password"
@@ -90,14 +99,18 @@ export default function Login() {
                         onChange={(e) => setPassword(e.target.value)}
                         autoComplete="current-password"
                     />
-                    <span
-                        class="flex justify-around items-center"
-                        onClick={handleToggle}
-                    >
-                  <Icon class="absolute mr-10" icon={icon} size={25} />
-                </span>
+                    <div className="absolute top-0 right-0 flex flex-row items-center justify-center gap-x-2 h-full mr-3">
+                    <span>
+                      <IoScanCircleOutline
+                          size={25}
+                          onClick={() => setShowModalQrScanner(true)}
+                      />
+                    </span>
+                      <span onClick={handleToggle}>
+                      <Icon icon={icon} size={25} />
+                    </span>
+                    </div>
                   </div>
-
                 </Form.Group>
               </Form>
               <Button
@@ -110,6 +123,19 @@ export default function Login() {
             </div>
           </Card.Body>
         </Card>
+        <Modal
+            show={showModalQrScanner}
+            onHide={() => setShowModalQrScanner(false)}
+        >
+          <Modal.Header closeButton className="flex items-center justify-center flex-row">
+            <Modal.Title>QR Scanner</Modal.Title>
+          </Modal.Header>
+          <Modal.Body className="flex flex-row items-center justify-center">
+            {scanSuccess ? null : (
+                <Scanner onResult={handleScanSuccess} />
+            )}
+          </Modal.Body>
+        </Modal>
       </div>
   );
 }

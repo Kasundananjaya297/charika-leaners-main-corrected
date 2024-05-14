@@ -255,11 +255,11 @@ const viewTrail = (stdID) =>{
                 </Col>
               </Row>
               <div></div>
-              <Modal show={showModalSession} onHide={()=>{setShowModalSession(false);setInterrupt(!interrupt)}}  size={'xl'}>
+              <Modal show={showModalSession} onHide={()=>{setShowModalSession(false);setInterrupt(!interrupt)}} fullscreen={true}>
                   <ModalHeader closeButton>
                     <Modal.Title>Session Details</Modal.Title>
                   </ModalHeader>
-                    <Modal.Body className="items-center flex flex-row justify-center w-full">
+                    <Modal.Body className="items-center flex flex-row justify-center">
                       {packData?.map((data, i) => (
                           <SessionCard key={i} packeData={data} stdID ={studentData?.stdID} setInterrupt={setInterrupt}/>
                       ))}

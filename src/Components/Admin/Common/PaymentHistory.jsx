@@ -13,6 +13,7 @@ const PaymentHistory = ({ data, packageData,setShowModal }) => {
     const [packData, setPackData] = useState(packageData);
     const [amount, setPayment] = useState(0);
     const [payments,setPayments] = useState([]);
+    const [showModalPayemntRecipt, setShowModalPayemntRecipt] = useState(false);
 
     useEffect(() => {
         if(packData.length===0){
@@ -34,7 +35,7 @@ const PaymentHistory = ({ data, packageData,setShowModal }) => {
             }
         }
         fetchData();
-    });
+    },[]);
 
     return (
         <Card style={{ width: "48rem" }}>
@@ -110,17 +111,14 @@ const PaymentHistory = ({ data, packageData,setShowModal }) => {
                                     <td className='p-2'>{payment?.paymentDate}</td>
                                     <td>{payment?.paymentTime}</td>
                                     <td>Rs. {payment?.amount}</td>
-                                    <td><MdEdit /></td>
                                 </tr>
                             ))}
                             </tbody>
                         </table>
+                        <Button >View Payment Slip</Button>
                     </Row>
                 </div>
-
             </div>
-
-
         </Card>
     );
 };

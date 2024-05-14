@@ -3,15 +3,21 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
-import {Button} from "react-bootstrap";
+import {Button, Modal} from "react-bootstrap";
 import Swal from "sweetalert2";
 import {savePayments} from "../../ApiService/api";
 import { CiWarning } from "react-icons/ci";
+import Invoice from "./Invoice";
+
 
 export const Payment = ({ data, packageData,setShowModal }) => {
     const [studentData, setStudentData] = useState(data);
     const [packData, setPackData] = useState(packageData);
     const [amount, setPayment] = useState(0);
+
+    //modal to view invoice
+    const[showModalViewInvoice, setShowModalViewInvoice] = useState(false);
+
     console.log(packData[0])
 
     const savePayment = async (e) => {
@@ -119,10 +125,13 @@ export const Payment = ({ data, packageData,setShowModal }) => {
                     <Col xs={4}>Payments:</Col>
                     <Col xs={8} className='italic'>(Rs. {(parseFloat(packData[0]?.totalAmountPaid)+parseFloat(amount))})</Col>
                 </Row>
-                <Row className='text-success font-bold'>
+                <Row className='text-success font-bold mb-2'>
                     <Col xs={4}>Remain:</Col>
                     <Col xs={8} className=''>Rs. {((packData[0]?.totalAmountToPay-packData[0]?.totalAmountPaid-amount)>0?(packData[0]?.totalAmountToPay-packData[0]?.totalAmountPaid-amount):0)}</Col>
                 </Row>
+                <Button onClick={() => {
+                    setShowModalViewInvoice(true)
+                }}>View Invoice</Button>
             </div>
             <Row className="mb-4 flex ">
                 <div className="items-center mt-3 flex justify-between ml-10">
@@ -148,6 +157,14 @@ export const Payment = ({ data, packageData,setShowModal }) => {
 
                 </div>
             </Row>
+            <Modal show={showModalViewInvoice} onHide={()=>{setShowModalViewInvoice(false)}} fullscreen={true}>
+                <Modal.Header closeButton className='flex items-center justify-center flex-row'>
+                    <Modal.Title>Invoice</Modal.Title>
+                </Modal.Header>
+                <Modal.Body className='flex flex-row items-center justify-center'>
+                    <Invoice data={studentData} packageData={packData}/>
+                </Modal.Body>
+            </Modal>
         </Card>
     );
 };

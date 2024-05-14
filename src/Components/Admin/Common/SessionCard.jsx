@@ -210,13 +210,13 @@ console.log(packeData)
         })
     }
   return (
-    <div>
+    <div className=''>
         <Row className="flex text-sm item-center">
             <Col sm={12} md={6} lg={4}>
                 <Form onSubmit={UpdatePackage}>
-                    <Card style={{width: "70rem"}}>
-                        <div className="flex p-5 items-center justify-center pt-0 w-wrap h-div">
-                            <Card.Body className="p-7">
+                    <Card style={{width: "76rem"}}>
+                        <div className="flex p-5 items-center justify-center pt-0 h-div">
+                            <Card.Body className="pl-7">
                                 <div className="flex flex-col w-96 mb-3">
                                     <Row className="mb-2">
                                         <Col xs={5}>Package ID:</Col>

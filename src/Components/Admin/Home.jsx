@@ -11,7 +11,16 @@ const Home = () => {
       nav("/");
     }
   }, [nav]);
-  return <div>This is home</div>;
+  return (
+      <div className="flex flex-col h-dvh mb-2">
+        <div className="flex flex-col overflow-y-scroll  h-full">
+          <div className="flex flex-wrap">
+            Admin home
+          </div>
+        </div>
+      </div>
+  )
+
 };
 
 export default Home;

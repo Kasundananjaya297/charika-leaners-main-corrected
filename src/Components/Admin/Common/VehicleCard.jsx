@@ -406,13 +406,13 @@ function VehicleCard({vehicleData,interrupt,setInterrupt}) {
 
     //minimumemission Date
     const minEmissionDate = vehicleData && vehicleData.emissionTests && vehicleData.emissionTests.length > 0
-        ? new Date(new Date(new Date(vehicleData.emissionTests[0].issuedDate).setFullYear(new Date(vehicleData.emissionTests[0].issuedDate).getFullYear() + 1)).setDate(new Date(vehicleData.emissionTests[0].issuedDate).getDate() - 20)).toISOString().split('T')[0]
-        : new Date(new Date().setDate(new Date().getDate() - 20)).toISOString().split('T')[0];
+        ? new Date(new Date(new Date(vehicleData.emissionTests[0].issuedDate).setFullYear(new Date(vehicleData.emissionTests[0].issuedDate).getFullYear() + 1)).setDate(new Date(vehicleData.emissionTests[0].issuedDate).getDate() - 365)).toISOString().split('T')[0]
+        : new Date(new Date().setFullYear(new Date().getFullYear() -1 )).toISOString().split('T')[0];
 
 // max date
     const maxDateForEmission = vehicleData && vehicleData.emissionTests && vehicleData.emissionTests.length > 0
         ? new Date(new Date(new Date(vehicleData.emissionTests[0].issuedDate).setFullYear(new Date(vehicleData.emissionTests[0].issuedDate).getFullYear() + 1)).setDate(new Date(vehicleData.emissionTests[0].issuedDate).getDate() + 20)).toISOString().split('T')[0]
-        : new Date(new Date().setDate(new Date().getDate() + 20)).toISOString().split('T')[0];
+        : new Date(new Date()).toISOString().split('T')[0];
 
     //min date for expire date
     const selectedEmissionDate = saveEmissionFromik.getFieldProps("issuedDate").value||minEmissionDate||vehicleData.emissionTests[0]?.issuedDate||new Date();

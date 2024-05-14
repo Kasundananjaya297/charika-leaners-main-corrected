@@ -6,6 +6,7 @@ import {Modal} from "react-bootstrap";
 import ModalForAddSchedule from "./ModalForAddSchedule";
 import {getAllSchedules} from "../../../ApiService/api";
 import ModalForViewScheduler from "./ModalForViewScheduler";
+import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 const localizer = momentLocalizer(moment);
 
@@ -30,6 +31,7 @@ function ScheduleCalander(props) {
             if(response?.data?.code ==="00"){
                 const data = response?.data?.content;
                 const events = data.map((event) => {
+                    let backgroundColor = "green";
                     return {
                         start: new Date(event.start),
                         end: new Date(event.end),
@@ -56,10 +58,10 @@ function ScheduleCalander(props) {
                         vehicleClassName: event.vehicleClassName,
                         vehiclePhoto: event.vehiclePhoto,
                         trainerPhoto: event.trainerPhoto,
-                        style: {backgroundColor: "red"},
+                        style: {backgroundColor}
                     }
                 })
-                setEventList(events)
+                setEventList(events);
             }
         }
         fetchData();
@@ -75,6 +77,10 @@ function ScheduleCalander(props) {
                 endAccessor="end"
                 onSelectEvent={event => {setSelectedEvent(event);setShowModalEventDetails(true)}}
                 onSelectSlot={(e) => {setSelectedDate(new Date(e.start));setShowModalAddEvent(true)}}
+                eventPropGetter={event => {
+                    const backgroundColor = 'green';
+                    return { style: { backgroundColor } };
+                }}
                 selectable
                 style={{ height: 800 }}
             />
