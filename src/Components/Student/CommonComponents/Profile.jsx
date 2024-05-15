@@ -1,14 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { findStudentByID } from '../../ApiService/api';
+import {findStudentByID, getAgreement, getPaymentDetails} from '../../ApiService/api';
 import Card from 'react-bootstrap/Card';
 import Image from 'react-bootstrap/Image';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import {Bolt, Settings} from "@mui/icons-material";
+import {Modal} from "react-bootstrap";
+import PaymentHistory from "../../Admin/Common/PaymentHistory";
+import ChangePassword from "./ChangePassword";
 
 function Profile(props) {
     const [studentData, setStudentData] = useState({});
+    const [packData, setPackData] = useState([]);
+    const [amount, setPayment] = useState(0);
+    const [payments,setPayments] = useState([]);
+    const [showModalPaymentHistory, setShowModalPaymentHistory] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const [showModalChangePassword, setShowModalChangePassword] = useState(false);
 
     useEffect(() => {
         const fetch = async () => {
@@ -21,6 +32,28 @@ function Profile(props) {
         fetch();
     }, []);
 
+
+    useEffect(() => {
+        const fetchData = async ()=>{
+            try {
+                const stdID = sessionStorage.getItem('username');
+                const response = await getPaymentDetails(stdID,studentData?.packageAndVehicleType[0]?.packageID);
+                setPayments(response?.data?.content)
+            }catch (error){
+                console.log(error)
+            }
+        }
+        fetchData();
+    },[studentData]);
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await getAgreement(studentData?.stdID);
+            setPackData(response?.data?.content);
+        }
+        fetchData();
+    }, [studentData]);
+
+
     return (
         <Container className="mt-4">
             <Row className="justify-content-center">
@@ -30,15 +63,17 @@ function Profile(props) {
                             <Card.Title>Personal Details</Card.Title>
                         </Card.Header>
                         <Card.Body>
-                            <div className="text-center mb-4">
-                                <Image
-                                    src={studentData?.profilePhotoURL}
-                                    roundedCircle
-                                    width={150}
-                                    alt="Profile Photo"
-                                />
-                            </div>
-                            <Card.Text>
+                            <Image
+                                src={studentData?.profilePhotoURL}
+                                roundedCircle
+                                height={100}
+                                width={100}
+                                onClick={() => setShowModal(true)}
+                            />
+                            <Modal show={showModal} onHide={()=>{setShowModal(false)}}>
+                                    <Image src={studentData?.profilePhotoURL}/>
+                            </Modal>
+                            <Card.Text className='mt-4'>
                                 <p><strong>Name:</strong> {studentData?.fname} {studentData?.lname}</p>
                                 <p><strong>Email:</strong> {studentData?.email}</p>
                                 <p><strong>Phone:</strong> {studentData?.telephone}</p>
@@ -48,14 +83,42 @@ function Profile(props) {
                                 <p><strong>Age:</strong> {studentData?.age}</p>
                                 <p><strong>Guardian Name:</strong> {studentData?.guardianName}</p>
                                 <p><strong>Guardian Phone:</strong> {studentData?.guardianTelephone}</p>
-                                <p><strong>Full Payment:</strong> {studentData?.fullPayment}</p>
-                                <p><strong>Balance:</strong> {studentData?.balance}</p>
-                                <p><strong>Registration Status:</strong> {studentData?.registrationStatus ? 'Registered' : 'Not Registered'}</p>
+                                <p><strong>Full Payment:</strong>  Rs.{ studentData?.fullPayment}</p>
+                                <p className='flex items-center'><strong>Remain Payment: </strong> Rs. {studentData?.balance}
+                                    <Button variant='link' onClick={()=>{setShowModalPaymentHistory(true)}}>View</Button>
+                                </p>
+                                <p>
+                                    <strong>Registration Status:</strong> {studentData?.registrationStatus ? 'Registered' : 'Not Registered'}
+                                </p>
+                                <Button onClick={()=>{setShowModalChangePassword(true)}}>
+                                    <div className='flex flex-row items-center gap-x-2'>
+                                        <div>
+                                            <Settings/>
+                                        </div>
+                                        <div>
+                                            Change Password
+                                        </div>
+                                    </div>
+                                </Button>
                             </Card.Text>
                         </Card.Body>
                     </Card>
                 </Col>
             </Row>
+            <Modal show={showModalPaymentHistory} onHide={()=>setShowModalPaymentHistory(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Payment History</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <PaymentHistory data={studentData} packageData={packData} setShowModal={setShowModalPaymentHistory} />
+                </Modal.Body>
+            </Modal>
+            <Modal show={showModalChangePassword} onHide={()=>{setShowModalChangePassword(false)}}>
+                <Modal.Header closeButton />
+                <Modal.Body>
+                    <ChangePassword />
+                </Modal.Body>
+            </Modal>
         </Container>
     );
 }

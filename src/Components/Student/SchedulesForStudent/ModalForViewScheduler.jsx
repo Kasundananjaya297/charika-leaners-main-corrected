@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -7,6 +7,7 @@ import Image from "react-bootstrap/Image";
 import {Button, Modal} from "react-bootstrap";
 import Swal from "sweetalert2";
 import {makeBooking, makeBookingSave} from "../../ApiService/api";
+import {Warning} from "@mui/icons-material";
 
 function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
     //hook for preview trainer profile photo
@@ -15,8 +16,14 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
     const [showModaTrainer, setShowModalTrainer] = useState(false)
     //hook for edit schedule
     const [showModalEditSchedule, setShowModalEditSchedule] = useState(false)
+    const [errorMsg, setErrorMsg] = useState('')
     //save data
     const makeBooking = () =>{
+        if(eventDetails?.bookingScheduleDTO[0]?.stdID === sessionStorage.getItem('username')){
+            setErrorMsg('You have already booked this schedule')
+            return;
+
+        }
         const booking = {
             bookingDate: new Date().toISOString().split('T')[0],
             bookingTime: new Date().toTimeString().split(' ')[0],
@@ -55,11 +62,16 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
             }
         })
     }
+    useEffect(() => {
+        if(eventDetails?.bookingScheduleDTO[0]?.stdID === sessionStorage.getItem('username')){
+            setErrorMsg('You have already booked this schedule')
+        }
+    }, []);
 
 
     return (
         <div>
-            <Card >
+            <Card>
                 <div className="flex  justify-between pl-4 pt-3 w-wrap h-wrap mb-2 w-auto pr-7">
                     <Col xs={1} sm={3}>
                         <div className="flex justify-center rounded-full items-center  w-fit h-fit bg-gray-200 mb-4">
@@ -93,6 +105,10 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
                     </Col>
                 </div>
                 <Card.Body className="p-4 -mt-8 text-sm">
+                    <div className='text-danger italic mb-3 items-center'>
+                        {(errorMsg)&&<Warning/>}
+                        {errorMsg}
+                    </div>
 
                     <Row className="mb-2">
                         <Col xs={4}>Title:</Col>
@@ -144,9 +160,9 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
                     </Row>
                 </Card.Body>
             </Card>
-            <div className='flex flex-row mt-2 items-end justify-end'>
+            {(errorMsg === '')&&<div className='flex flex-row mt-2 items-end justify-end'>
                 <Button onClick={makeBooking}>Book Now</Button>
-            </div>
+            </div>}
 
         </div>
     );

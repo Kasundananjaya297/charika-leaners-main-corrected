@@ -281,3 +281,6 @@ export const getSchedulesforStudent = (stdID) =>{
 export const makeBookingSave = (data) =>{
     return AxiosInstance.post('student/makeBooking',data);
 }
+export const changePassword = (data) =>{
+    return AxiosInstance.put('student/changePassword',data);
+}

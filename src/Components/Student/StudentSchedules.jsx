@@ -20,7 +20,6 @@ const localizer = momentLocalizer(moment);
             const response = await getSchedulesforStudent(sessionStorage.getItem('username'));
             const data = response?.data?.content;
             const events = data.map((event) => {
-                let backgroundColor = "green";
                 return {
                     start: new Date(event.start),
                     end: new Date(event.end),
@@ -47,14 +46,16 @@ const localizer = momentLocalizer(moment);
                     vehicleClassName: event.vehicleClassName,
                     vehiclePhoto: event.vehiclePhoto,
                     trainerPhoto: event.trainerPhoto,
-                    style: {backgroundColor},
                     bookingScheduleDTO: event.bookingScheduleDTO,
+                    color:sessionStorage.getItem('username') === event.bookingScheduleDTO[0]?.stdID ? "#BE8400" : "green",
+
                 }
             })
             setEventList(events);
         };
         fetch();
     }, []);
+    console.log(eventList?.bookingScheduleDTO);
     return (
         <div className='flex flex-col items-center justify-center w-full p-4 -mt-4 h-screen overflow-hidden'>
             <div className='w-full lg:w-3/4 xl:w-2/3' style={{height: '90%'}}>
@@ -66,7 +67,7 @@ const localizer = momentLocalizer(moment);
                     onSelectEvent={event => {setSelectedEvent(event);setShowModalEventDetails(true)}}
                     // onSelectSlot={(e) => {setSelectedDate(new Date(e.start));setShowModalAddEvent(true)}}
                     eventPropGetter={event => {
-                        const backgroundColor = 'green';
+                        const backgroundColor = event.color;
                         return {style: {backgroundColor}};
                     }}
                     selectable

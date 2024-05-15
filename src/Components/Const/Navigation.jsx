@@ -26,12 +26,6 @@ export const SIDEBAR_LINKS = [
 
   },
   {
-    key: "StudentProfile",
-    lable: "Student Profile",
-    path: "/studentprofile",
-    icon: <PiStudentBold />,
-  },
-  {
     key: "Trainers",
     lable: "Trainers",
     path: "/Trainer",
@@ -42,5 +36,11 @@ export const SIDEBAR_LINKS = [
     lable: "Schedule",
     path: "/Schedule",
     icon: <FaCalendarAlt />,
-  }
+  },
+  {
+    key: "StudentProfile",
+    lable: "Student Profile",
+    path: "/studentprofile",
+    icon: <PiStudentBold />,
+  },
 ];

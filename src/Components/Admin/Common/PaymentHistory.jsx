@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
-import {Button} from "react-bootstrap";
+import {Button, Table} from "react-bootstrap";
 import Card from "react-bootstrap/Card";
 import { MdEdit } from "react-icons/md";
 import {getPaymentDetails} from "../../ApiService/api";
@@ -26,6 +26,7 @@ const PaymentHistory = ({ data, packageData,setShowModal }) => {
     }, [packData]);
 
     useEffect(() => {
+        console.log(studentData?.stdID,packData[0]?.packageID)
         const fetchData = async ()=>{
             try {
                 const response = await getPaymentDetails(studentData?.stdID,packData[0]?.packageID);
@@ -35,13 +36,13 @@ const PaymentHistory = ({ data, packageData,setShowModal }) => {
             }
         }
         fetchData();
-    },[]);
+    },[studentData]);
 
     return (
-        <Card style={{ width: "48rem" }}>
+        <Card>
             <div className='flex flex-col'>
-                <div className='items-center ml-4'>
-                    <div className='bg-gray-50 text-sm flex flex-col w-96 border rounded p-4 gap-y-1 ml-4 mt-3'>
+                <div className='items-center justify-center flex'>
+                    <div className='bg-gray-50 text-sm flex flex-col w-96 border rounded p-4 gap-y-1 mt-3'>
                         <Row>
                             <Col xs={4}>Contract No:</Col>
                             <Col xs={8}>{studentData?.stdID}</Col>
@@ -94,19 +95,18 @@ const PaymentHistory = ({ data, packageData,setShowModal }) => {
                         </Row>
                     </div>
                 </div>
-                <div className='w-full pl-8 pr-12'>
+                <div className='w-full pl-8 pr-12 overflow-y-scroll h-40 mt-4'>
                     <Row className='mt-3 flex-row items-start justify-start p-2 '>
-                        <table className=''>
+                        <Table responsive bordered hover className="table-striped table-bordered table-hover">
                             <thead className='bg-gray-50'>
                             <tr>
                                 <th className='px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider'>Date</th>
                                 <th className='px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider'>Time</th>
-                                <th className='text-xs font-medium text-gray-500 uppercase'>Amount</th>
-                                <th className='text-xs font-medium text-gray-500'></th>
+                                <th className='px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider'>Amount</th>
                             </tr>
                             </thead>
                             <tbody className='bg-white divide-y divide-gray-200 text-sm'>
-                            {payments.map((payment,i) => (
+                            {payments.map((payment, i) => (
                                 <tr key={i}>
                                     <td className='p-2'>{payment?.paymentDate}</td>
                                     <td>{payment?.paymentTime}</td>
@@ -114,8 +114,7 @@ const PaymentHistory = ({ data, packageData,setShowModal }) => {
                                 </tr>
                             ))}
                             </tbody>
-                        </table>
-                        <Button >View Payment Slip</Button>
+                        </Table>
                     </Row>
                 </div>
             </div>

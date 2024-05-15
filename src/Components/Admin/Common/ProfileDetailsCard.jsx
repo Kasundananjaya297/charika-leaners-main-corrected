@@ -300,7 +300,7 @@ const viewTrail = (stdID) =>{
                   <Button variant="link" className="font-bold" style={{ fontSize: "small" }} onClick={()=>setShowModalPaymentHistory(true)}>View</Button>
                 </Col>
               </Row>
-              <Modal show={showModalPaymentHistory} onHide={()=>setShowModalPaymentHistory(!showModalPaymentHistory)} size={'lg'}>
+              <Modal show={showModalPaymentHistory} onHide={()=>setShowModalPaymentHistory(!showModalPaymentHistory)}>
                 <Modal.Header closeButton>
                   <Modal.Title>Payment History</Modal.Title>
                 </Modal.Header>
