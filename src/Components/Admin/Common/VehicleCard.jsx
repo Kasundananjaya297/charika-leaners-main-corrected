@@ -8,6 +8,7 @@ import {Button, InputGroup, Modal} from "react-bootstrap";
 import { Document, Page ,pdfjs} from 'react-pdf';
 import Form from "react-bootstrap/Form";
 import ProgressBar from "react-bootstrap/ProgressBar";
+
 import {
     getVehicleInsuranceTypes, saveEmissionTest, saveInsurance,
     saveNewVehicleInsuranceType,
@@ -24,6 +25,8 @@ import addVehicleTypeEdit from "../Forms/AddVehicleTypeEdit";
 import VehicleServieAndRepair from "../Forms/ModalsForVehicleCard/VehicleServieAndRepair";
 import ServiceAndRepairEnd from "../Forms/ModalsForVehicleCard/ServiceAndRepairEnd";
 import ViewRepair from "../Forms/ModalsForVehicleCard/ViewRepair";
+import MapView from "./MapView";
+
 
 
 function VehicleCard({vehicleData,interrupt,setInterrupt}) {
@@ -54,6 +57,8 @@ function VehicleCard({vehicleData,interrupt,setInterrupt}) {
     const [showModalServiceAndRepairEnd,setShowModalServiceAndRepairEnd] = useState(false);
     //hook for view show repair or service modal
     const [viewRepairOrServiceModalView,setViewRepairOrServiceModalView] = useState(false);
+    //hook for view show view location modal
+    const [viewLcationModal,setViewLocationModal] = useState(false);
 
     //upload book
     const [uploadState, setUploadState] = useState(true);
@@ -1199,6 +1204,12 @@ function VehicleCard({vehicleData,interrupt,setInterrupt}) {
                                 </Col>
                             </Row>
                             <Row className="mb-2 items-center">
+                                <Col xs={4}>Location:</Col>
+                                <Col xs={8} className="pl-4">
+                                    <Button size={'sm'} variant='outline-success' onClick={()=>{setViewLocationModal(true)}}>Track</Button>
+                                </Col>
+                            </Row>
+                            <Row className="mb-2 flex flex-row ">
                                 <Col xs={4}>Vehicle status:</Col>
                                 <Col xs={8} className="pl-4">
                                     <Button size={'sm'} disabled={true}>{vehicleData?.vehicleStatus}</Button>
@@ -1525,6 +1536,14 @@ function VehicleCard({vehicleData,interrupt,setInterrupt}) {
                                                 </Row>
                                             </div>
                                         ))}
+                                </Modal.Body>
+                            </Modal>
+                            <Modal show={viewLcationModal} onHide={()=>{setViewLocationModal(false);setInterrupt(!interrupt)}} size={"lg"}>
+                                <Modal.Header closeButton>
+                                    <Modal.Title>View Location</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body className='w-full h-full'>
+                                    <MapView setInter={setInterrupt} inter={interrupt}/>
                                 </Modal.Body>
                             </Modal>
                         </Card.Body>

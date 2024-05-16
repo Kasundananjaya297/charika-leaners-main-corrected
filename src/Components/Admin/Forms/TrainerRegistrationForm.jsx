@@ -98,7 +98,7 @@ function TrainerRegistrationForm(props) {
             dateOfBirth: Yup.date().required("Date of Birth Required"),
             nic: validateNIC(),
             nicURL: Yup.string().required("NIC URL is required"),
-            profilePhotoURL: Yup.string().required("Profile Photo URL is required"),
+            profilePhotoURL: Yup.string().required("TrainerProfile Photo URL is required"),
             licenceNo: Yup.string().required("Licence ID is required").min(7,"Licence ID must be 7 characters").max(7,"Licence ID must be 7 characters"),
             licenceIssuedOn: Yup.date().required("Licence Issued Date is required,License must be older than 5 years").max(new Date(new Date().setFullYear(new Date().getFullYear() - 5)), "License must be older than 5 years"),
             bloodType: Yup.string().required("Blood Type is required"),

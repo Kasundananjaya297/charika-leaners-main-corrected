@@ -284,3 +284,7 @@ export const makeBookingSave = (data) =>{
 export const changePassword = (data) =>{
     return AxiosInstance.put('student/changePassword',data);
 }
+export const getTrainerSchedules = (trainerID) =>{
+    return AxiosInstance.get(`trainer/getScheduelsByTrainerID/${trainerID}`);
+}
+//geo location

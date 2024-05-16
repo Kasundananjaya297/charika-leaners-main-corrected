@@ -39,7 +39,7 @@ export const SIDEBAR_LINKS = [
   },
   {
     key: "StudentProfile",
-    lable: "Student Profile",
+    lable: "Student",
     path: "/studentprofile",
     icon: <PiStudentBold />,
   },

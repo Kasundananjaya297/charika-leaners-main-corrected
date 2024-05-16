@@ -1,14 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import {Calendar, momentLocalizer} from "react-big-calendar";
 import moment from "moment/moment";
-import {getSchedulesforStudent} from "../ApiService/api";
+import {getSchedulesforStudent, getTrainerSchedules} from "../ApiService/api";
 import {Modal} from "react-bootstrap";
 import ModalForViewScheduler from "./SchedulesForStudent/ModalForViewScheduler";
 
 
 const localizer = momentLocalizer(moment);
 
-    const StudentSchedules = () => {
+    const TrainersSchedules = () => {
     const [eventList, setEventList] = React.useState([]);
 
     const [showModalEventDetails, setShowModalEventDetails] = useState(false)
@@ -17,7 +17,8 @@ const localizer = momentLocalizer(moment);
 
     useEffect(() => {
         const fetch = async () => {
-            const response = await getSchedulesforStudent(sessionStorage.getItem('username'));
+            const response = await getTrainerSchedules(sessionStorage.getItem('username'));
+            console.log(response);
             const data = response?.data?.content;
             const events = data.map((event) => {
                 return {
@@ -54,7 +55,7 @@ const localizer = momentLocalizer(moment);
             setEventList(events);
         };
         fetch();
-    }, [interrupt]);
+    }, []);
     console.log(eventList?.bookingScheduleDTO);
     return (
         <div className='flex flex-col items-center justify-center w-full p-4 -mt-4 h-screen overflow-hidden'>
@@ -86,4 +87,4 @@ const localizer = momentLocalizer(moment);
     );
 };
 
-export default StudentSchedules;
+export default TrainersSchedules;

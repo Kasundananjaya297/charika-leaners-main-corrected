@@ -27,6 +27,10 @@ import StudentHome from "./Components/Student/StudentHome";
 import StudentSchedules from "./Components/Student/StudentSchedules";
 import Invoice from "./Components/Admin/Common/Invoice";
 import Profile from "./Components/Student/CommonComponents/Profile";
+import TrainertLayout from "./Components/Trainer/CommonComponents/TrainertLayout";
+import TrainerHome from "./Components/Trainer/TrainerHome";
+import TrainersSchedules from "./Components/Trainer/TrainersSchedules";
+import TrainerProfile from "./Components/Trainer/CommonComponents/TrainerProfile";
 
 function App() {
   return (
@@ -61,6 +65,12 @@ function App() {
           <Route path='/Student/studentHome' element={<StudentHome />} />
           <Route path='/Student/studentSchedules' element={<StudentSchedules />} />
           <Route path = '/Student/studentProfile' element = {<Profile/>} />
+        </Route>
+
+        <Route path="/trainer" element={<TrainertLayout />}>
+          <Route path='/trainer/trainerHome' element={<TrainerHome />} />
+          <Route path={'/trainer/trainerSchedules'} element={<TrainersSchedules />} />
+          <Route path={'/trainer/trainerProfile'} element={<TrainerProfile />} />
         </Route>
       </Routes>
     </Router>

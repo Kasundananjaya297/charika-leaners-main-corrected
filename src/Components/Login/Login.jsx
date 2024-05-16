@@ -53,6 +53,9 @@ export default function Login() {
       } else if (sessionStorage.getItem("role") === "STUDENT") {
         nav("/Student/studentHome");
         sessionStorage.setItem("username", username);
+      }else if (sessionStorage.getItem("role") === "TRAINER") {
+        nav("/trainer/trainerHome");
+        sessionStorage.setItem("username", username);
       }
     } catch (e) {
       console.error(e);

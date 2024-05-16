@@ -17,6 +17,7 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
     //hook for edit schedule
     const [showModalEditSchedule, setShowModalEditSchedule] = useState(false)
     const [errorMsg, setErrorMsg] = useState('')
+    const [trainerErrorMsg,setTrainerErrorMsg] = useState('');
     //save data
     const makeBooking = () =>{
         if(eventDetails?.bookingScheduleDTO[0]?.stdID === sessionStorage.getItem('username')){
@@ -52,7 +53,6 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
                         'Your booking has been completed.',
                         'success'
                     )
-                    setInterrupt(!interrupt);
                 }else if (reponse?.data?.code === "06"){
                     Swal.fire(
                         'Error!',
@@ -69,7 +69,11 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
         }
     }, []);
     useEffect(() => {
-
+        if(new Date() >= new Date(eventDetails.start) && sessionStorage.getItem('role') === 'TRAINER'){
+            setErrorMsg("You can't cancel this session. This Session Is expired")
+        } else if(new Date(new Date().setDate(new Date().getDate() + 2)) >= new Date(eventDetails.start) && sessionStorage.getItem('role') === 'TRAINER'){
+            setErrorMsg("You can't Cancel Session Before 48h.")
+        }
     }, []);
 
 
@@ -164,14 +168,14 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
                     </Row>
                 </Card.Body>
             </Card>
-            {(errorMsg === '')&&<div className='flex flex-row mt-2 items-end justify-end'>
+            {(sessionStorage.getItem("role")==="STUDENT")&&(errorMsg === '')&&<div className='flex flex-row mt-2 items-end justify-end'>
                 <Button onClick={makeBooking}>Book Now</Button>
             </div>}
-            {(errorMsg !== '')&&(sessionStorage.getItem("role")==="STUDENT")&&
-                (<div className='flex flex-row mt-2 items-end justify-end'>
-                    <Button variant='outline-danger'>Cancel This Session</Button>
-                </div>)
-            }
+            {sessionStorage.getItem("role")==="TRAINER"&&(
+                <div className='flex flex-row mt-2 items-end justify-end'>
+                    {(errorMsg==='')&&(<Button variant='outline-danger'>Cancel This Session</Button>)}
+                </div>
+            )}
 
         </div>
     );

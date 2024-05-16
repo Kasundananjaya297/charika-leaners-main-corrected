@@ -76,7 +76,7 @@ export default function RegistrationForm1() {
       adl1: validateName("Address line 1"),
       adl2: ValidateNonRequiredName(),
       city: validateName("City"),
-      profilePhotoURL:Yup.string().required("Profile Photo Uploading is required"),
+      profilePhotoURL:Yup.string().required("TrainerProfile Photo Uploading is required"),
     }),
     onSubmit: async (e, { setSubmitting, resetForm }) => {
       setSubmitting(true);
