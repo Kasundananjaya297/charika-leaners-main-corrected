@@ -48,14 +48,15 @@ const localizer = momentLocalizer(moment);
                     vehiclePhoto: event.vehiclePhoto,
                     trainerPhoto: event.trainerPhoto,
                     bookingScheduleDTO: event.bookingScheduleDTO,
-                    color:sessionStorage.getItem('username') === event.bookingScheduleDTO[0]?.stdID ? "#BE8400" : "green",
+                    trainerRequestToCancel: event.trainerRequestToCancel,
+                    color:event.trainerRequestToCancel?"pink":"" ||sessionStorage.getItem('username') === event.bookingScheduleDTO[0]?.stdID ? "#BE8400" : "green",
 
                 }
             })
             setEventList(events);
         };
         fetch();
-    }, []);
+    }, [interrupt]);
     console.log(eventList?.bookingScheduleDTO);
     return (
         <div className='flex flex-col items-center justify-center w-full p-4 -mt-4 h-screen overflow-hidden'>

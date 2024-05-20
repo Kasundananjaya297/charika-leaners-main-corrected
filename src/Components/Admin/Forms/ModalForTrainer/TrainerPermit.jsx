@@ -122,6 +122,7 @@ function TrainerPermit({data}) {
                                     <div className="flex gap-x-3 ">
                                         <Form.Control
                                             type="file"
+                                            accept='.pdf'
                                             required={true}
                                             onChange={(e) => {
                                                 setFileLocation1(e.target.files[0]);

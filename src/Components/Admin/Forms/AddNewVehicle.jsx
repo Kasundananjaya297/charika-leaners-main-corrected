@@ -521,11 +521,12 @@ function AddNewVehicle(props) {
                                     as={Col}
                                 >
                                     <Form.Label>
-                                        Upload Book:<span className="text-red-500"> *</span>
+                                        Upload Book PDF:<span className="text-red-500"> *</span>
                                     </Form.Label>
                                     <div className='flex gap-x-2 w-96'>
                                         <Form.Control
                                             type="file"
+                                            accept={'.pdf'}
                                             onChange={(e) => {
                                                 setFileLocation(e.target.files[0]);
                                                 setUploadState(false);
@@ -564,6 +565,7 @@ function AddNewVehicle(props) {
                                 <div className='flex gap-x-2 w-96'>
                                     <Form.Control
                                         type="file"
+                                        accept='image/*'
                                         onChange={(e) => {
                                             setFileLocation2(e.target.files[0]);
                                             setUploadState2(false);

@@ -394,6 +394,7 @@ export default function TrailPermit() {
                     <div className="flex flex-row gap-x-3">
                       <Form.Control
                           type="file"
+                          accept='.pdf'
                           required={true}
                           onChange={(e) => {
                             setFileLocation(e.target.files[0]);

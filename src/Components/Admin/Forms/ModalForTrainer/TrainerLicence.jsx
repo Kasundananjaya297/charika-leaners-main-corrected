@@ -114,7 +114,7 @@ function TrainerLicence({trainerID,trainerData}) {
             }
         }
         fetchData();
-    }, []);
+    }, [showModalAddVehicleType]);
     //hook for collect vehicle type List
     useEffect(() => {
         const newArray = [...selectedVehicleType];
@@ -176,6 +176,7 @@ function TrainerLicence({trainerID,trainerData}) {
                                     <div className="flex gap-x-3 ">
                                         <Form.Control
                                             type="file"
+                                            accept='.pdf'
                                             required={true}
                                             onChange={(e) => {
                                                 setFileLocation1(e.target.files[0]);

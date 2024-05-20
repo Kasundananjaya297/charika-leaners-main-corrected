@@ -40,7 +40,7 @@ function Trainers(props) {
                 <div className="flex flex-wrap">
                     {trainersDetails?.map((data,i)=>(
                         <div className="pl-16 mt-4 gap-x-16 gap-y-4 mb-9" key={i}>
-                            <TrainerCard data={data}/>
+                            <TrainerCard data={data} setInterrupt={setInterrupt} interrupt={interrupt}/>
                         </div>
                     ))}
                 </div>

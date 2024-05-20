@@ -132,7 +132,10 @@ function TrialPermitView() {
                                             <tr key={i}>
                                                 <td className="border p-2">{dt?.selectedType} </td>
                                                 <td className="border p-2">{dt?.description}</td>
-                                                <td className="border p-2">{dt?.engineCapacity}</td>
+                                                <td className="border p-2">
+                                                    <Button className='mr-4' variant='outline-success' size={'sm'}>Passed</Button>
+                                                    <Button variant='outline-danger' size={'sm'}>Faild</Button>
+                                                </td>
                                             </tr>
                                             ))}
                                             </tbody>

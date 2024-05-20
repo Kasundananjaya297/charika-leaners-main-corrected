@@ -169,6 +169,7 @@ export default function RegistrationForm1() {
                         <Form.Control
                           type="file"
                           required={true}
+                          accept={'image/*'}
                           onChange={(e) => {
                               setFileLocation(e.target.files[0]);
                               setUploadState(false);

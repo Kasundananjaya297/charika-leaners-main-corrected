@@ -436,7 +436,6 @@ export default function TrailPermitEdit() {
                     </div>
                   </Button>
                 </Row>
-
                 <Row className="">
                   <Form.Group controlId="formFile" className="mb-2 mt-2" as={Col} md={8}>
                     <Form.Label>Upload Current Trail Permit</Form.Label>

@@ -6,18 +6,18 @@ import {FaUserEdit} from "react-icons/fa";
 import Image from "react-bootstrap/Image";
 import {Button, Modal} from "react-bootstrap";
 import Swal from "sweetalert2";
-import {makeBooking, makeBookingSave} from "../../ApiService/api";
+import {makeBooking, makeBookingSave, trainerCancleSession} from "../../ApiService/api";
 import {Warning} from "@mui/icons-material";
 
 function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
+console.log("+++++++++++++++++",eventDetails)
     //hook for preview trainer profile photo
     const [showModal, setShowModal] = useState(false)
     //hook for preview vehicle profile photo
     const [showModaTrainer, setShowModalTrainer] = useState(false)
     //hook for edit schedule
-    const [showModalEditSchedule, setShowModalEditSchedule] = useState(false)
     const [errorMsg, setErrorMsg] = useState('')
-    const [trainerErrorMsg,setTrainerErrorMsg] = useState('');
+
     //save data
     const makeBooking = () =>{
         if(eventDetails?.bookingScheduleDTO[0]?.stdID === sessionStorage.getItem('username')){
@@ -75,6 +75,36 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
             setErrorMsg("You can't Cancel Session Before 48h.")
         }
     }, []);
+    const cancelSession = (id) => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you want to cancel this schedule?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, cancel it!'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const response = await trainerCancleSession(id);
+                if (response?.data?.code === "00") {
+                    Swal.fire(
+                        'Cancelled!',
+                        'Your schedule has been cancelled.',
+                        'success'
+                    )
+                    setInterrupt(!interrupt)
+                } else {
+                    Swal.fire(
+                        'Error!',
+                        'Something went wrong',
+                        'error'
+                    )
+                }
+            }
+        })
+
+    }
 
 
     return (
@@ -168,12 +198,9 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
                     </Row>
                 </Card.Body>
             </Card>
-            {(sessionStorage.getItem("role")==="STUDENT")&&(errorMsg === '')&&<div className='flex flex-row mt-2 items-end justify-end'>
-                <Button onClick={makeBooking}>Book Now</Button>
-            </div>}
             {sessionStorage.getItem("role")==="TRAINER"&&(
                 <div className='flex flex-row mt-2 items-end justify-end'>
-                    {(errorMsg==='')&&(<Button variant='outline-danger'>Cancel This Session</Button>)}
+                    {(errorMsg==='')&&(<Button variant='outline-danger' onClick={()=>{cancelSession(eventDetails?.schedulerID)}} disabled={eventDetails.trainerRequestToCancel}>{(eventDetails.trainerRequestToCancel?"Pending...":"")||"Request to Cancel"}</Button>)}
                 </div>
             )}
 

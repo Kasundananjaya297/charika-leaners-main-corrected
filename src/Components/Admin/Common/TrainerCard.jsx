@@ -9,9 +9,13 @@ import TrainerLicence from "../Forms/ModalForTrainer/TrainerLicence";
 import TrainerLicenceView from "../Forms/ModalForTrainer/TrainerLicenceView";
 import TrainerPermit from "../Forms/ModalForTrainer/TrainerPermit";
 import TrainerPermitPreview from "../Forms/ModalForTrainer/TrainerPermitPreview";
+import StudentCredential from "./StudentCredential";
+import {adminResetPassword} from "../../ApiService/api";
+import Swal from "sweetalert2";
+import TrainerCredential from "./TrainerCredential";
 
 
-function TrainerCard({data}) {
+function TrainerCard({data,interrupt, setInterrupt}) {
     const [showModal,setShowModal] = useState(false);
 
     //modal for trainer licence
@@ -22,9 +26,50 @@ function TrainerCard({data}) {
     const [showPermitModal, setShowPermitModal] = useState(false);
     //show modal for preiew trainer permit
     const [showModalTrainerPermit, setShowModalTrainerPermit] = useState(false);
+    //show modal for preview trainer credential
+    const [showModalTrainerCredential, setShowModalTrainerCredential] = useState(false);
+    //reset password
+    const changePassword = async () => {
+        const userData={
+                username:data?.trainerID ,
+                password: "",
+                role: "",
+                isActive: true,
+        }
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to reset the password of this Trainer",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Reset'
+        }).then(async (result) => {
+           try{
+               if(result.isConfirmed) {
+                  const response =await adminResetPassword(userData);
+                  if(response?.data?.code ==="00"){
+                      Swal.fire(
+                          'Reset!',
+                          'Password Reset Successfully',
+                          'success'
+                      )
+                  }
+                  setInterrupt(!interrupt);
+               }
+           }catch (e){
+                Swal.fire(
+                     'Error!',
+                     'Something went wrong',
+                     'error'
+                )
+           }
+
+        })
+    }
     return (
         <div>
-            <Row className="flex overflow-hidden text-sm item-center">
+            <Row className="flex overflow-hidden text-sm item-center ">
                 <Col sm={12} md={6} lg={4}>
                     <Card style={{width: "25rem"}}>
                         <div className="flex  justify-between pr-1 pl-5 pt-3 w-wrap h-wrap mb-2">
@@ -150,6 +195,13 @@ function TrainerCard({data}) {
                                     <Button size='sm' variant='link' className='ml-4' onClick={()=>{setShowModalTrainerPermit(true)}}>View</Button>
                                 </Col>
                             </Row>
+                            <Row className='mb-2 items-center'>
+                                <Col xs={4}>Tr. Credential:</Col>
+                                <Col xs={8} className="pl-4">
+                                  <Button size='sm' variant='outline-danger' onClick={changePassword}>Reset</Button>
+                                 <Button size='sm' variant='link' className='ml-4' onClick={()=>{setShowModalTrainerCredential(true)}}>View</Button>
+                                </Col>
+                            </Row>
                         </Card.Body>
                     </Card>
                 </Col>
@@ -186,7 +238,15 @@ function TrainerCard({data}) {
                     <TrainerPermitPreview datas = {data} />
                 </Modal.Body>
             </Modal>
+            <Modal show={showModalTrainerCredential} onHide={()=>{setShowModalTrainerCredential(false)}} fullscreen={true}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Trainer Credentials</Modal.Title>
+                </Modal.Header>
+                <Modal.Body className='flex items-center justify-center'>
+                    <TrainerCredential data={data} />
+                </Modal.Body>
 
+            </Modal>
         </div>
 
     );

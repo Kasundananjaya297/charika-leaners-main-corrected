@@ -13,13 +13,20 @@ const localizer = momentLocalizer(moment);
 
     const [showModalEventDetails, setShowModalEventDetails] = useState(false)
     const [selectedEvent, setSelectedEvent] = useState({});
-    const [interrupt, setInterrupt] = useState(false)
+    const [interrupt, setInterrupt] = useState(false);
 
     useEffect(() => {
         const fetch = async () => {
             const response = await getSchedulesforStudent(sessionStorage.getItem('username'));
             const data = response?.data?.content;
             const events = data.map((event) => {
+                let color = "green";
+                for (let i = 0; i < event.bookingScheduleDTO.length; i++) {
+                    if (event.bookingScheduleDTO[i].stdID === sessionStorage.getItem('username')) {
+                        color = "#BE8400";
+                        break;
+                    }
+                }
                 return {
                     start: new Date(event.start),
                     end: new Date(event.end),
@@ -47,8 +54,7 @@ const localizer = momentLocalizer(moment);
                     vehiclePhoto: event.vehiclePhoto,
                     trainerPhoto: event.trainerPhoto,
                     bookingScheduleDTO: event.bookingScheduleDTO,
-                    color:sessionStorage.getItem('username') === event.bookingScheduleDTO[0]?.stdID ? "#BE8400" : "green",
-
+                    color: color,
                 }
             })
             setEventList(events);

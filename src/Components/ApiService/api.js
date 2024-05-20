@@ -287,4 +287,16 @@ export const changePassword = (data) =>{
 export const getTrainerSchedules = (trainerID) =>{
     return AxiosInstance.get(`trainer/getScheduelsByTrainerID/${trainerID}`);
 }
+export const adminResetPassword = (data) =>{
+    return AxiosInstance.put('admin/resetPassword',data);
+}
+export const acceptOrRegectBookingRequest = (data) =>{
+    return AxiosInstance.put('admin/acceptOrRegectBookingRequest',data);
+}
+export const studentCancelBooking = (bookingID) =>{
+    return AxiosInstance.put(`student/studentCancelBooking/${bookingID}`);
+}
+export const trainerCancleSession = (sessionID) =>{
+    return AxiosInstance.put(`trainer/trainerCancleSchedule/${sessionID}`);
+}
 //geo location

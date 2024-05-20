@@ -161,6 +161,7 @@ function TrainerRegistrationForm(props) {
                                             <div className="flex gap-x-3">
                                                 <Form.Control
                                                     type="file"
+                                                    accept={'image/*'}
                                                     required={true}
                                                     onChange={(e) => {
                                                         setFileLocation(e.target.files[0]);
@@ -331,6 +332,7 @@ function TrainerRegistrationForm(props) {
                                             <div className="flex gap-x-3 w-72">
                                                 <Form.Control
                                                     type="file"
+                                                    accept={'.pdf'}
                                                     required={true}
                                                     onChange={(e) => {
                                                         setFileLocation1(e.target.files[0]);

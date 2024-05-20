@@ -4,17 +4,19 @@ import Col from "react-bootstrap/Col";
 import {Button, ModalHeader} from "react-bootstrap";
 import Image from "react-bootstrap/Image";
 import { Link, useNavigate } from "react-router-dom";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import { FaUserEdit } from "react-icons/fa";
 import { Modal } from 'react-bootstrap';
 import {SelectPackage} from "../Forms/SelectPackage";
 import {returnFocus} from "react-modal/lib/helpers/focusManager";
 import PackageCard from "./PackageCard";
-import {getAgreement} from "../../ApiService/api";
+import {adminResetPassword, getAgreement} from "../../ApiService/api";
 import SessionCard from "./SessionCard";
 import PackageCardForSelected from "./PackageCardForSelected";
 import Payment from "./Payment";
 import PaymentHistory from "./PaymentHistory";
+import Swal from "sweetalert2";
+import StudentCredential from "./StudentCredential";
 export default function ProfileDetailsCard({ studentData,setInterrupt,interrupt }) {
   const [showModal, setShowModal] = useState(false);
   const [packModal, setPackModal] = useState(false);
@@ -27,6 +29,8 @@ export default function ProfileDetailsCard({ studentData,setInterrupt,interrupt 
   const showPackModal = () => {
     setPackModal(true);
   };
+  //show modal for preview Student credential
+  const [showModalStudentCredential, setShowModalStudentCredential] = useState(false);
 
   // Function to hide the modal
   const hidePackModal = () => {
@@ -64,12 +68,56 @@ const viewTrail = (stdID) =>{
     }
     fetchData();
   }, [showModal1,showModal,interrupt,showModalCollectPayment]);
+
+  const changePassword = async () => {
+    const userData={
+      username:studentData?.stdID ,
+      password: "",
+      role: "",
+      isActive: true,
+    }
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You want to reset the password of this Student",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Reset'
+    }).then(async (result) => {
+      try{
+        if(result.isConfirmed) {
+          const response =await adminResetPassword(userData);
+          if(response?.data?.code ==="00"){
+            Swal.fire(
+                'Reset!',
+                'Password Reset Successfully',
+                'success'
+            )
+          }else if(response?.data?.code ==="05"){
+            Swal.fire(
+                'Error!',
+                'Student Account not registered yet',
+                'error'
+            )
+          }
+          setInterrupt(!interrupt);
+        }
+      }catch (e){
+        Swal.fire(
+            'Error!',
+            'Something went wrong',
+            'error'
+        )
+      }
+    })
+  }
   return (
     <div>
       <Row className="flex overflow-hidden text-sm item-center">
         <Col sm={12} md={6} lg={4}>
           <Card style={{ width: "24rem" }}>
-          <div className="flex  justify-between pr-1 pl-5 pt-3 w-wrap h-wrap -mb-6 " >
+          <div className="flex  justify-between pr-1 pl-5 pt-3 w-wrap h-wrap -mb-7 " >
             <FaUserEdit size={24} onClick={() => regForm2(studentData)}/>
             <Col xs={1} sm={3}>
               <div className="flex justify-center rounded-full items-center  w-fit h-fit bg-gray-200">
@@ -101,6 +149,7 @@ const viewTrail = (stdID) =>{
                 <Col xs={4}>Medical:</Col>
                 <Col xs={8} className="pl-4 font-bold flex flex-row gap-x-4 items-center">
                   <Button
+                      size='sm'
                       className="flex w-18 h-8 justify-center items-center"
                       variant="outline-success"
                       style={{ fontSize: "small" }}
@@ -108,13 +157,13 @@ const viewTrail = (stdID) =>{
                   >
                     Add
                   </Button>
-                  <Button variant="link" className="font-bold" style={{ fontSize: "small" }} onClick={()=>viewMedical(studentData?.stdID)}>View</Button>
+                  <Button size='sm' variant="link" className="font-bold" style={{ fontSize: "small" }} onClick={()=>viewMedical(studentData?.stdID)}>View</Button>
                 </Col>
               </Row>
               <Row className="mb-2 flex items-center justify-center">
-                <Col xs={4}>Trail:</Col>
+                <Col xs={4}>Trail/Result:</Col>
                 <Col xs={8} className="font-bold flex flex-row gap-x-4 items-center" >
-                  <Button
+                  <Button size='sm'
                     className="flex w-18 h-8 justify-center items-center "
                     variant="outline-success"
                     onClick={(e) => {
@@ -124,10 +173,10 @@ const viewTrail = (stdID) =>{
                   >
                     Add
                   </Button>
-                  <Button variant="link" className="font-bold" style={{ fontSize: "small" }}
+                  <Button size='sm' variant="link" className="font-bold" style={{ fontSize: "small" }}
                           onClick={(e) => {
                             viewTrail(studentData?.stdID);
-                          }}>View</Button>
+                          }}>View&Add</Button>
                 </Col>
               </Row>
               <Row className="mb-2">
@@ -213,6 +262,7 @@ const viewTrail = (stdID) =>{
                 <Col xs={4}>Package:</Col>
                 <Col xs={8} className="font-bold flex flex-row gap-x-4 items-center" >
                     <Button
+                        size='sm'
                       className="flex w-18 h-8 justify-center items-center "
                       variant="outline-success"
                       onClick={() => {
@@ -249,6 +299,7 @@ const viewTrail = (stdID) =>{
                 <Col xs={4}>Sessions:</Col>
                 <Col xs={8} className="pl-4 font-bold">
                   <Button style={{ fontSize: "small" }}
+                          size='sm'
                           className="flex w-18 h-8 justify-center items-center"
                           variant="outline-success"
                           onClick={()=>{setShowModalSession(true)}}>View & Edit</Button>
@@ -275,6 +326,7 @@ const viewTrail = (stdID) =>{
                 <Col xs={4}>Payments:</Col>
                 <Col xs={8} className="font-bold flex flex-row gap-x-4 items-center">
                   <Button
+                      size='sm'
                       className="flex w-18 h-8 justify-center items-center "
                       variant="outline-success"
                       onClick={() => {
@@ -297,7 +349,7 @@ const viewTrail = (stdID) =>{
                       </div>
                     </Modal.Body>
                   </Modal>
-                  <Button variant="link" className="font-bold" style={{ fontSize: "small" }} onClick={()=>setShowModalPaymentHistory(true)}>View</Button>
+                  <Button size='sm' variant="link" className="font-bold" style={{ fontSize: "small" }} onClick={()=>setShowModalPaymentHistory(true)}>View</Button>
                 </Col>
               </Row>
               <Modal show={showModalPaymentHistory} onHide={()=>setShowModalPaymentHistory(!showModalPaymentHistory)}>
@@ -314,10 +366,25 @@ const viewTrail = (stdID) =>{
                   Rs. {studentData?.balance}
                 </Col>
               </Row>
+              <Row className=' items-center'>
+                <Col xs={4}>Std. Cred.:</Col>
+                <Col xs={8} className="pl-4">
+                  <Button size='sm' variant='outline-danger' onClick={changePassword}>Reset</Button>
+                  <Button size='sm' variant='link' className='ml-4' onClick={()=>{setShowModalStudentCredential(true)}}>View</Button>
+                </Col>
+              </Row>
             </Card.Body>
           </Card>
         </Col>
       </Row>
+      <Modal show={showModalStudentCredential} onHide={()=>{setShowModalStudentCredential(false)}} fullscreen={true}>
+        <Modal.Header closeButton>
+          <Modal.Title>Student Credentials</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className='flex items-center justify-center'>
+          <StudentCredential data={studentData} />
+        </Modal.Body>
+      </Modal>
     </div>
   );
 }

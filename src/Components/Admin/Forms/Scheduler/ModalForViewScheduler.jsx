@@ -6,14 +6,48 @@ import {FaUserEdit} from "react-icons/fa";
 import Image from "react-bootstrap/Image";
 import {Button, Modal} from "react-bootstrap";
 import ModalForEditSchedule from "./ModalForEditSchedule";
+import Swal from "sweetalert2";
+import {acceptOrRegectBookingRequest} from "../../../ApiService/api";
 
 function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
+    console.log("+++++++++++++++++",eventDetails)
     //hook for preview trainer profile photo
     const [showModal, setShowModal] = useState(false)
     //hook for preview vehicle profile photo
     const [showModaTrainer, setShowModalTrainer] = useState(false)
     //hook for edit schedule
     const [showModalEditSchedule, setShowModalEditSchedule] = useState(false)
+    const handleBookingRequest = (rslt) => {
+        Swal.fire({
+            icon:'warning',
+            title:'Are you sure?',
+            text:"After accepting can't be undone",
+            showCancelButton:true,
+        }).then(async (result)=>{
+            if(result.isConfirmed){
+                const response = await acceptOrRegectBookingRequest({
+                    bookingID:eventDetails.bookingScheduleDTO[0].bookingID,
+                    isAccepted: rslt
+                })
+                if(response?.data?.code ==="00"){
+                    Swal.fire({
+                        icon:'success',
+                        title:'Success',
+                        text:response?.data?.message
+                    })
+                    setInterrupt(!interrupt)
+                }else {
+                    Swal.fire({
+                        icon:'error',
+                        title:'Error',
+                        text:response?.data?.message
+                    })
+                }
+            }
+        })
+    }
+
+
 
     console.log(eventDetails)
 
@@ -114,10 +148,10 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
                                             </div>
                                         </div>
                                         <div className='flex'>
-                                            <Button variant='outline-success' size='sm' className='mr-3'>
+                                            <Button variant='outline-success' size='sm' className='mr-3' onClick={()=>{handleBookingRequest(true)}}>
                                                 Accept
                                             </Button>
-                                            <Button variant='outline-danger' size='sm'>
+                                            <Button variant='outline-danger' size='sm' onClick={()=>{handleBookingRequest(false)}}>
                                                 Reject
                                             </Button>
                                         </div>

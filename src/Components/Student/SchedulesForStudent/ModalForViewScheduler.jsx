@@ -6,7 +6,7 @@ import {FaUserEdit} from "react-icons/fa";
 import Image from "react-bootstrap/Image";
 import {Button, Modal} from "react-bootstrap";
 import Swal from "sweetalert2";
-import {makeBooking, makeBookingSave} from "../../ApiService/api";
+import {makeBooking, makeBookingSave, studentCancelBooking} from "../../ApiService/api";
 import {Warning} from "@mui/icons-material";
 
 function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
@@ -14,15 +14,20 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
     const [showModal, setShowModal] = useState(false)
     //hook for preview vehicle profile photo
     const [showModaTrainer, setShowModalTrainer] = useState(false)
-    //hook for edit schedule
-    const [showModalEditSchedule, setShowModalEditSchedule] = useState(false)
+    //error msg based on studnet booking
+    const [errorMsgDate, setErrorMsgDate] = useState('')
+
     const [errorMsg, setErrorMsg] = useState('')
+    //booking ID
+    const [bookingID, setBookingID] = useState('')
+    console.log(eventDetails)
     //save data
     const makeBooking = () =>{
-        if(eventDetails?.bookingScheduleDTO[0]?.stdID === sessionStorage.getItem('username')){
+        for(let i = 0; i<eventDetails.bookingScheduleDTO.length; i++){
+        if(eventDetails?.bookingScheduleDTO[i]?.stdID === sessionStorage.getItem('username')){
             setErrorMsg('You have already booked this schedule')
             return;
-
+        }
         }
         const booking = {
             bookingDate: new Date().toISOString().split('T')[0],
@@ -54,24 +59,62 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
                     )
                     setInterrupt(!interrupt);
                 }else if (reponse?.data?.code === "06"){
+                    Swal.fire({
+                        icon:'error',
+                        title: 'Oops...',
+                        text: reponse?.data?.message,
+                    })
+                }else if(reponse?.data?.code === "10"){
                     Swal.fire(
                         'Error!',
-                        'Booking is full',
+                        "You have already booked other schedule during this time period,You can't participate in two schedules at the same time",
                         'error'
                     )
                 }
             }
         })
     }
+    const cancleBooking = (bookingID) =>{
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you want to cancel this schedule?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, cancel it!'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const reponse = await studentCancelBooking(bookingID);
+                if(reponse?.data?.code === "00"){
+                    Swal.fire(
+                        'Canceled!',
+                        'Your booking has been canceled.',
+                        'success'
+                    )
+                    setInterrupt(!interrupt);
+                }else{
+                    Swal.fire({
+                        icon:'error',
+                        title: 'Oops...',
+                        text: reponse?.data?.message,
+                    })
+                }
+            }
+
+        })
+    }
     useEffect(() => {
-        if(eventDetails?.bookingScheduleDTO[0]?.stdID === sessionStorage.getItem('username')){
-            setErrorMsg('You have already booked this schedule')
+        for(let i = 0; i<eventDetails.bookingScheduleDTO.length; i++){
+            if(eventDetails?.bookingScheduleDTO[i]?.stdID === sessionStorage.getItem('username')){
+                setErrorMsg('You have already booked this schedule')
+                setBookingID(eventDetails.bookingScheduleDTO[i].bookingID)
+                if((new Date(new Date().setDate(new Date().getDate() +1)) >= new Date(eventDetails?.start))){
+                    setErrorMsgDate("You can't Cancel session within 24h (please inform to the admin)")
+                }
+            }
         }
     }, []);
-    useEffect(() => {
-
-    }, []);
-
 
     return (
         <div>
@@ -112,8 +155,9 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
                     <div className='text-danger italic mb-3 items-center'>
                         {(errorMsg)&&<Warning/>}
                         {errorMsg}
+                        {(errorMsgDate)&&<Warning/>}
+                        {errorMsgDate}
                     </div>
-
                     <Row className="mb-2">
                         <Col xs={4}>Title:</Col>
                         <Col xs={8} className="pl-4">
@@ -167,9 +211,9 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
             {(errorMsg === '')&&<div className='flex flex-row mt-2 items-end justify-end'>
                 <Button onClick={makeBooking}>Book Now</Button>
             </div>}
-            {(errorMsg !== '')&&(sessionStorage.getItem("role")==="STUDENT")&&
+            {(errorMsg !== '')&&(sessionStorage.getItem("role")==="STUDENT")&&(errorMsgDate === '')&&
                 (<div className='flex flex-row mt-2 items-end justify-end'>
-                    <Button variant='outline-danger'>Cancel This Session</Button>
+                    <Button variant='outline-danger' onClick={()=>{cancleBooking(bookingID)}}>Cancel This Session</Button>
                 </div>)
             }
 

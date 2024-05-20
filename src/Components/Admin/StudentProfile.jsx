@@ -65,7 +65,7 @@ export default function StudentProfile() {
       <div className="flex flex-col overflow-y-scroll h-full">
         <div className="flex flex-wrap">
           {studentDetails?.map((details, i) => (
-            <div className="pl-20 mt-4 gap-x-16 gap-y-6 mb-9" key={i}>
+            <div className="pl-20 mt-2 gap-x-16 gap-y-6 mb-9" key={i}>
               <ProfileDetailsCard studentData={details} setInterrupt={setInterrupt} interrupt={interrupt}/>
             </div>
           ))}
