@@ -7,7 +7,7 @@ import Image from "react-bootstrap/Image";
 import {Button, Modal} from "react-bootstrap";
 import ModalForEditSchedule from "./ModalForEditSchedule";
 import Swal from "sweetalert2";
-import {acceptOrRegectBookingRequest} from "../../../ApiService/api";
+import {acceptOrRegectBookingRequest, studentCancelBooking} from "../../../ApiService/api";
 
 function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
     console.log("+++++++++++++++++",eventDetails)
@@ -17,7 +17,8 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
     const [showModaTrainer, setShowModalTrainer] = useState(false)
     //hook for edit schedule
     const [showModalEditSchedule, setShowModalEditSchedule] = useState(false)
-    const handleBookingRequest = (rslt) => {
+    const handleBookingRequest = (rslt,bookingID) => {
+        console.log(rslt,bookingID);
         Swal.fire({
             icon:'warning',
             title:'Are you sure?',
@@ -26,9 +27,35 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
         }).then(async (result)=>{
             if(result.isConfirmed){
                 const response = await acceptOrRegectBookingRequest({
-                    bookingID:eventDetails.bookingScheduleDTO[0].bookingID,
+                    bookingID:bookingID,
                     isAccepted: rslt
                 })
+                if(response?.data?.code ==="00"){
+                    Swal.fire({
+                        icon:'success',
+                        title:'Success',
+                        text:response?.data?.message
+                    })
+                    setInterrupt(!interrupt)
+                }else {
+                    Swal.fire({
+                        icon:'error',
+                        title:'Error',
+                        text:response?.data?.message
+                    })
+                }
+            }
+        })
+    }
+    const handleBookingRequestDelete = (bookingID) => {
+        Swal.fire({
+            icon:'warning',
+            title:'Are you sure?',
+            text:"After accepting can't be undone",
+            showCancelButton:true,
+        }).then(async (result)=>{
+            if(result.isConfirmed){
+                const response = await studentCancelBooking(bookingID,"STUDENT");
                 if(response?.data?.code ==="00"){
                     Swal.fire({
                         icon:'success',
@@ -148,11 +175,14 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
                                             </div>
                                         </div>
                                         <div className='flex'>
-                                            <Button variant='outline-success' size='sm' className='mr-3' onClick={()=>{handleBookingRequest(true)}}>
-                                                Accept
-                                            </Button>
-                                            <Button variant='outline-danger' size='sm' onClick={()=>{handleBookingRequest(false)}}>
-                                                Reject
+                                            {<Button variant='outline-success' size='sm' className='mr-3'
+                                                     onClick={() => {
+                                                         handleBookingRequest(true,request?.bookingID)
+                                                     }} disabled={request.isAccepted}>
+                                                {request.isAccepted?"Accepted..":""||"Accept"}
+                                            </Button>}
+                                            <Button variant='outline-danger' size='sm' onClick={()=>{handleBookingRequestDelete(request?.bookingID)}}>
+                                                Delete
                                             </Button>
                                         </div>
                                     </div>

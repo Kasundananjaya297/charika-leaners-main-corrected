@@ -293,8 +293,8 @@ export const adminResetPassword = (data) =>{
 export const acceptOrRegectBookingRequest = (data) =>{
     return AxiosInstance.put('admin/acceptOrRegectBookingRequest',data);
 }
-export const studentCancelBooking = (bookingID) =>{
-    return AxiosInstance.put(`student/studentCancelBooking/${bookingID}`);
+export const studentCancelBooking = (bookingID,viewFor) =>{
+    return AxiosInstance.put(`student/studentCancelBooking/${bookingID}/${viewFor}`);
 }
 export const trainerCancleSession = (sessionID) =>{
     return AxiosInstance.put(`trainer/trainerCancleSchedule/${sessionID}`);

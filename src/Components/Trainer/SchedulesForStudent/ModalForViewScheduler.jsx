@@ -197,6 +197,43 @@ console.log("+++++++++++++++++",eventDetails)
                         </Col>
                     </Row>
                 </Card.Body>
+                <Card.Body className='bg-gray-50'>
+                    <Card.Title>Students</Card.Title>
+                    <div className='h-28 overflow-y-scroll'>
+                        {eventDetails?.bookingScheduleDTO?.map((request, index) => (
+                                <Row key={index} className='flex flex-row items-center justify-center'>
+                                    <div className='flex justify-between items-center'>
+                                        <div className='mb-1 '>
+                                            <div>
+                                                {request.stdID} - {request.stdFname} {request.stdLname}
+                                            </div>
+                                            <div className='text-xs italic'>
+                                                {request.telephone} | {request.bookingDate} {request.bookingTime}
+                                            </div>
+                                        </div>
+                                        <div className='flex'>
+                                            {<Button variant='outline-success' size='sm' className='mr-3'
+                                                     onClick={() => {
+                                                         // handleBookingRequest(true,request?.bookingID)
+                                                     }} disabled={request.isAccepted}>
+                                                {request.isAccepted?"Accepted..":""||"Start"}
+                                            </Button>}
+                                            <Button variant='outline-danger' size='sm' onClick={()=>{
+                                                // handleBookingRequestDelete(request?.bookingID)
+                                            }
+                                            }
+                                            >
+                                                End
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </Row>
+                            )
+                        )
+                        }
+                    </div>
+
+                </Card.Body>
             </Card>
             {sessionStorage.getItem("role")==="TRAINER"&&(
                 <div className='flex flex-row mt-2 items-end justify-end'>

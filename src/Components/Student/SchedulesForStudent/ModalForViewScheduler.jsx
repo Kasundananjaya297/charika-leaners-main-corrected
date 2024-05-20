@@ -85,7 +85,7 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
             confirmButtonText: 'Yes, cancel it!'
         }).then(async (result) => {
             if (result.isConfirmed) {
-                const reponse = await studentCancelBooking(bookingID);
+                const reponse = await studentCancelBooking(bookingID,"ADMIN");
                 if(reponse?.data?.code === "00"){
                     Swal.fire(
                         'Canceled!',
