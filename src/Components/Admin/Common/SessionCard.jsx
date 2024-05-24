@@ -18,6 +18,7 @@ import AddExtraVehicleType from "./AddExtraVehicleType";
 
 export default function SessionCard({packeData,setPackgeID,stdID, interrupt,setInterrupt}) {
     const nav = useNavigate();
+    console.log("Package Data",packeData)
     const packDataEdit=(data) =>{
         nav(`/Packages/editPackage`,{state:data})
     }
@@ -314,8 +315,8 @@ console.log(packeData)
                                                                 </td>
                                                                 <td className='px-3 py-2 whitespace-nowrap'>Rs. {(saveData[i]?.priceForExtraLesson === undefined ? data?.priceForExtraLesson : saveData[i]?.priceForExtraLesson)}</td>
                                                                 <td className='px-3 py-2 whitespace-nowrap'>{(saveData[i]?.totalLessons === undefined ? data?.totalLessons : saveData[i].totalLessons)}</td>
-                                                                <td className='px-3 py-2 whitespace-nowrap'>10</td>
-                                                                <td className='px-3 py-2 whitespace-nowrap'>9</td>
+                                                                <td className='px-3 py-2 whitespace-nowrap'>{data?.participatedLessons}</td>
+                                                                <td className='px-3 py-2 whitespace-nowrap'>{((saveData[i]?.totalLessons === undefined ? data?.totalLessons : saveData[i].totalLessons)-data?.participatedLessons)}</td>
                                                             </tr>
                                                         ))}
                                                         </tbody>
@@ -364,6 +365,8 @@ console.log(packeData)
                                             <th className='px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider'>Extras</th>
                                             <th className='px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider'>Price_per_Lesson</th>
                                             <th className='px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider'>Price</th>
+                                            <th className='px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider'>Participated</th>
+                                            <th className='px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider'>Remain</th>
                                             </thead>
                                             <tbody className='bg-white divide-y divide-gray-200'>
                                             {extraSessionNotINAgreement?.map((data, i) => (
@@ -407,6 +410,8 @@ console.log(packeData)
                                                     <td className='px-3 py-2 whitespace-nowrap w-32'>
                                                         Rs. {(extrasDataToSave[i]?.priceForExtraLesson===undefined? data?.priceForExtraLesson: extrasDataToSave[i]?.priceForExtraLesson)}
                                                     </td>
+                                                    <td className='px-3 py-2 whitespace-nowrap'>{data?.participatedLessons}</td>
+                                                    <td className='px-3 py-2 whitespace-nowrap'>{data?.extraLessons - data?.participatedLessons}</td>
                                                 </tr>
                                             ))}
                                             </tbody>

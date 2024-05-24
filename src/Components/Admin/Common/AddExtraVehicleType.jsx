@@ -163,6 +163,7 @@ const AddExtraVehicleType = ({stdID,setShowModal,packID}) => {
                                 <Form.Group className='w-20'>
                                     <InputGroup>
                                         <Form.Control type="number" placeholder="Extra Lessons"
+                                                      min={0}
                                                       onChange={(e) => {
                                                           setID(id);
                                                           setExtraLessonVehicleType(saveData[id]?.extraLessonVehicleType);
@@ -178,6 +179,7 @@ const AddExtraVehicleType = ({stdID,setShowModal,packID}) => {
                                 <Form.Group className='w-32'>
                                     <InputGroup>
                                         <Form.Control type="number" placeholder="Price"
+                                                      min={0}
                                                       onChange={(e) => {
                                                           setID(id);
                                                           setExtraLessonVehicleType(saveData[id]?.extraLessonVehicleType);

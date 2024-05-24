@@ -13,9 +13,11 @@ import StudentCredential from "./StudentCredential";
 import {adminResetPassword} from "../../ApiService/api";
 import Swal from "sweetalert2";
 import TrainerCredential from "./TrainerCredential";
+import TrainerParicipationView from "./TrainerParicipationView";
 
 
 function TrainerCard({data,interrupt, setInterrupt}) {
+    console.log("TrainerCard",data)
     const [showModal,setShowModal] = useState(false);
 
     //modal for trainer licence
@@ -28,6 +30,8 @@ function TrainerCard({data,interrupt, setInterrupt}) {
     const [showModalTrainerPermit, setShowModalTrainerPermit] = useState(false);
     //show modal for preview trainer credential
     const [showModalTrainerCredential, setShowModalTrainerCredential] = useState(false);
+    //show modal trainer participation
+    const [showModalTrainerParticipation, setShowModalTrainerParticipation] = useState(false);
     //reset password
     const changePassword = async () => {
         const userData={
@@ -196,6 +200,12 @@ function TrainerCard({data,interrupt, setInterrupt}) {
                                 </Col>
                             </Row>
                             <Row className='mb-2 items-center'>
+                                <Col xs={4}>Participation:</Col>
+                                <Col xs={8} className="pl-4">
+                                    <Button size='sm' variant='outline-success' onClick={()=>{setShowModalTrainerParticipation(true)}}>View</Button>
+                                </Col>
+                            </Row>
+                            <Row className='mb-2 items-center'>
                                 <Col xs={4}>Tr. Credential:</Col>
                                 <Col xs={8} className="pl-4">
                                   <Button size='sm' variant='outline-danger' onClick={changePassword}>Reset</Button>
@@ -206,6 +216,7 @@ function TrainerCard({data,interrupt, setInterrupt}) {
                     </Card>
                 </Col>
             </Row>
+
             <Modal show={showLicenceModal} onHide={()=>{setShowLicenceModal(false)}}>
                 <Modal.Header closeButton>
                     <Modal.Title>Add Trainer Licence</Modal.Title>
@@ -245,7 +256,14 @@ function TrainerCard({data,interrupt, setInterrupt}) {
                 <Modal.Body className='flex items-center justify-center'>
                     <TrainerCredential data={data} />
                 </Modal.Body>
-
+            </Modal>
+            <Modal show={showModalTrainerParticipation} onHide={()=>{setShowModalTrainerParticipation(false)}} size={'xl'}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Trainer Participation</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <TrainerParicipationView/>
+                </Modal.Body>
             </Modal>
         </div>
 
