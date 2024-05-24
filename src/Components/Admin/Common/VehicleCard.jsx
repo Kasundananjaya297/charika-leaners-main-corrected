@@ -1543,7 +1543,7 @@ function VehicleCard({vehicleData,interrupt,setInterrupt}) {
                                     <Modal.Title>View Location</Modal.Title>
                                 </Modal.Header>
                                 <Modal.Body className='w-full h-full'>
-                                    <MapView setInter={setInterrupt} inter={interrupt}/>
+                                    <MapView setInter={setInterrupt} inter={interrupt} registrationNo={vehicleData?.registrationNo}/>
                                 </Modal.Body>
                             </Modal>
                         </Card.Body>

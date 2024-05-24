@@ -60,7 +60,9 @@ function ScheduleCalander(props) {
                         trainerPhoto: event.trainerPhoto,
                         bookingScheduleDTO: event.bookingScheduleDTO,
                         trainerRequestToCancel: event.trainerRequestToCancel,
-                        color: event.trainerRequestToCancel?"pink":""||event.studentCount === event.bookingScheduleDTO?.length ? "red" : event.bookingScheduleDTO?.length !==0? "#BE8400" :"green",
+                        isStrated: event.isStarted,
+                        isCompleted: event.isCompleted,
+                        color:event.isStarted?"":event.trainerRequestToCancel?"pink":event.studentCount === event.bookingScheduleDTO?.length ? "red" : event.bookingScheduleDTO?.length !==0? "#BE8400" :"green",
                     }
                 })
                 setEventList(events);

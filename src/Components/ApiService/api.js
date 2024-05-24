@@ -299,4 +299,31 @@ export const studentCancelBooking = (bookingID,viewFor) =>{
 export const trainerCancleSession = (sessionID) =>{
     return AxiosInstance.put(`trainer/trainerCancleSchedule/${sessionID}`);
 }
+export const saveStartedLocation = (data) =>{
+    return AxiosInstance.post('trainer/saveStartedLocation',data);
+}
+export const updateStudentAttendace = (data) =>{
+    return AxiosInstance.put('trainer/updateStudentAttendance',data);
+}
+export const completeSchedule = (scheduleID) =>{
+    return AxiosInstance.put(`trainer/completeSchedule/${scheduleID}`);
+}
+export const updateVehicleLocation = (data) =>{
+    return AxiosInstance.put('trainer/updateVehicleLocation',data);
+}
+export const getVehicleLocation = (registrationNo) =>{
+    return AxiosInstance.get(`admin/getVehicleLocationByVehicleID/${registrationNo}`);
+}
+export const getTrainerByLetter = (data) =>{
+    return AxiosInstance.get(`admin/getTrainer/${data}`);
+}
+export const getTrainerByID = (data) =>{
+    return AxiosInstance.get(`admin/getTrainerByID/${data}`);
+}
+export const getVehhicleByLetter = (data) =>{
+    return AxiosInstance.get(`admin/getVehhicleByLetter/${data}`);
+}
+export  const getVehicleByID = (data) =>{
+    return AxiosInstance.get(`admin/getVehicleById/${data}`);
+}
 //geo location

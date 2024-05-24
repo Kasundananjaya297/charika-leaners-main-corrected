@@ -6,8 +6,16 @@ import {FaUserEdit} from "react-icons/fa";
 import Image from "react-bootstrap/Image";
 import {Button, Modal} from "react-bootstrap";
 import Swal from "sweetalert2";
-import {makeBooking, makeBookingSave, trainerCancleSession} from "../../ApiService/api";
+import {
+    completeSchedule,
+    makeBooking,
+    makeBookingSave,
+    saveStartedLocation,
+    trainerCancleSession,
+    updateStudentAttendace
+} from "../../ApiService/api";
 import {Warning} from "@mui/icons-material";
+
 
 function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
 console.log("+++++++++++++++++",eventDetails)
@@ -103,9 +111,113 @@ console.log("+++++++++++++++++",eventDetails)
                 }
             }
         })
+    }
+    //mark student attendance
+    const markAttendance = (bookingID,isAttempted) => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you want to mark this student as attended?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, mark it!'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const response = await updateStudentAttendace({bookingID:bookingID,isCompleted:isAttempted});
+                if (response?.data?.code === "00") {
+                    Swal.fire(
+                        'Marked!',
+                        'Student has been marked as attended.',
+                        'success'
+                    )
+                    setInterrupt(!interrupt)
+                } else {
+                    Swal.fire(
+                        'Error!',
+                        'Something went wrong',
+                        'error'
+                    )
+                }
+            }
+        })
 
     }
+    const completeSession = () => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you want to complete this session?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, complete it!'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const response = await completeSchedule(eventDetails.schedulerID);
+                if (response?.data?.code === "00") {
+                    Swal.fire(
+                        'Completed!',
+                        'Your session has been completed.',
+                        'success'
+                    )
+                    setInterrupt(!interrupt);
+                } else {
+                    Swal.fire(
+                        'Error!',
+                        'Something went wrong',
+                        'error'
+                    )
+                }
+            }
+        })
+    }
+    //save start location
+   const startSession =  () => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you want to start this session?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, start it!'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(async(position) => {
+                        const endLatitude = position.coords.latitude;
+                        const endLongitude = position.coords.longitude;
 
+                        const datatoSave = {
+                            registrationNo: eventDetails.registrationNo,
+                            startLatitude: endLatitude,
+                            startLongitude: endLongitude,
+                            endLatitude: endLatitude,
+                            endLongitude: endLongitude,
+                            schedulerID: eventDetails.schedulerID,
+                        }
+                        await saveStartedLocation(datatoSave).then((response) => {
+                            if(response?.data?.code === "00"){
+                                Swal.fire(
+                                    'Started!',
+                                    'Your session has been started.',
+                                    'success'
+                                )
+                                setInterrupt(!interrupt);
+                            }else{
+                                Swal.fire(
+                                    'Error!',
+                                    'Something went wrong',
+                                    'error'
+                                )
+                            }
+                        })
+                    });
+                }
+            }
+        })
+    };
 
     return (
         <div>
@@ -143,6 +255,8 @@ console.log("+++++++++++++++++",eventDetails)
                     </Col>
                 </div>
                 <Card.Body className="p-4 -mt-8 text-sm">
+                    {(eventDetails.isStrated&&(!eventDetails?.isCompleted))&&<div className='text-success italic mb-3 items-center'>Started</div>}
+                    {(eventDetails.isStrated&&(eventDetails?.isCompleted))&&<div className='text-success italic mb-3 items-center'>Completed</div>}
                     <div className='text-danger italic mb-3 items-center'>
                         {(errorMsg)&&<Warning/>}
                         {errorMsg}
@@ -196,6 +310,12 @@ console.log("+++++++++++++++++",eventDetails)
                             {eventDetails.make} {eventDetails.model}
                         </Col>
                     </Row>
+                    {((eventDetails?.bookingScheduleDTO?.length>0)&&(!eventDetails?.isStrated)&&(!eventDetails?.isCompleted))&&<Row>
+                        <Button onClick={()=>{ startSession()}} variant={'outline-success'}>Start Session</Button>
+                    </Row>}
+                    {((eventDetails?.bookingScheduleDTO?.length>0)&&(eventDetails?.isStrated)&&(!eventDetails?.isCompleted))&&<Row>
+                        <Button onClick={()=>{ completeSession()}} variant={'outline-danger'}>Complete Session</Button>
+                    </Row>}
                 </Card.Body>
                 <Card.Body className='bg-gray-50'>
                     <Card.Title>Students</Card.Title>
@@ -212,18 +332,17 @@ console.log("+++++++++++++++++",eventDetails)
                                             </div>
                                         </div>
                                         <div className='flex'>
-                                            {<Button variant='outline-success' size='sm' className='mr-3'
-                                                     onClick={() => {
-                                                         // handleBookingRequest(true,request?.bookingID)
-                                                     }} disabled={request.isAccepted}>
-                                                {request.isAccepted?"Accepted..":""||"Start"}
+                                            {<Button variant='outline-success' size='sm' className='mr-3' disabled={((!request?.isCompleted)&&(!eventDetails.isStrated)||(request?.isCompleted)&&(eventDetails.isStrated))}
+                                                     onClick={() => {markAttendance(request.bookingID,true)
+                                                     }}>
+                                                Att
                                             </Button>}
-                                            <Button variant='outline-danger' size='sm' onClick={()=>{
-                                                // handleBookingRequestDelete(request?.bookingID)
+                                            <Button disabled={((!request?.isCompleted)&&(!eventDetails.isStrated)||(request?.isCompleted)&&(eventDetails.isStrated))} variant='outline-danger' size='sm' onClick={()=>{
+                                                markAttendance(request.bookingID,false)
                                             }
                                             }
                                             >
-                                                End
+                                                n/a
                                             </Button>
                                         </div>
                                     </div>
@@ -237,10 +356,9 @@ console.log("+++++++++++++++++",eventDetails)
             </Card>
             {sessionStorage.getItem("role")==="TRAINER"&&(
                 <div className='flex flex-row mt-2 items-end justify-end'>
-                    {(errorMsg==='')&&(<Button variant='outline-danger' onClick={()=>{cancelSession(eventDetails?.schedulerID)}} disabled={eventDetails.trainerRequestToCancel}>{(eventDetails.trainerRequestToCancel?"Pending...":"")||"Request to Cancel"}</Button>)}
+                    {(!eventDetails.isStrated)&&(errorMsg==='')&&(<Button variant='outline-danger' onClick={()=>{cancelSession(eventDetails?.schedulerID)}} disabled={eventDetails.trainerRequestToCancel}>{(eventDetails.trainerRequestToCancel?"Pending...":"")||"Request to Cancel"}</Button>)}
                 </div>
             )}
-
         </div>
     );
 }

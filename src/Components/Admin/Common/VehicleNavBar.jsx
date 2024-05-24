@@ -8,9 +8,9 @@ import { useNavigate } from "react-router-dom";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import { debounce } from "lodash";
-import { getPackageByLetter } from "../../ApiService/api";
+import {getPackageByLetter, getVehhicleByLetter} from "../../ApiService/api";
 
-export default function PackageNavBar({ setfiled, setOrder, setPackageID }) {
+export default function PackageNavBar({ setfiled, setOrder, VehicleID }) {
   //props for set nav bar selections
   const nav = useNavigate();
   const GotoAddNewVehicle = () => {
@@ -24,7 +24,7 @@ export default function PackageNavBar({ setfiled, setOrder, setPackageID }) {
     const fetchData = async () => {
       try {
         if (search !== null && search !== undefined && search !== "") {
-          const response = await getPackageByLetter(search);
+          const response = await getVehhicleByLetter(search);
           console.log(response?.data?.content);
           setSearchData(response?.data?.content);
         }
@@ -83,18 +83,20 @@ export default function PackageNavBar({ setfiled, setOrder, setPackageID }) {
                         className="flex flex-col  p-2 text-sm hover:bg-blue-400 w-full h-full rounded-lg"
                         onClick={(e) => {
                           setSearch("");
-                          setPackageID(data?.packageID);
+                          VehicleID(data?.registrationNo);
                         }}
                       >
                         <div className="flex flex-row justify-between font-semibold w-full">
                           <div>
-                            {data?.packageID} 
+                            {data?.registrationNo}
                           </div>
                           <div>
-                          {data?.packageName}
+                          {data?.make}
                           </div>
                         </div>
-                        <div>{data?.description}</div>
+                        <div>
+                          {data?.modal}
+                        </div>
                       </div>
                     </div>
                   ))}

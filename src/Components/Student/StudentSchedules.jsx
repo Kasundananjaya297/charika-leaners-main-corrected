@@ -24,6 +24,9 @@ const localizer = momentLocalizer(moment);
                 for (let i = 0; i < event.bookingScheduleDTO.length; i++) {
                     if (event.bookingScheduleDTO[i].stdID === sessionStorage.getItem('username')) {
                         color = "#BE8400";
+                        if(event.bookingScheduleDTO[i].isAccepted === true){
+                            color = "";
+                        }
                         break;
                     }
                 }

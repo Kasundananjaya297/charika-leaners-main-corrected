@@ -1,7 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {Calendar, momentLocalizer} from "react-big-calendar";
 import moment from "moment/moment";
-import {getSchedulesforStudent, getTrainerSchedules} from "../ApiService/api";
+import {
+    getSchedulesforStudent,
+    getTrainerSchedules,
+    saveStartedLocation,
+    updateVehicleLocation
+} from "../ApiService/api";
 import {Modal} from "react-bootstrap";
 import ModalForViewScheduler from "./SchedulesForStudent/ModalForViewScheduler";
 
@@ -13,14 +18,19 @@ const localizer = momentLocalizer(moment);
 
     const [showModalEventDetails, setShowModalEventDetails] = useState(false)
     const [selectedEvent, setSelectedEvent] = useState({});
-    const [interrupt, setInterrupt] = useState(false)
+    const [interrupt, setInterrupt] = useState(false);
+    const [registrationNo, setRegistrationNo] = useState(null)
 
     useEffect(() => {
         const fetch = async () => {
             const response = await getTrainerSchedules(sessionStorage.getItem('username'));
-            console.log(response);
             const data = response?.data?.content;
             const events = data.map((event) => {
+                if((event?.isStarted )&& (!event?.isCompleted)){
+                    setRegistrationNo(event.registrationNo);
+                }else if((event?.isStarted )&& (event?.isCompleted)&&(registrationNo !== null)){
+                    setRegistrationNo(null);
+                }
                 return {
                     start: new Date(event.start),
                     end: new Date(event.end),
@@ -49,15 +59,49 @@ const localizer = momentLocalizer(moment);
                     trainerPhoto: event.trainerPhoto,
                     bookingScheduleDTO: event.bookingScheduleDTO,
                     trainerRequestToCancel: event.trainerRequestToCancel,
-                    color:event.trainerRequestToCancel?"pink":"" ||sessionStorage.getItem('username') === event.bookingScheduleDTO[0]?.stdID ? "#BE8400" : "green",
-
+                    isStrated: event.isStarted,
+                    isCompleted: event.isCompleted,
+                    color:event.isStarted?"":event.trainerRequestToCancel?"pink":sessionStorage.getItem('username') === event.trainerID && event.bookingScheduleDTO.length>0 ? "#BE8400" : "green",
                 }
             })
             setEventList(events);
         };
         fetch();
     }, [interrupt]);
-    console.log(eventList?.bookingScheduleDTO);
+        useEffect(() => {
+            console.log("Registration No", registrationNo);
+            const updateLocation = async () => {
+                if (registrationNo === null) {
+                    return;
+                }
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        async (position) => {
+                            const endLatitude = position.coords.latitude;
+                            const endLongitude = position.coords.longitude;
+                            console.log("endLatitude", endLatitude);
+                            console.log("endLongitude", endLongitude);
+
+                            try {
+                                const response = await updateVehicleLocation({ endLatitude, endLongitude, registrationNo });
+                                console.log("updated", response);
+                            } catch (error) {
+                                console.error("Failed to update location", error);
+                            }
+                        },
+                        (error) => {
+                            console.error("Error getting location", error);
+                        }
+                    );
+                }
+            };
+            const intervalId = setInterval(updateLocation, 8000);
+            // Clean up the interval on component unmount
+            return () => {
+                clearInterval(intervalId);
+            };
+        }, [registrationNo, saveStartedLocation, updateVehicleLocation]);
+
     return (
         <div className='flex flex-col items-center justify-center w-full p-4 -mt-4 h-screen overflow-hidden'>
             <div className='w-full lg:w-3/4 xl:w-2/3' style={{height: '90%'}}>

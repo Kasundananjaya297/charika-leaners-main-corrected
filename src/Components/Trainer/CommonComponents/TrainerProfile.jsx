@@ -33,25 +33,7 @@ function TrainerProfile(props) {
     }, []);
 
 
-    useEffect(() => {
-        const fetchData = async ()=>{
-            try {
-                const stdID = sessionStorage.getItem('username');
-                const response = await getPaymentDetails(stdID,studentData?.packageAndVehicleType[0]?.packageID);
-                setPayments(response?.data?.content)
-            }catch (error){
-                console.log(error)
-            }
-        }
-        fetchData();
-    },[studentData]);
-    useEffect(() => {
-        const fetchData = async () => {
-            const response = await getAgreement(studentData?.stdID);
-            setPackData(response?.data?.content);
-        }
-        fetchData();
-    }, [studentData]);
+
 
 
     return (

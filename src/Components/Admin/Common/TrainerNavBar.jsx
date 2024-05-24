@@ -8,9 +8,9 @@ import { useNavigate } from "react-router-dom";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import { debounce } from "lodash";
-import { findStudentByAnyfield } from "../../ApiService/api";
+import {findStudentByAnyfield, getTrainerByLetter} from "../../ApiService/api";
 
-export default function TrainerNavBar({ setfiled, setOrder, setStudentID }) {
+export default function TrainerNavBar({ setfiled, setOrder, setTrainerID }) {
   //props for set nav bar selections
   const nav = useNavigate();
   const GoToRegisterForm1 = () => {
@@ -24,7 +24,7 @@ export default function TrainerNavBar({ setfiled, setOrder, setStudentID }) {
     const fetchData = async () => {
       try {
         if (search !== null && search !== undefined && search !== "") {
-          const response = await findStudentByAnyfield(search);
+          const response = await getTrainerByLetter(search);
           console.log(response?.data?.content);
           setSearchData(response?.data?.content);
         }
@@ -47,7 +47,7 @@ export default function TrainerNavBar({ setfiled, setOrder, setStudentID }) {
                 if (eventKey === "stdID_ASC" || eventKey === "stdID_DESC") {
                   // Extract the order (ASC/DESC) from the eventKey
                   const order = eventKey.split("_")[1];
-                  setfiled("stdID");
+                  setfiled("trainerID");
                   setOrder(order);
                 } else {
                   setfiled(eventKey);
@@ -83,7 +83,7 @@ export default function TrainerNavBar({ setfiled, setOrder, setStudentID }) {
                         className="flex flex-col  p-2 text-sm hover:bg-blue-400 w-full h-full rounded-lg"
                         onClick={(e) => {
                           setSearch("");
-                          setStudentID(data?.stdID);
+                          setTrainerID(data?.trainerID);
                         }}
                       >
                         <div className="flex flex-row justify-between font-semibold w-full">

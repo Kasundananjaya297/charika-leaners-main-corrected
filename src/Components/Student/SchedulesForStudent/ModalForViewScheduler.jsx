@@ -20,6 +20,7 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
     const [errorMsg, setErrorMsg] = useState('')
     //booking ID
     const [bookingID, setBookingID] = useState('')
+    const [notification, setNotification] = useState("");
     console.log(eventDetails)
     //save data
     const makeBooking = () =>{
@@ -111,6 +112,10 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
                 setBookingID(eventDetails.bookingScheduleDTO[i].bookingID)
                 if((new Date(new Date().setDate(new Date().getDate() +1)) >= new Date(eventDetails?.start))){
                     setErrorMsgDate("You can't Cancel session within 24h (please inform to the admin)")
+
+                }
+                if(eventDetails.bookingScheduleDTO[i].isAccepted === true){
+                    setNotification('Admin Accepted your booking')
                 }
             }
         }
@@ -152,6 +157,7 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
                     </Col>
                 </div>
                 <Card.Body className="p-4 -mt-8 text-sm">
+                    {(notification)&&<div className='text-success italic mb-3 items-center'>{notification}</div>}
                     <div className='text-danger italic mb-3 items-center'>
                         {(errorMsg)&&<Warning/>}
                         {errorMsg}

@@ -76,6 +76,7 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
 
 
 
+
     console.log(eventDetails)
 
     return (
@@ -115,7 +116,8 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
                     </Col>
                 </div>
                 <Card.Body className="p-4 -mt-8 text-sm">
-
+                    {(eventDetails.isStrated&&(!eventDetails?.isCompleted))&&<div className='text-success italic mb-3 items-center'>Started</div>}
+                    {(eventDetails.isStrated&&(eventDetails?.isCompleted))&&<div className='text-success italic mb-3 items-center'>Completed</div>}
                     <Row className="mb-2">
                         <Col xs={4}>Title:</Col>
                         <Col xs={8} className="pl-4">
@@ -171,7 +173,7 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
                                                 {request.stdID} - {request.stdFname} {request.stdLname}
                                             </div>
                                             <div className='text-xs italic'>
-                                                {request.telephone} | {request.bookingDate} {request.bookingTime}
+                                                {request.telephone} | {request.bookingDate} {request.bookingTime} {(eventDetails?.isStrated||eventDetails?.isCompleted)&&(request?.isCompleted?" | Attended":" | absent")}
                                             </div>
                                         </div>
                                         <div className='flex'>
