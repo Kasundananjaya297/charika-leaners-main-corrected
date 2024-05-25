@@ -262,7 +262,7 @@ function TrainerCard({data,interrupt, setInterrupt}) {
                     <Modal.Title>Trainer Participation</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <TrainerParicipationView/>
+                    <TrainerParicipationView bookingData={data}/>
                 </Modal.Body>
             </Modal>
         </div>
