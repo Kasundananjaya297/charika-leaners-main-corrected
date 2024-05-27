@@ -274,7 +274,6 @@ console.log(packeData)
                                                             <th className='px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider'>Total_Sessions</th>
                                                             <th className='px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider'>Participated</th>
                                                             <th className='px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider'>Remain</th>
-
                                                         </tr>
                                                         </thead>
                                                         <tbody class='bg-white divide-y divide-gray-200'>

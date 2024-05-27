@@ -326,4 +326,10 @@ export const getVehhicleByLetter = (data) =>{
 export  const getVehicleByID = (data) =>{
     return AxiosInstance.get(`admin/getVehicleById/${data}`);
 }
+export const getBookingDatabyID = (id) =>{
+    return AxiosInstance.get(`trainer/getBookingDataByID/${id}`);
+}
+export const getNotification = (viewFor) =>{
+    return AxiosInstance.get(`http://127.0.0.1:8080/api/admin/getAllNotifications/${viewFor}`);
+}
 //geo location

@@ -31,6 +31,7 @@ import TrainertLayout from "./Components/Trainer/CommonComponents/TrainertLayout
 import TrainerHome from "./Components/Trainer/TrainerHome";
 import TrainersSchedules from "./Components/Trainer/TrainersSchedules";
 import TrainerProfile from "./Components/Trainer/CommonComponents/TrainerProfile";
+import Session from "./Components/Student/CommonComponents/Session";
 
 function App() {
   return (
@@ -62,9 +63,9 @@ function App() {
           <Route path={"/invoice"} element={<Invoice />} />
         </Route>
         <Route path="/Student" element={<StudentLayout />}>
-          <Route path='/Student/studentHome' element={<StudentHome />} />
           <Route path='/Student/studentSchedules' element={<StudentSchedules />} />
           <Route path = '/Student/studentProfile' element = {<Profile/>} />
+          <Route path='/Student/sessions' element={<Session />} />
         </Route>
 
         <Route path="/trainer" element={<TrainertLayout />}>

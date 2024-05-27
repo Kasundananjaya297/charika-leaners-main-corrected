@@ -34,7 +34,7 @@ const StudentNavBar = () => {
         <div className='w-screen'>
             <Navbar expand="lg" className="bg-body-tertiary">
                 <Container fluid className='w-screen flex flex-row justify-between'>
-                    <Navbar.Brand href="#">Navbar scroll</Navbar.Brand>
+                    <Navbar.Brand href="#">Student</Navbar.Brand>
                     <Navbar.Toggle aria-controls="navbarScroll" />
                     <Navbar.Collapse id="navbarScroll" className='w-full'>
                         <Nav
@@ -42,9 +42,8 @@ const StudentNavBar = () => {
                             style={{ maxHeight: '200px' }}
                             navbarScroll
                         >
-                            <Nav.Link href="/Student/studentHome">Home</Nav.Link>
                             <Nav.Link href="/Student/studentSchedules">Schedules</Nav.Link>
-                            <Nav.Link href="#action3">Feed Backs</Nav.Link>
+                            <Nav.Link href="/Student/sessions">Sessions</Nav.Link>
                             <Nav.Link href="/Student/studentProfile">Profile</Nav.Link>
                             <Nav.Link onClick={handleLogOut} className='text-danger'>Logout</Nav.Link>
                         </Nav>

@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react';
 import {useNavigate} from "react-router-dom";
+import TrainerParticipationView from "./TrainerParticipations/TrainerParicipationView";
 
 const TrainerHome = () => {
     const nav = useNavigate();
@@ -13,7 +14,7 @@ const TrainerHome = () => {
     }, [nav]);
     return (
         <div className=''>
-            Trainer Home
+            <TrainerParticipationView />
         </div>
     );
 };

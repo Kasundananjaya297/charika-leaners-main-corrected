@@ -78,8 +78,9 @@ const TrainerParticipationView = ({ bookingData }) => {
                         <th>Started</th>
                         <th>Completed</th>
                         <th>Vehicle</th>
-                        <th>Students</th>
-                        <th>Booking Details</th>
+                        <th>Max Participant</th>
+                        <th>No. Booking</th>
+                        <th>No. Attendance</th>
                     </tr>
                     </thead>
                     <tbody className="text-xs">
@@ -93,7 +94,10 @@ const TrainerParticipationView = ({ bookingData }) => {
                             <td>{data?.vehicleClass} - {data?.vehicleClassName}</td>
                             <td>{data?.studentCount}</td>
                             <td>
-                                {data?.bookingID} - {data?.bookingDate} {data?.bookingTime}
+                                {data?.numberofBooking}
+                            </td>
+                            <td>
+                                {data?.numberofAttendance}
                             </td>
                         </tr>
                     ))}
