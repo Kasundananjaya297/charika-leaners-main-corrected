@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useLocation, useNavigate} from "react-router-dom";
 import {Button, Card, Form, Row,CloseButton} from "react-bootstrap";
-import {findStudentByID, getTrailPermit} from "../../ApiService/api";
+import {findStudentByID, getTrailPermit, updateStudentResult} from "../../ApiService/api";
 import Swal from "sweetalert2";
 import { GrDocumentImage } from "react-icons/gr";
 import { FaUserEdit } from "react-icons/fa";
@@ -11,6 +11,7 @@ function TrialPermitView() {
     const stdID = location.state;
     const [studentData,setStudentData] = useState({});
     const [trialPermit, setTrailPermit] = useState([]);
+    const [interrupt,setInterrupt] = useState(false);
 
     const nav = useNavigate();
     useEffect(() => {
@@ -43,12 +44,48 @@ function TrialPermitView() {
         }
             getStudentData(stdID);}
 
-    }, [stdID]);
+    }, [stdID,interrupt]);
     const back =() =>{
         nav("/studentprofile");
     }
     const regForm2 = () => {
         nav("/studentprofile/trail/edit", { state: trialPermit});
+    }
+
+    const updatePassFail = async (serialNo,VehicleClass,isPassed) => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: `Do you want to update ${isPassed ? 'Passed' : 'Faild'} status?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const response = await updateStudentResult(serialNo,VehicleClass,isPassed);
+                    if (response?.data?.code === '00') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: 'Updated Successfully',
+                        });
+                        setInterrupt(!interrupt);
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Failed to update',
+                        });
+                    }
+                } catch (e) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to update',
+                    });
+                }
+            }
+        })
     }
 
     return (
@@ -133,8 +170,8 @@ function TrialPermitView() {
                                                 <td className="border p-2">{dt?.selectedType} </td>
                                                 <td className="border p-2">{dt?.description}</td>
                                                 <td className="border p-2">
-                                                    <Button className='mr-4' variant='outline-success' size={'sm'}>Passed</Button>
-                                                    <Button variant='outline-danger' size={'sm'}>Faild</Button>
+                                                    <Button className='mr-4' variant='outline-success' size={'sm'} onClick={()=>{updatePassFail(trialPermit[0]?.serialNo,dt?.selectedType,true)}} disabled={dt?.isPassed}>Passed</Button>
+                                                    <Button variant='outline-danger' size={'sm'} onClick={()=>{updatePassFail(trialPermit[0]?.serialNo,dt?.selectedType,false)}} disabled={dt?.isPassed}>Faild</Button>
                                                 </td>
                                             </tr>
                                             ))}

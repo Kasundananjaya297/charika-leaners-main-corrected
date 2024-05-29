@@ -19,7 +19,8 @@ const localizer = momentLocalizer(moment);
     const [showModalEventDetails, setShowModalEventDetails] = useState(false)
     const [selectedEvent, setSelectedEvent] = useState({});
     const [interrupt, setInterrupt] = useState(false);
-    const [registrationNo, setRegistrationNo] = useState(null)
+    const [registrationNo, setRegistrationNo] = useState(null);
+    const [isEventIsStarted, setIsEventIsStarted] = useState(false);
 
     useEffect(() => {
         const fetch = async () => {
@@ -28,9 +29,15 @@ const localizer = momentLocalizer(moment);
             const events = data.map((event) => {
                 if((event?.isStarted )&& (!event?.isCompleted)){
                     setRegistrationNo(event.registrationNo);
-                }else if((event?.isStarted )&& (event?.isCompleted)&&(registrationNo !== null)){
+                    setIsEventIsStarted(true);
+                }else if((event?.isStarted )&& (event?.isCompleted)&&(registrationNo !== null)) {
                     setRegistrationNo(null);
                 }
+
+                if((event?.isStarted )&& (event?.isCompleted)&&(registrationNo === null)){
+                    setIsEventIsStarted(false);
+                }
+
                 return {
                     start: new Date(event.start),
                     end: new Date(event.end),
@@ -61,6 +68,7 @@ const localizer = momentLocalizer(moment);
                     trainerRequestToCancel: event.trainerRequestToCancel,
                     isStrated: event.isStarted,
                     isCompleted: event.isCompleted,
+                    isOtherSessionStarted : isEventIsStarted ,
                     color:event.isStarted?"":event.trainerRequestToCancel?"pink":sessionStorage.getItem('username') === event.trainerID && event.bookingScheduleDTO.length>0 ? "#BE8400" : "green",
                 }
             })
@@ -77,8 +85,8 @@ const localizer = momentLocalizer(moment);
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(
                         async (position) => {
-                            const endLatitude = position.coords.latitude;
-                            const endLongitude = position.coords.longitude;
+                            const endLatitude = await position.coords.latitude;
+                            const endLongitude = await position.coords.longitude;
                             console.log("endLatitude", endLatitude);
                             console.log("endLongitude", endLongitude);
 
@@ -125,7 +133,7 @@ const localizer = momentLocalizer(moment);
                     <Modal.Title>Event Details</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <ModalForViewScheduler eventDetails={selectedEvent} interrupt={interrupt} setInterrupt={setInterrupt}/>
+                    <ModalForViewScheduler eventDetails={selectedEvent} interrupt={interrupt} setInterrupt={setInterrupt} isOtherSessionStarted={isEventIsStarted}/>
                 </Modal.Body>
             </Modal>
         </div>

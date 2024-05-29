@@ -17,7 +17,7 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
     const [showModaTrainer, setShowModalTrainer] = useState(false)
     //hook for edit schedule
     const [showModalEditSchedule, setShowModalEditSchedule] = useState(false)
-    const handleBookingRequest = (rslt,bookingID) => {
+    const handleBookingRequest = (rslt,bookingID,stdID,schedulerID) => {
         console.log(rslt,bookingID);
         Swal.fire({
             icon:'warning',
@@ -28,7 +28,9 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
             if(result.isConfirmed){
                 const response = await acceptOrRegectBookingRequest({
                     bookingID:bookingID,
-                    isAccepted: rslt
+                    isAccepted: rslt,
+                    stdID: stdID,
+                    schedulerID:schedulerID
                 })
                 if(response?.data?.code ==="00"){
                     Swal.fire({
@@ -179,7 +181,7 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
                                         <div className='flex'>
                                             {<Button variant='outline-success' size='sm' className='mr-3'
                                                      onClick={() => {
-                                                         handleBookingRequest(true,request?.bookingID)
+                                                         handleBookingRequest(true,request?.bookingID,request?.stdID,request?.schedulerID)
                                                      }} disabled={request.isAccepted}>
                                                 {request.isAccepted?"Accepted..":""||"Accept"}
                                             </Button>}

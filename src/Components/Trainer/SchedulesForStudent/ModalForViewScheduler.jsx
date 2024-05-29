@@ -17,7 +17,7 @@ import {
 import {Warning} from "@mui/icons-material";
 
 
-function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
+function ModalForViewScheduler({eventDetails,interrupt,setInterrupt,isOtherSessionStarted}) {
 console.log("+++++++++++++++++",eventDetails)
     //hook for preview trainer profile photo
     const [showModal, setShowModal] = useState(false)
@@ -26,51 +26,7 @@ console.log("+++++++++++++++++",eventDetails)
     //hook for edit schedule
     const [errorMsg, setErrorMsg] = useState('')
 
-    //save data
-    const makeBooking = () =>{
-        if(eventDetails?.bookingScheduleDTO[0]?.stdID === sessionStorage.getItem('username')){
-            setErrorMsg('You have already booked this schedule')
-            return;
 
-        }
-        const booking = {
-            bookingDate: new Date().toISOString().split('T')[0],
-            bookingTime: new Date().toTimeString().split(' ')[0],
-            isAccepted: false,
-            isCanceled: false,
-            isCompleted: false,
-            schedulerID: eventDetails.schedulerID,
-            stdID: sessionStorage.getItem('username')
-        }
-        console.log(booking);
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "Do you want to book this schedule?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, book it!'
-        }).then(async (result) => {
-            if (result.isConfirmed) {
-               const reponse = await makeBookingSave(booking);
-               console.log(reponse);
-                if(reponse?.data?.code === "00"){
-                    Swal.fire(
-                        'Booked!',
-                        'Your booking has been completed.',
-                        'success'
-                    )
-                }else if (reponse?.data?.code === "06"){
-                    Swal.fire(
-                        'Error!',
-                        'Booking is full',
-                        'error'
-                    )
-                }
-            }
-        })
-    }
     useEffect(() => {
         if(eventDetails?.bookingScheduleDTO[0]?.stdID === sessionStorage.getItem('username')){
             setErrorMsg('You have already booked this schedule')
@@ -256,7 +212,8 @@ console.log("+++++++++++++++++",eventDetails)
                 </div>
                 <Card.Body className="p-4 -mt-8 text-sm">
                     {(eventDetails.isStrated&&(!eventDetails?.isCompleted))&&<div className='text-success italic mb-3 items-center'>Started</div>}
-                    {(eventDetails.isStrated&&(eventDetails?.isCompleted))&&<div className='text-success italic mb-3 items-center'>Completed</div>}
+                    {((eventDetails.isStrated)&&(eventDetails?.isCompleted))&&<div className='text-success italic mb-3 items-center'>Completed</div>}
+                    {(!eventDetails.isStrated)&&(!eventDetails?.isCompleted)&&(isOtherSessionStarted)&&<div className='text-danger italic mb-3 items-center'>You can't start 2 sessions at same time</div>}
                     <div className='text-danger italic mb-3 items-center'>
                         {(errorMsg)&&<Warning/>}
                         {errorMsg}
@@ -311,7 +268,7 @@ console.log("+++++++++++++++++",eventDetails)
                         </Col>
                     </Row>
                     {((eventDetails?.bookingScheduleDTO?.length>0)&&(!eventDetails?.isStrated)&&(!eventDetails?.isCompleted))&&<Row>
-                        <Button onClick={()=>{ startSession()}} variant={'outline-success'}>Start Session</Button>
+                        <Button onClick={()=>{ startSession()}} variant={'outline-success'} disabled={isOtherSessionStarted}>Start Session</Button>
                     </Row>}
                     {((eventDetails?.bookingScheduleDTO?.length>0)&&(eventDetails?.isStrated)&&(!eventDetails?.isCompleted))&&<Row>
                         <Button onClick={()=>{ completeSession()}} variant={'outline-danger'}>Complete Session</Button>

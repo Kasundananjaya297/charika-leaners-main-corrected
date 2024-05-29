@@ -18,8 +18,7 @@ const Home = () => {
         <div className="flex flex-col overflow-y-scroll  h-full">
           <div className="flex flex-col">
             <AdminHomeNavBar />
-            <iframe title="Charika Leaners" width="1140" height="541.25" src="https://app.powerbi.com/reportEmbed?reportId=8fa44dac-4541-4e61-9e25-9a586ed1ff3c&autoAuth=true&embeddedDemo=true" frameborder="0" allowFullScreen="true">
-
+            <iframe title="Charika Leaners" width="1140" height="541.25" src="http://172.16.16.103:5001/public/dashboards/qIZieKzbNkU40XSP59BCunSDjjBfroi0sBJkCKHK?org_slug=default?refresh=30">
             </iframe>
           </div>
         </div>

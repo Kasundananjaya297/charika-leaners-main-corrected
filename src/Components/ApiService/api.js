@@ -330,6 +330,15 @@ export const getBookingDatabyID = (id) =>{
     return AxiosInstance.get(`trainer/getBookingDataByID/${id}`);
 }
 export const getNotification = (viewFor) =>{
-    return AxiosInstance.get(`http://127.0.0.1:8080/api/admin/getAllNotifications/${viewFor}`);
+    return AxiosInstance.get(`admin/getAllNotifications/${viewFor}`);
+}
+export const deleteNotification = (id) =>{
+    return AxiosInstance.delete(`admin/deleteNotification/${id}`)
+}
+export const getAllnotificationByID = (id,viewdFor) =>{
+    return AxiosInstance.get(`admin/getAllnotificationByID/${id}/${viewdFor}`);
+}
+export const updateStudentResult = (serialNo,vehicleClass,isPassed)=>{
+    return AxiosInstance.put(`admin/updatePassOrFailStudentInTrialPermit/${serialNo}/${vehicleClass}/${isPassed}`);
 }
 //geo location
