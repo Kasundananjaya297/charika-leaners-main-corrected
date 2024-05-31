@@ -32,12 +32,14 @@ import TrainerHome from "./Components/Trainer/TrainerHome";
 import TrainersSchedules from "./Components/Trainer/TrainersSchedules";
 import TrainerProfile from "./Components/Trainer/CommonComponents/TrainerProfile";
 import Session from "./Components/Student/CommonComponents/Session";
+import LandingPage from "./Components/LandingPage/LandingPage";
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route index element={<Login />} />
+        <Route index element={<LandingPage />} />
+        <Route path='/login' element={<Login />} />
         <Route path="/" element={<Layout />}>
           <Route path="/Home" element={<Home />}></Route>
           <Route path="/studentprofile" element={<StudentProfile />} />

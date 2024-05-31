@@ -27,6 +27,9 @@ const firebaseConfig = {
 export const ValidateUser = (userData) => {
   return axios.post("http://127.0.0.1:8080/api/authentication/ValidateUser", userData);
 };
+export const getPackages = (field,order,pageSize,offset)=>{
+    return axios.get(`http://127.0.0.1:8080/api/admin/getAllPackage/${field}/${order}/${pageSize}/${offset}`);
+}
 // export const ValidateUser = (userData) => {
 //   return axios.post("http://172.16.16.130:8080/api/authentication/ValidateUser", userData);
 // };
@@ -147,9 +150,6 @@ export const updateMedicalReport=(data)=>{
 }
 export const AddPackage = (data)=>{
   return AxiosInstance.post('admin/AddPackage',data);
-}
-export const getPackages = (field,order,pageSize,offset)=>{
-  return AxiosInstance.get(`admin/getAllPackage/${field}/${order}/${pageSize}/${offset}`);
 }
 export const upDatePackage = (data)=>{
   return AxiosInstance.post('admin/updatePackage',data);

@@ -61,6 +61,9 @@ export default function Login() {
       console.error(e);
     }
   };
+  const gotoIndexing = () => {
+    nav("/");
+  }
 
 
   const handleScanSuccess = (text) => {
@@ -118,12 +121,16 @@ export default function Login() {
                 </Form.Group>
               </Form>
               <Button
-                  variant="primary"
-                  className="w-full mt-3 mb-4"
+                  variant='outline-success'
+                  className="w-full mt-3 mb-1"
                   onClick={HandleLogin}
               >
                 Login
               </Button>
+              <Button variant={'outline-danger'}
+                      className="w-full mt-3 mb-4"
+                      onClick={()=>{gotoIndexing()}}
+              >Cancel</Button>
             </div>
           </Card.Body>
         </Card>

@@ -101,7 +101,7 @@ function ServiceAndRepairEnd({interrupts,setInterrupts, show, onHide,data}) {
             registrationNo:data.registrationNo,
             itemsORDones:[]
         },validationSchema: Yup.object({
-            invoiceNo: Yup.string().required("Invoice No is required").min(10,"Invoice No must be 10 characters"),
+            invoiceNo: Yup.string().required("Invoice No is required"),
             returnDate: Yup.date().required("Return Date is required"),
             returnTime: Yup.string().required("Return Time is required"),
             invoiceUrl: Yup.string().required("Invoice upload is required"),
