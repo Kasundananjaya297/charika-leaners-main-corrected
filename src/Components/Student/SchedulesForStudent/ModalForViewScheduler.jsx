@@ -183,12 +183,6 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
                         </Col>
                     </Row>
                     <Row className="mb-2">
-                        <Col xs={4}>Remain Count:</Col>
-                        <Col xs={8} className="pl-4">
-                            {eventDetails.studentCount}
-                        </Col>
-                    </Row>
-                    <Row className="mb-2">
                         <Col xs={4}>Trainer:</Col>
                         <Col xs={8} className="pl-4">
                             {eventDetails.trainerFname} {eventDetails.trainerLname}

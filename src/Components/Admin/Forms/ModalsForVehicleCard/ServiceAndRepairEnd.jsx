@@ -106,7 +106,6 @@ function ServiceAndRepairEnd({interrupts,setInterrupts, show, onHide,data}) {
             returnTime: Yup.string().required("Return Time is required"),
             invoiceUrl: Yup.string().required("Invoice upload is required"),
             itemsORDones:Yup.array().min(1,"Required to select item")
-
         }),onSubmit: async (values) =>{
             console.log(values);
 

@@ -28,10 +28,10 @@ const firebaseConfig = {
 //   return axios.post("http:/172.16.16.111:8080/api/authentication/ValidateUser", userData);
 // };
 export const getPackages = (field,order,pageSize,offset)=>{
-    return axios.get(`http://172.16.16.115:8080/api/admin/getAllPackage/${field}/${order}/${pageSize}/${offset}`);
+    return axios.get(`http://localhost:8080/api/admin/getAllPackage/${field}/${order}/${pageSize}/${offset}`);
 }
 export const ValidateUser = (userData) => {
-  return axios.post("http://172.16.16.115:8080/api/authentication/ValidateUser", userData);
+  return axios.post("http://localhost:8080/api/authentication/ValidateUser", userData);
 };
 
 export const SaveStudent = (stdData) => {

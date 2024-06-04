@@ -114,7 +114,7 @@ console.log("+++++++++++++++++",eventDetails)
                 if (response?.data?.code === "00") {
                     Swal.fire(
                         'Completed!',
-                        'Your session has been completed.',
+                        'Your session  cancel  Request has been sent.',
                         'success'
                     )
                     setInterrupt(!interrupt);
@@ -174,6 +174,18 @@ console.log("+++++++++++++++++",eventDetails)
             }
         })
     };
+    // remain time set
+    const eventStartTime = new Date(eventDetails?.start);
+    const currentTime = new Date();
+    const hourDifference = eventStartTime.getHours() - currentTime.getHours() + (eventStartTime.getHours() < currentTime.getHours() ? 24 : 0);
+    const minuteDifference = eventStartTime.getMinutes() - currentTime.getMinutes() + (eventStartTime.getMinutes() < currentTime.getMinutes() ? 60 : 0);
+    const secondDifference = eventStartTime.getSeconds() - currentTime.getSeconds() + (eventStartTime.getSeconds() < currentTime.getSeconds() ? 60 : 0);
+    const timeDifference = `${hourDifference}:${minuteDifference}:${secondDifference}`;
+    //date difference
+    const eventStartDate = new Date(eventDetails?.start);
+    const currentDate = new Date();
+    const oneDay = 24 * 60 * 60 * 1000; // Hours * Minutes * Seconds * Milliseconds
+    const diffDays = Math.floor((eventStartDate - currentDate) / oneDay);
 
     return (
         <div>
@@ -211,6 +223,9 @@ console.log("+++++++++++++++++",eventDetails)
                     </Col>
                 </div>
                 <Card.Body className="p-4 -mt-8 text-sm">
+                    {/*Missed some validation part*/}
+                    {/*get date */}
+                    {(diffDays >= 0)&&(<div div className='text-success italic mb-3 items-center'>Remaining Time: {diffDays} Day(s) {timeDifference} Hours</div>)}
                     {(eventDetails.isStrated&&(!eventDetails?.isCompleted))&&<div className='text-success italic mb-3 items-center'>Started</div>}
                     {((eventDetails.isStrated)&&(eventDetails?.isCompleted))&&<div className='text-success italic mb-3 items-center'>Completed</div>}
                     {(!eventDetails.isStrated)&&(!eventDetails?.isCompleted)&&(isOtherSessionStarted)&&<div className='text-danger italic mb-3 items-center'>You can't start 2 sessions at same time</div>}
@@ -233,12 +248,6 @@ console.log("+++++++++++++++++",eventDetails)
                     </Row>
                     <Row className="mb-2">
                         <Col xs={4}>Student Count:</Col>
-                        <Col xs={8} className="pl-4">
-                            {eventDetails.studentCount}
-                        </Col>
-                    </Row>
-                    <Row className="mb-2">
-                        <Col xs={4}>Remain Count:</Col>
                         <Col xs={8} className="pl-4">
                             {eventDetails.studentCount}
                         </Col>
@@ -267,7 +276,7 @@ console.log("+++++++++++++++++",eventDetails)
                             {eventDetails.make} {eventDetails.model}
                         </Col>
                     </Row>
-                    {((eventDetails?.bookingScheduleDTO?.length>0)&&(!eventDetails?.isStrated)&&(!eventDetails?.isCompleted))&&<Row>
+                    {((eventDetails?.bookingScheduleDTO?.length>0)&&(!eventDetails?.isStrated)&&(!eventDetails?.isCompleted)&&(diffDays === 0))&&<Row>
                         <Button onClick={()=>{ startSession()}} variant={'outline-success'} disabled={isOtherSessionStarted}>Start Session</Button>
                     </Row>}
                     {((eventDetails?.bookingScheduleDTO?.length>0)&&(eventDetails?.isStrated)&&(!eventDetails?.isCompleted))&&<Row>
