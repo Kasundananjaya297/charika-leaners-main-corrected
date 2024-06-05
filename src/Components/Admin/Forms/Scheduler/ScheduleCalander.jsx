@@ -73,7 +73,7 @@ function ScheduleCalander(props) {
 
 
     return (
-        <div style={{width:1300}} className='flex items-center justify-center mt-10'>
+        <div style={{width:1300}} className='flex items-center justify-center  w-screen h-full mt-10'>
             <Calendar
                 localizer={localizer}
                 events={eventList}
