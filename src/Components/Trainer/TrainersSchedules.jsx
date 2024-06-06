@@ -69,7 +69,7 @@ const localizer = momentLocalizer(moment);
                     isStrated: event.isStarted,
                     isCompleted: event.isCompleted,
                     isOtherSessionStarted : isEventIsStarted ,
-                    color:event.isStarted?"":event.trainerRequestToCancel?"pink":sessionStorage.getItem('username') === event.trainerID && event.bookingScheduleDTO.length>0 ? "#BE8400" : "green",
+                    color:event.isStarted? event.isCompleted? "red" :"":event.trainerRequestToCancel?"pink":sessionStorage.getItem('username') === event.trainerID && event.bookingScheduleDTO.length > 0 ? "#BE8400" : "green",
                 }
             })
             setEventList(events);

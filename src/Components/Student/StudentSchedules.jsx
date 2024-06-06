@@ -27,6 +27,9 @@ const localizer = momentLocalizer(moment);
                         if(event.bookingScheduleDTO[i].isAccepted === true){
                             color = "";
                         }
+                        if(event.bookingScheduleDTO[i].isCompleted === true){
+                            color = "red";
+                        }
                         break;
                     }
                 }
@@ -57,10 +60,12 @@ const localizer = momentLocalizer(moment);
                     vehiclePhoto: event.vehiclePhoto,
                     trainerPhoto: event.trainerPhoto,
                     bookingScheduleDTO: event.bookingScheduleDTO,
+                    isCompleted: event.isCompleted,
                     color: color,
                 }
             })
             setEventList(events);
+            console.log(events);
         };
         fetch();
     }, [interrupt]);

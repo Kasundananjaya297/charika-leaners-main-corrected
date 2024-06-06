@@ -37,6 +37,7 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
             isCanceled: false,
             isCompleted: false,
             schedulerID: eventDetails.schedulerID,
+            vehicleClass: eventDetails.vehicleClass,
             stdID: sessionStorage.getItem('username')
         }
         console.log(booking);
@@ -66,10 +67,11 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
                         text: reponse?.data?.message,
                     })
                 }else if(reponse?.data?.code === "10"){
-                    Swal.fire(
-                        'Error!',
-                        "You have already booked other schedule during this time period,You can't participate in two schedules at the same time",
-                        'error'
+                    Swal.fire({
+                            icon:'error',
+                            title: 'Oops...',
+                            text: reponse?.data?.message,
+                        }
                     )
                 }
             }
@@ -116,6 +118,8 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
                 }
                 if(eventDetails.bookingScheduleDTO[i].isAccepted === true){
                     setNotification('Admin Accepted your booking')
+                } if(eventDetails.bookingScheduleDTO[i].isAccepted === true && eventDetails.isCompleted === true) {
+                    setNotification('Completed your Session')
                 }
             }
         }
@@ -158,16 +162,34 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
                 </div>
                 <Card.Body className="p-4 -mt-8 text-sm">
                     {(notification)&&<div className='text-success italic mb-3 items-center'>{notification}</div>}
-                    <div className='text-danger italic mb-3 items-center'>
-                        {(errorMsg)&&<Warning/>}
+                    {(!eventDetails.isCompleted)&&<div className='text-danger italic mb-3 items-center'>
+                        {(errorMsg) && <Warning/>}
                         {errorMsg}
-                        {(errorMsgDate)&&<Warning/>}
+                        {(errorMsgDate) && <Warning/>}
                         {errorMsgDate}
-                    </div>
+                    </div>}
                     <Row className="mb-2">
                         <Col xs={4}>Title:</Col>
                         <Col xs={8} className="pl-4">
                             {eventDetails.titleFetch} Session
+                        </Col>
+                    </Row>
+                    <Row className= "mb-2">
+                        <Col xs={4}>Date:</Col>
+                        <Col xs={8} className="pl-4">
+                            {new Date(eventDetails.start).toDateString()}
+                        </Col>
+                    </Row>
+                    <Row className="mb-2">
+                        <Col xs={4}>Start Time:</Col>
+                        <Col xs={8} className="pl-4">
+                            {new Date(eventDetails.start).toTimeString().split(' ')[0]}
+                        </Col>
+                    </Row>
+                    <Row className="mb-2">
+                        <Col xs={4}>End Time:</Col>
+                        <Col xs={8} className="pl-4">
+                            {new Date(eventDetails.end).toTimeString().split(' ')[0]}
                         </Col>
                     </Row>
                     <Row className="mb-2">

@@ -126,6 +126,24 @@ function ModalForViewScheduler({eventDetails,interrupt,setInterrupt}) {
                             {eventDetails.titleFetch} Session
                         </Col>
                     </Row>
+                    <Row className= "mb-2">
+                        <Col xs={4}>Date:</Col>
+                        <Col xs={8} className="pl-4">
+                            {new Date(eventDetails.start).toDateString()}
+                        </Col>
+                    </Row>
+                    <Row className="mb-2">
+                        <Col xs={4}>Start Time:</Col>
+                        <Col xs={8} className="pl-4">
+                            {new Date(eventDetails.start).toTimeString().split(' ')[0]}
+                        </Col>
+                    </Row>
+                    <Row className="mb-2">
+                        <Col xs={4}>End Time:</Col>
+                        <Col xs={8} className="pl-4">
+                            {new Date(eventDetails.end).toTimeString().split(' ')[0]}
+                        </Col>
+                    </Row>
                     <Row className="mb-2">
                         <Col xs={4}>Vehicle Class:</Col>
                         <Col xs={8} className="pl-4">

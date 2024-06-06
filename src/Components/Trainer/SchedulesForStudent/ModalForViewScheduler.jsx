@@ -18,7 +18,7 @@ import {Warning} from "@mui/icons-material";
 
 
 function ModalForViewScheduler({eventDetails,interrupt,setInterrupt,isOtherSessionStarted}) {
-console.log("+++++++++++++++++",eventDetails)
+
     //hook for preview trainer profile photo
     const [showModal, setShowModal] = useState(false)
     //hook for preview vehicle profile photo
@@ -190,7 +190,7 @@ console.log("+++++++++++++++++",eventDetails)
     return (
         <div>
             <Card>
-                <div className="flex  justify-between pl-4 pt-3 w-wrap h-wrap mb-2 w-auto pr-7">
+                <div className="flex justify-between pl-4 pt-3 w-wrap h-wrap mb-2 w-auto pr-7">
                     <Col xs={1} sm={3}>
                         <div className="flex justify-center rounded-full items-center  w-fit h-fit bg-gray-200 mb-4">
                             <div className=" w-16 h-16 p-2 rounded-full">
@@ -225,7 +225,7 @@ console.log("+++++++++++++++++",eventDetails)
                 <Card.Body className="p-4 -mt-8 text-sm">
                     {/*Missed some validation part*/}
                     {/*get date */}
-                    {(diffDays >= 0)&&(<div div className='text-success italic mb-3 items-center'>Remaining Time: {diffDays} Day(s) {timeDifference} Hours</div>)}
+                    {(diffDays >= 0)&&(<div className='text-success italic mb-3 items-center'>Remaining Time: {diffDays} Day(s) {timeDifference} Hours</div>)}
                     {(eventDetails.isStrated&&(!eventDetails?.isCompleted))&&<div className='text-success italic mb-3 items-center'>Started</div>}
                     {((eventDetails.isStrated)&&(eventDetails?.isCompleted))&&<div className='text-success italic mb-3 items-center'>Completed</div>}
                     {(!eventDetails.isStrated)&&(!eventDetails?.isCompleted)&&(isOtherSessionStarted)&&<div className='text-danger italic mb-3 items-center'>You can't start 2 sessions at same time</div>}
@@ -238,6 +238,24 @@ console.log("+++++++++++++++++",eventDetails)
                         <Col xs={4}>Title:</Col>
                         <Col xs={8} className="pl-4">
                             {eventDetails.titleFetch} Session
+                        </Col>
+                    </Row>
+                    <Row className= "mb-2">
+                        <Col xs={4}>Date:</Col>
+                        <Col xs={8} className="pl-4">
+                            {new Date(eventDetails.start).toDateString()}
+                        </Col>
+                    </Row>
+                    <Row className="mb-2">
+                        <Col xs={4}>Start Time:</Col>
+                        <Col xs={8} className="pl-4">
+                            {new Date(eventDetails.start).toTimeString().split(' ')[0]}
+                        </Col>
+                    </Row>
+                    <Row className="mb-2">
+                        <Col xs={4}>End Time:</Col>
+                        <Col xs={8} className="pl-4">
+                            {new Date(eventDetails.end).toTimeString().split(' ')[0]}
                         </Col>
                     </Row>
                     <Row className="mb-2">
