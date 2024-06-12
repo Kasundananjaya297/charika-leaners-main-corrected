@@ -187,89 +187,87 @@ export default function AddPackagesEdit() {
                       <th colSpan={2}>Vehicle Type</th>
                       <th className='flex items-center justify-center'>Session Count</th>
                     </tr>
-                    {
-                      vehicleType?.map((item, i) => (
-                          <tr key={i}>
-                            <td className="pl-3">{item?.typeID}-{item?.typeName} {item?.engineCapacity}</td>
-                            <td className="p-2">
-                            <Form.Group required>
-                                  <Dropdown>
-                                    <Dropdown.Toggle variant="outline-secondary" size="sm">
-                                      Type
-                                    </Dropdown.Toggle>
-                                    <Dropdown.Menu>
-                                      {item?.typeAuto && (
-                                        <Dropdown.Item
-                                            disabled={true}
-                                        //{...formik.getFieldProps("vehicleType")}
-                                          onClick={() => {
-                                            setSelectedType(item?.typeID);
-                                            setAutoOrManual("Auto");
-                                            setID(i);
-                                            setIsVisible(true);
-                                            setLessons(vehicleData[i]?.lessons);
-                                            //formik.setFieldValue("vehicleType", "Auto");
-                                          }}
-                                        >
-                                          Auto
-                                        </Dropdown.Item>
-                                      )}
-                                      {item?.typeManual && (
-                                        <Dropdown.Item
-                                            disabled={true}
-                                        //{...formik.getFieldProps("vehicleType")}
-                                          onClick={() => {
-                                            setSelectedType(item?.typeID);
-                                            setAutoOrManual("Manual");
-                                            setID(i);
-                                            setIsVisible(true);
-                                            setLessons(vehicleData[i]?.lessons);
-                                            //formik.setFieldValue("vehicleType", "Manual");
-                                          }}
-                                        >
-                                          Manual
-                                        </Dropdown.Item>
-                                      )}
-                                      <Dropdown.Item
-                                          disabled={true}
-                                        onClick={() => {
-                                          setSelectedType(null);
-                                          setAutoOrManual(null);
-                                          setID(i);
-                                          setIsVisible(false);
-                                          setLessons(0);
-                                          setVehicleData([]);
-                                          //formik.setFieldValue("vehicleType", "");
-                                        }}
-                                      >
-                                        --
-                                      </Dropdown.Item>
-                                    </Dropdown.Menu>
-                                  </Dropdown>
-                                </Form.Group>
-                            </td>
-                            <td className="-gap-x-10"><FaUserEdit /></td>
-                            <td className='flex flex-row mt-1 items-center justify-center'>
-                                <Col md={6}>
-                                    <Form.Control
-                                        key={i}
-                                        type="number"
-                                        min={1}
-                                        max={50}
-                                        defaultValue={0}
-                                        placeholder="0"
-                                        onBlur={(e) => {
-                                            setLessons(e.target.value);
-                                            setID(i); 
-                                        }}
-                                        disabled={true}
-                                        required
-                                    />
-                                </Col>
-                            </td>
-                          </tr>
-                      ))
-                    }
+                        {
+                            vehicleType?.map((item, i) => (
+                                <tr key={i}>
+                                    <td className="pl-3">{item?.typeID}-{item?.typeName} {item?.engineCapacity}</td>
+                                    <td className="p-2">
+                                        <Form.Group required>
+                                            <Dropdown>
+                                                <Dropdown.Toggle variant="outline-secondary" size="sm">
+                                                    {vehicleData[i]?.autoOrManual || "Type"}
+                                                </Dropdown.Toggle>
+                                                <Dropdown.Menu>
+                                                    {item?.typeAuto && (
+                                                        <Dropdown.Item
+                                                            //{...formik.getFieldProps("vehicleType")}
+                                                            onClick={() => {
+                                                                setSelectedType(vehicleType[i]?.typeID);
+                                                                setAutoOrManual("Auto");
+                                                                setID(i);
+                                                                setIsVisible(true);
+                                                                setLessons(vehicleData[i]?.lessons);
+                                                                //formik.setFieldValue("vehicleType", "Auto");
+                                                            }}
+                                                        >
+                                                            Auto
+                                                        </Dropdown.Item>
+                                                    )}
+                                                    {item?.typeManual && (
+                                                        <Dropdown.Item
+                                                            //{...formik.getFieldProps("vehicleType")}
+                                                            onClick={() => {
+                                                                setSelectedType(vehicleType[i]?.typeID)
+                                                                setAutoOrManual("Manual");
+                                                                setID(i);
+                                                                setIsVisible(true);
+                                                                setLessons(vehicleData[i]?.lessons);
+                                                                //formik.setFieldValue("vehicleType", "Manual");
+                                                            }}
+                                                        >
+                                                            Manual
+                                                        </Dropdown.Item>
+                                                    )}
+                                                    <Dropdown.Item
+                                                        onClick={() => {
+                                                            setID(i);
+                                                            setSelectedType("--");
+                                                            setAutoOrManual("--");
+                                                            setIsVisible(false);
+                                                            setLessons(0);
+                                                            //formik.setFieldValue("vehicleType", "");
+                                                        }}
+                                                    >
+                                                        --
+                                                    </Dropdown.Item>
+                                                </Dropdown.Menu>
+                                            </Dropdown>
+                                        </Form.Group>
+                                    </td>
+                                    <td className="-gap-x-10"><FaUserEdit /></td>
+                                    <td className='flex flex-row mt-1 items-center justify-center'>
+                                        <Col md={6}>
+                                            <Form.Control
+                                                type="number"
+                                                min={1}
+                                                max={50}
+                                                defaultValue={0}
+                                                placeholder="0"
+                                                onChange={(e) => {
+                                                    setID(i);
+                                                    setLessons(e.target.value);
+                                                    setSelectedType(vehicleType[i]?.typeID)
+                                                    setAutoOrManual(vehicleData[i]?.autoOrManual);
+                                                    setIsVisible(true);
+                                                }}
+                                                disabled={!vehicleData[i]?.isVisible}
+                                                required
+                                            />
+                                        </Col>
+                                    </td>
+                                </tr>
+                            ))
+                        }
                     </table>
                     <Form.Text className="text-danger">
                         {error}

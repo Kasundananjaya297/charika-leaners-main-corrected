@@ -30,10 +30,11 @@ const Vehicle = () => {
     useEffect(() => {
         const onFetch = async () => {
             try {
-                const response = await getVehicles("registrationNo", "DESC", itemsPerPage, 0);
+                const response = await getVehicles("registrationNo", "DESC", itemsPerPage, offset);
                 if (response && response?.data?.code === "00") {
                     setVehicleData(response?.data?.content);
                     setRecordCount(response?.data?.recordCount);
+                    console.log("+++++++++++",response?.data?.recordCount)
                 } else {
                     console.log("Error fetching data:", response);
                 }
@@ -42,7 +43,7 @@ const Vehicle = () => {
             }
         };
         onFetch();
-    }, [interrupt]);
+    }, [interrupt,offset,itemsPerPage]);
 
     useEffect(() => {
         const fetch = async () => {

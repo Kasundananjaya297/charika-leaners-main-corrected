@@ -39,7 +39,7 @@ function Trainers(props) {
            console.log(response?.data);
        }
     fetchData();
-    },[feildName,order,order,offset,interrupt,itemsPerPage]);
+    },[feildName,order,offset,interrupt,itemsPerPage]);
 
     //pagination set items for pagination
     let items = [];
