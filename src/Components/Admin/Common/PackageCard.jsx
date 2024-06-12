@@ -45,7 +45,7 @@ export default function PackageCard({packeData,setPackgeID}) {
                         </Row>
                         <Row className='flex items-center justify-center flex-row'>
                             <Col className='mb-2'>Lessons: *</Col>
-                            <div className='flex flex-col gap-y-1 h-32'>
+                            <div className='flex flex-col gap-y-1 h-28 overflow-y-scroll'>
                                 <div className='pb-4 overflow-auto'>
                                 <div class='overflow-hidden border border-gray-200 rounded-lg mr-6'>
                                     <div class='overflow-y-auto  '>
@@ -69,7 +69,6 @@ export default function PackageCard({packeData,setPackgeID}) {
                                         </table>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                         </Row>

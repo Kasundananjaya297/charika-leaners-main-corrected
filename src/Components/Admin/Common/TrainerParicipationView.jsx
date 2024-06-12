@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Table, Form } from 'react-bootstrap';
+import Dropdown from "react-bootstrap/Dropdown";
+import {Toggles} from "react-bootstrap-icons";
 
 const TrainerParticipationView = ({ bookingData }) => {
     const [filterMonth, setFilterMonth] = useState('all');
@@ -19,6 +21,7 @@ const TrainerParticipationView = ({ bookingData }) => {
         const month = new Date(data.start).getMonth() + 1;
         return month === parseInt(filterMonth);
     }).filter(data => hideStarted ? data.completeOn : true);
+    console.log("++++++++++++++++",bookingData)
 
     return (
         <div>
@@ -92,12 +95,32 @@ const TrainerParticipationView = ({ bookingData }) => {
                             <td>{data?.startedOn ? data.startedOn.split('.')[0] : ''}</td>
                             <td>{data?.completeOn ? data.completeOn.split('.')[0] : ''}</td>
                             <td>{data?.vehicleClass} - {data?.vehicleClassName}</td>
-                            <td>{data?.studentCount}</td>
                             <td>
-                                {data?.numberofBooking}
+                                {data?.studentCount}
                             </td>
                             <td>
-                                {data?.numberofAttendance}
+                                <Dropdown>
+                                    <Dropdown.Toggle  size={'sm'} variant="outline-secondary">{data?.numberofBooking}</Dropdown.Toggle>
+                                    {data?.bookingScheduleDTO?.length>0&&data?.bookingScheduleDTO?.map((item, i) => (
+                                        <Dropdown.Menu key={i}>
+                                            <Dropdown.Item className='text-xs'>
+                                                {item?.stdID} - {item?.stdFname} {item?.lname}
+                                            </Dropdown.Item>
+                                        </Dropdown.Menu>
+                                    ))}
+                                </Dropdown>
+                            </td>
+                            <td>
+                                <Dropdown>
+                                    <Dropdown.Toggle  size={'sm'} variant="outline-secondary">{data?.numberofAttendance}</Dropdown.Toggle>
+                                    {data?.bookingScheduleDTO?.length>0&&data?.bookingScheduleDTO?.map((item, i) => (
+                                       ( item?.isCompleted &&<Dropdown.Menu key={i}>
+                                            <Dropdown.Item className='text-xs'>
+                                                {item?.stdID} - {item?.stdFname} {item?.lname}
+                                            </Dropdown.Item>
+                                        </Dropdown.Menu>)
+                                    ))}
+                                </Dropdown>
                             </td>
                         </tr>
                     ))}
