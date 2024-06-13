@@ -121,9 +121,9 @@ function TrainerRegistrationForm(props) {
                                 title: "Success",
                                 text: "Trainer saved successfully",
                             }).then(() => {
-                                //nav(-1);
+                                nav(-1);
                             });
-                        }else if(response.data.code === "06"){
+                        }else {
                             Swal.fire({
                                 icon: "error",
                                 title: "Error",
@@ -132,8 +132,6 @@ function TrainerRegistrationForm(props) {
                         }
                     }
                 })
-
-
             }catch (error) {
 
             }
